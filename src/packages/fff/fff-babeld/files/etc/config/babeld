@@ -1,0 +1,21 @@
+config general
+	option export_table '10'
+	option import_table '10'
+	option local_port '33123'
+
+config interface
+	option type 'wired'
+
+config filter
+	option type 'redistribute'
+	option local 'true'
+	option ip '10.0.0.0/8'
+
+config filter
+	option type 'redistribute'
+	option local 'true'
+	option action 'deny'
+
+config filter
+	option type 'redistribute'
+	option ip '10.0.0.0/8'
