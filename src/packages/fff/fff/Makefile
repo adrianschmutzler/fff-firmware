@@ -35,7 +35,6 @@ endef
 
 define Package/fff-node
     $(call Package/fff/base)
-    DEFAULT:=y
     TITLE+=(Home node)
     DEPENDS+=+fff-fastd \
              +fff-firewall \
@@ -85,3 +84,5 @@ endef
 
 $(eval $(call BuildPackage,fff-node))
 $(eval $(call BuildPackage,fff-layer3))
+
+include $(TOPDIR)/variant.mk
