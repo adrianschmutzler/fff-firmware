@@ -1,0 +1,13 @@
+#!/bin/sh
+
+/bin/rm -f /usr/lib/micron.d/fff-batman-adv
+
+uci batch <<EOF
+  set batman-adv.bat0=mesh
+  set batman-adv.bat0.gw_mode='server'
+  set batman-adv.bat0.gw_sel_class='200000'
+EOF
+
+uci commit
+
+exit 0
