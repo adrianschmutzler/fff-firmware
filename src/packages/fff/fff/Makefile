@@ -72,6 +72,8 @@ define Package/fff-layer3
              +@FASTD_ENABLE_CIPHER_NULL \
              +@FASTD_WITH_STATUS_SOCKET \
              +fastd \
+             +kmod-wireguard \
+             +wireguard-tools \
              +iperf3 \
              +tcpdump \
              +fff-gw
