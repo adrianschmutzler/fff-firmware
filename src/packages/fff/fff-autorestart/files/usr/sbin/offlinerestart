@@ -1,0 +1,56 @@
+#!/bin/sh
+
+if [ -s /tmp/gatewayoff ] && grep -q '^0$' /tmp/gatewayoff ; then
+	exit 0
+fi
+
+UPPER_LIMIT='50' # Above this limit the gateway will be considered online
+LOWER_LIMIT='20' # Below this limit the gateway will be considered offline
+# In-between these two values the state is not changed
+
+NOW=$(date +%s)
+
+if batctl -v | grep -q '2013\.4\.0' ; then
+	BATCTLGW=$(batctl gwl | grep '^=>')
+else
+	BATCTLGW=$(batctl gwl | grep -m 1 "Bit")
+fi
+
+GATEWAY_TQ=$(echo "$BATCTLGW" | awk -F'[()]' '{print $2}'| tr -d " ") # Grep the connection quality of the gateway which is currently used
+if [ ! "$GATEWAY_TQ" ]; # If there is no gateway there will be errors in the following if clauses
+then
+	GATEWAY_TQ=0 # Just an easy way to get a valid value if there is no gateway
+fi
+if [ $GATEWAY_TQ -gt $UPPER_LIMIT ]; then
+	echo "Gateway TQ is $GATEWAY_TQ - Node is online"
+	if [ -s /tmp/gatewayoff ] ; then 
+		rm -f /tmp/gatewayoff
+	fi
+	if [ -s /etc/autorestartcount ] ; then 
+		rm -f /etc/autorestartcount
+	fi
+elif [ $GATEWAY_TQ -lt $LOWER_LIMIT ] ; then
+	echo "Gateway TQ is $GATEWAY_TQ - Node is considered offline"
+	if [ ! -s /tmp/gatewayoff ] ; then 
+		echo "$NOW" > /tmp/gatewayoff
+	fi
+	OFFLINESINCE=$(($(date +%s)-1800)) # Restart after 30 minutes
+	OFFLINEDAY=$(($(date +%s)-86400)) # Restart after 1 day
+	if [ "$(cat /tmp/gatewayoff)" -lt "$OFFLINESINCE" ] ; then
+		if [ -s /etc/autorestartcount ] ; then # Auto-restart has already taken place
+		    restartcount="$(cat /etc/autorestartcount)"
+			if [ "$restartcount" -lt 2 ] || [ "$(cat /tmp/gatewayoff)" -lt "$OFFLINEDAY" ] ; then
+				# 1st and 2nd restart after 30 minutes, 3rd+ restart after one day
+				echo $((restartcount + 1)) > /etc/autorestartcount
+				reboot && exit
+			fi
+		else
+			echo "1" > /etc/autorestartcount
+			reboot && exit
+		fi
+	fi
+elif [ $GATEWAY_TQ -ge $LOWER_LIMIT ] && [ $GATEWAY_TQ -le $UPPER_LIMIT ] ; then # This is just to get a clean run if we are in-between the grace periode
+	echo "Gateway TQ is $GATEWAY_TQ - Do nothing"
+else
+	echo "Parsing error"
+fi

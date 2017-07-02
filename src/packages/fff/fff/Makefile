@@ -18,6 +18,7 @@ define Package/fff-base
              +ip6tables \
              +odhcp6c \
              +micrond \
+             +fff-autorestart \
              +fff-nodewatcher \
              +fff-web \
              +fff-uradvd \
