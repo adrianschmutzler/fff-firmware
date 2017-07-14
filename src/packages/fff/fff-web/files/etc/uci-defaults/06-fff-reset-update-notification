@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ "$(uci -q get fff.notifyupdate.resetonupgrade)" = "1" ] ; then
+	uci -q set "fff.notifyupdate.value=1"
+	uci -q commit fff
+	/bin/rm -f /tmp/fwcheck
+fi
+
+exit 0
