@@ -41,7 +41,7 @@ if [ "$REQUEST_METHOD" == "POST" ] ; then
 		uci -q set "simple-tc.example.ifname=wan"
 		uci -q set "simple-tc.example.limit_ingress=${POST_limit_ingress}"
 		uci -q set "simple-tc.example.limit_egress=${POST_limit_egress}"
-
+		
 		# Restliche Einstellungen
 		uci -q set "fff.notifyupdate=webui"
 		if [ "$POST_upgrade_notification" == "on" ] ; then
@@ -51,7 +51,12 @@ if [ "$REQUEST_METHOD" == "POST" ] ; then
 			rm -f /tmp/fwcheck
 			rm -f /tmp/isupdate
 		fi
-
+		if [ "$POST_upgrade_reset" == "on" ] ; then
+			uci -q set "fff.notifyupdate.resetonupgrade=1"
+		else
+			uci -q set "fff.notifyupdate.resetonupgrade=0"
+		fi
+		
 		if uci -q get system.poe_passthrough > /dev/null ; then
 			uci -q set "fff.poe_passthrough=fff"
 			if [ "$POST_poe_passthrough" == "on" ] ; then
@@ -96,6 +101,11 @@ if [ "$(uci -q get 'fff.notifyupdate.value')" == "0" ] ; then # not set=1
 	upgrade_checked=""
 else
 	upgrade_checked="$chkd"
+fi
+if [ "$(uci -q get 'fff.notifyupdate.resetonupgrade')" == "0" ] ; then # not set=1
+	upgrade_reset_checked=""
+else
+	upgrade_reset_checked="$chkd"
 fi
 if [ "$(uci -q get 'fff.wifi.disable24ghz')" = "1" ] ; then # not set=0
 	enable24ghz_checked=""
@@ -145,6 +155,9 @@ fi
 	<table>
 		<tr><th>Show upgrade notification:</th><td colspan="2">
 			<input type="checkbox" name="upgrade_notification" <%= ${upgrade_checked} %>/>
+		</td></tr>
+		<tr><th>Reset notification setting after upgrade:</th><td colspan="2">
+			<input type="checkbox" name="upgrade_reset" <%= ${upgrade_reset_checked} %>/>
 		</td></tr>
 		
 		<%
