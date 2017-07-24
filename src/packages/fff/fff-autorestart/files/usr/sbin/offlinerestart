@@ -1,5 +1,7 @@
 #!/bin/sh
 
+/usr/sbin/updatefwname
+
 if [ -s /tmp/gatewayoff ] && grep -q '^0$' /tmp/gatewayoff ; then
 	exit 0
 fi

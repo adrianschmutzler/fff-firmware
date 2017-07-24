@@ -1,0 +1,16 @@
+#!/bin/sh
+
+fw=$(awk -F= '/FIRMWARE_VERSION=/ { print $2 }' /etc/firmware_release | sed "s/\"//g")
+if echo "$fw" | grep -q '\-ar$' ; then
+	newfw="${fw%-*}"
+else
+	newfw="$fw"
+fi
+if [ ! -s /tmp/gatewayoff ] || ! grep -q '^0$' /tmp/gatewayoff ; then
+	newfw="${newfw}-ar"
+fi
+if [ ! "$fw" = "$newfw" ] ; then
+	sed -i "/FIRMWARE_VERSION=/ { c \
+	FIRMWARE_VERSION=\"$newfw\"
+	}" /etc/firmware_release
+fi
