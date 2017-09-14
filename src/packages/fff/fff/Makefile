@@ -53,6 +53,7 @@ define Package/fff-layer3
     TITLE+=(Layer 3 Gateway)
     DEPENDS+=+fff-dhcp \
              +fff-odhcpd \
+             +fff-gateway \
              +fff-babeld \
              +arptables \
              +ebtables \
