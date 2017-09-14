@@ -1,0 +1,170 @@
+#!/bin/sh
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+BOARD="$(uci get board.model.name)"
+. /etc/network.$BOARD
+
+#load uci functions
+. /lib/functions.sh
+
+
+
+# ensure client config exists
+if ! uci get gateway.@client[0] > /dev/null; then
+    echo "ERROR: No client config or error parsing config!"
+    exit 1
+fi
+
+
+
+## set hostname
+
+if uci -q get gateway.@gateway[0].name; then
+    uci set system.@system[0].hostname=$(uci get gateway.@gateway[0].name)
+else
+    echo "WARNING: No gateway name set!"
+fi
+
+
+
+## configure clientnet
+
+# ipaddr
+#remove old ipaddr
+uci del network.mesh.ipaddr
+#set new ipaddr
+if uci -q get gateway.@client[0].ipaddr; then
+    uci add_list network.mesh.ipaddr=$(uci get gateway.@client[0].ipaddr)
+    uci set network.mesh.ip4table='fff'
+    uci set network.mesh.ip6table='fff'
+else
+    echo "WARNING: No client ipaddr set!"
+fi
+
+# ip6addr
+#remove old ip6addr
+for ip in $(uci get network.mesh.ip6addr); do
+    if ( echo "$ip" | grep -v -e "fd43:" -e "fdff:" ); then
+        uci del_list network.mesh.ip6addr="$ip"
+    fi
+done
+#set new ip6addr
+if uci -q get gateway.@client[0].ip6addr; then
+    uci add_list network.mesh.ip6addr=$(uci get gateway.@client[0].ip6addr)
+else
+    echo "WARNING: No client ip6addr set!"
+fi
+
+# dhcp
+uci del dhcp.mesh.start
+uci del dhcp.mesh.limit
+if uci -q get gateway.@client[0].dhcp_start; then
+    uci set dhcp.mesh=dhcp
+    uci set dhcp.mesh.interface=mesh
+    uci set dhcp.mesh.start=$(uci get gateway.@client[0].dhcp_start)
+    uci set dhcp.mesh.limit=$(uci get gateway.@client[0].dhcp_limit)
+else
+    echo "WARNING: No DHCP range start and/or limit set!"
+fi
+
+
+## dns
+uci delete dhcp.@dnsmasq[0].server
+if uci -q get gateway.@dns[0].server; then
+    for f in $(uci get gateway.@dns[0].server); do
+        uci add_list dhcp.@dnsmasq[0].server=$f
+        uci add_list dhcp.@dnsmasq[0].server="/in-addr.arpa/$f"
+        uci add_list dhcp.@dnsmasq[0].server="/ip6.arpa/$f"
+    done
+else
+    echo "WARNING: No DNS servers set!"
+fi
+
+
+
+## babelpeer
+# remove peers missing in gateway config
+remove_babelpeer() {
+    local name="$1"
+    if ! echo $name | grep cfg > /dev/null; then # do not delete default interface
+        if ! uci -q get gateway.$name > /dev/null; then
+            # remove interface
+            uci del network.$name
+            # remove babel interface
+            uci del babeld.$name
+        fi
+    fi
+}
+
+config_load babeld
+config_foreach remove_babelpeer interface
+
+
+#add new peers
+add_babelpeer() {
+    local name="$1"
+    local vlan
+    local type
+
+    # prohibit cfg* as name
+    if echo $name | grep cfg > /dev/null; then
+        echo "ERROR: name $name is invalid for babelpeer!"
+        return
+    fi
+
+    # get iface
+    if uci -q get gateway.$name.vlan; then
+        iface="${SWITCHDEV}.$(uci get gateway.$name.vlan)"
+    elif uci -q get gateway.$name.iface; then
+        iface="$(uci get gateway.$name.iface)"
+    else
+        echo "ERROR: No iface set for babelpeer $name!"
+        return
+    fi
+
+    # get type
+    if uci -q get gateway.$name.type; then
+        type=$(uci get gateway.$name.type)
+    else
+        type=wired
+    fi
+
+    # add interface
+    uci set network.$name=interface
+    uci set network.$name.proto=static
+    uci set network.$name.ifname=$iface
+
+    # peer_ip
+    if uci -q get gateway.@gateway[0].peer_ip; then
+        uci set network.$name.ipaddr=$(uci get gateway.@gateway[0].peer_ip)
+    elif uci -q get gateway.@client[0].ipaddr; then
+        # use ipaddr (without subnet) if no peer_ip set
+        uci set network.$name.ipaddr=$(uci get gateway.@client[0].ipaddr | cut -d / -f1)
+    else
+        echo "FATAL: Neither peer_ip nor ipaddr set! No peering ipv4 set!"
+    fi
+
+    # peer_ip6
+    if uci -q get gateway.@gateway[0].peer_ip6; then
+        uci set network.$name.ip6addr=$(uci get gateway.@gateway[0].peer_ip6)
+    fi
+
+    # add babel interface
+    uci set babeld.$name=interface
+    uci set babeld.$name.ifname=$name
+    uci set babeld.$name.type=$type
+}
+
+config_load gateway
+config_foreach add_babelpeer babelpeer
+
+
+exit 0
