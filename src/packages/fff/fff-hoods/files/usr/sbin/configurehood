@@ -225,6 +225,12 @@ if [ -s "$hoodfile" ]; then
 		uci -q set "system.@system[0].hood=$hood"
 		uci -q commit system
 
+		# Use custom ids if provided
+		customap="$(uci -q get fff.wifi.essid)"
+		custommesh="$(uci -q get fff.wifi.mesh_id)"
+		[ -n "$customap" ] && essid="$customap"
+		[ -n "$custommesh" ] && mesh_id="$custommesh"
+
 		if ! wifiDelIface; then
 			echo "Can't delete current wifi setup"
 			exit 1
