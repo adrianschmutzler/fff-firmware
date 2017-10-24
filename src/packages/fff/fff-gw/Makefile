@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=fff-web
-PKG_VERSION:=6
-PKG_RELEASE:=2
+PKG_NAME:=fff-gw
+PKG_VERSION:=1
+PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -11,13 +11,12 @@ include $(INCLUDE_DIR)/package.mk
 define Package/$(PKG_NAME)
     SECTION:=base
     CATEGORY:=Freifunk
-    TITLE:= Freifunk-Franken Webinterface
+    TITLE:=Freifunk-Franken gw Customizations
     URL:=http://www.freifunk-franken.de
-    DEPENDS:=+uhttpd +libustream-mbedtls +haserl +px5g +simple-tc +fff-boardname +fff-config +fff-network +fff-hoodutils
 endef
 
 define Package/$(PKG_NAME)/description
-    This is the Webinterface for the Freifunk Franken Firmware
+    This is the gw customization package.
 endef
 
 define Build/Prepare
@@ -34,9 +33,6 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(CP) ./files/* $(1)/
-ifeq ($(CONFIG_PACKAGE_fff-nodewatcher),y)
-	ln -s ../../tmp/crawldata/node.data $(1)/www/public/node.data
-endif
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
