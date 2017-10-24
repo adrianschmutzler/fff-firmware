@@ -4,7 +4,7 @@
 . /lib/functions/fff/keyxchange
 . /etc/firmware_release
 
-UPGRADE_PATH="http://[fd43:5602:29bd:10::0215:5d01:201d]:2351/"
+UPGRADE_PATH="http://[fd43:5602:29bd:10::a]:2351/"
 cat="adsc2"
 over=/tmp/fwupver
 
