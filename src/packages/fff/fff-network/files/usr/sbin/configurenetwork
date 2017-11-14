@@ -150,7 +150,7 @@ if [ "$ONE_PORT" = "YES" ] && ( ! uci -q get network.$SWITCHDEV.ifname || [ "$FO
         uci set network.mesh.ifname="bat0"
         uci set network.wan.ifname="eth1" #eth1 because it is default in config file
         uci set network.ethmesh.ifname="$SWITCHDEV"
-        ETH0MAC="w2ap"
+        ETH0MAC=1
     fi
     uci commit
 fi
@@ -196,7 +196,7 @@ fi
 if [[ -n "$ETH0MAC" ]]; then
         echo "Fixing MAC on eth0"
         sleep 10
-        NEW_MACADDR=$(cat "/sys/class/net/${ETH0MAC}/address")
+        NEW_MACADDR=$(macFlipLocalBit "$ROUTERMAC")
         uci set network.eth0.macaddr=$NEW_MACADDR
         uci commit
         ifconfig eth0 down
