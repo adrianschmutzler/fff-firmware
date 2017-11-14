@@ -73,6 +73,8 @@ define Package/fff-layer3
              +@FASTD_ENABLE_CIPHER_NULL \
              +@FASTD_WITH_STATUS_SOCKET \
              +fastd \
+             +iperf3 \
+             +tcpdump \
              +fff-gw
     VARIANT:=layer3
 endef
