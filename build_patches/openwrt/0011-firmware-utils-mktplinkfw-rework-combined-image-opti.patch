@@ -37,7 +37,7 @@ Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
  2 files changed, 44 insertions(+), 62 deletions(-)
 
 diff --git a/target/linux/ar71xx/image/tp-link.mk b/target/linux/ar71xx/image/tp-link.mk
-index 32d16f9..2557858 100644
+index 04d2fa4..d334120 100644
 --- a/target/linux/ar71xx/image/tp-link.mk
 +++ b/target/linux/ar71xx/image/tp-link.mk
 @@ -26,11 +26,11 @@ endef
@@ -55,7 +55,7 @@ index 32d16f9..2557858 100644
  		-c
  	@mv $@.new $@
  endef
-@@ -849,7 +849,6 @@ define Device/tl-wr1043nd-v4
+@@ -803,7 +803,6 @@ define Device/tl-wr1043nd-v4
      BOARDNAME := TL-WR1043ND-v4
      DEVICE_PROFILE := TLWR1043
      TPLINK_HWID :=  0x10430004
