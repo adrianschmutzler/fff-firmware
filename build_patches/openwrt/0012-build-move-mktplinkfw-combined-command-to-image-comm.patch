@@ -38,7 +38,7 @@ index 04fa853..9e56ab8 100644
  	sh $(TOPDIR)/scripts/sysupgrade-tar.sh \
  		--board $(if $(BOARD_NAME),$(BOARD_NAME),$(DEVICE_NAME)) \
 diff --git a/target/linux/ar71xx/image/tp-link.mk b/target/linux/ar71xx/image/tp-link.mk
-index 2557858..685b09e 100644
+index d334120..11da6d1 100644
 --- a/target/linux/ar71xx/image/tp-link.mk
 +++ b/target/linux/ar71xx/image/tp-link.mk
 @@ -21,20 +21,6 @@ define Build/mktplinkfw
@@ -80,7 +80,7 @@ index 2557858..685b09e 100644
  endef
  
  define Device/tplink-4m
-@@ -249,7 +235,7 @@ $(Device/tplink-8mlzma)
+@@ -241,7 +227,7 @@ $(Device/tplink-8mlzma)
    DEVICE_TITLE := TP-LINK TL-WDR6500v2
    DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ledtrig-usbport kmod-ath10k ath10k-firmware-qca988x
    KERNEL := kernel-bin | patch-cmdline | lzma | uImage lzma
@@ -89,7 +89,7 @@ index 2557858..685b09e 100644
    BOARDNAME = TL-WDR6500-v2
    DEVICE_PROFILE = TLWDR6500V2
    TPLINK_HWID := 0x65000002
-@@ -852,7 +838,7 @@ define Device/tl-wr1043nd-v4
+@@ -806,7 +792,7 @@ define Device/tl-wr1043nd-v4
      MTDPARTS := spi0.0:128k(u-boot)ro,1536k(kernel),14016k(rootfs),128k(product-info)ro,320k(config)ro,64k(partition-table)ro,128k(logs)ro,64k(ART)ro,15552k@0x20000(firmware)
      IMAGE_SIZE := 15552k
      TPLINK_BOARD_NAME := TLWR1043NDV4
