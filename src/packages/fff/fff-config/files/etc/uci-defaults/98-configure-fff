@@ -11,6 +11,11 @@ if ! uci -q get fff.system > /dev/null ; then
 fi
 
 uci -q set fff.wifi=fff
+
+uci -q get fff.wifi.disable24ghz > /dev/null || uci -q set "fff.wifi.disable24ghz=0"
+uci -q get fff.wifi.disable5ghz > /dev/null || uci -q set "fff.wifi.disable5ghz=0"
+uci -q get fff.wifi.disablewifi > /dev/null || uci -q set "fff.wifi.disablewifi=0"
+
 uci -q get fff.wifi.disablew2ap > /dev/null || uci -q set "fff.wifi.disablew2ap=0"
 uci -q get fff.wifi.disablew5ap > /dev/null || uci -q set "fff.wifi.disablew5ap=0"
 uci -q get fff.wifi.disablew2mesh > /dev/null || uci -q set "fff.wifi.disablew2mesh=0"
