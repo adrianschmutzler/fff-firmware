@@ -228,4 +228,26 @@ wifiAddMesh() {
 	echo "${iface}"
 	return 0
 }
+
+wifiGetPhy() {
+	# Returns the wifi-device (radioX) for a given frequency (2 or 5)
+
+	if [ $# -ne "1" ]
+	then
+		return 1
+	fi
+
+	local freq=$1
+	local radio=""
+
+	for phy in $(iw phy | awk '/^Wiphy/{ print $2 }'); do
+		if iw phy "$phy" info | grep -q -m1 "${freq}... MHz"; then
+			radio="radio$(echo "$phy" | tr -d -C "0-9")"
+		fi
+	done
+	
+	echo "$radio"
+	return 0 # also returns success if outermost if is false
+}
+
 # vim: set noexpandtab:tabstop=4
