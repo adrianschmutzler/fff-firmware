@@ -1,7 +1,11 @@
 #!/usr/bin/haserl
 
 <%
+. /lib/functions/fff/wireless
+
 # write
+radio2="$(wifiGetPhy "2")"
+radio5="$(wifiGetPhy "5")"
 if [ "$REQUEST_METHOD" == "POST" ] ; then
 	#check for valid hostname as specified in rfc 1123
 	#see http://stackoverflow.com/a/3824105
@@ -58,8 +62,21 @@ if [ "$REQUEST_METHOD" == "POST" ] ; then
 				uci -q set "system.poe_passthrough.value=0"
 			fi
 		fi
+		
+		if [ "$POST_enable24ghz" == "on" ] ; then
+			wifiSetActive "2" "1"
+		else
+			wifiSetActive "2" "0"
+		fi
+		if [ "$POST_enable5ghz" == "on" ] ; then
+			wifiSetActive "5" "1"
+		else
+			wifiSetActive "5" "0"
+		fi
 
 		uci -q commit
+		
+		wifi > /dev/null
 
 		MSG='<span class="green">Daten gespeichert! - Bitte Router neustarten.</span>'
 	fi
@@ -79,6 +96,16 @@ if [ "$(uci -q get 'fff.notifyupdate.value')" == "0" ] ; then # not set=1
 	upgrade_checked=""
 else
 	upgrade_checked="$chkd"
+fi
+if [ "$(uci -q get 'fff.wifi.disable24ghz')" = "1" ] ; then # not set=0
+	enable24ghz_checked=""
+else
+	enable24ghz_checked="$chkd"
+fi
+if [ "$(uci -q get 'fff.wifi.disable5ghz')" = "1" ] ; then # not set=0
+	enable5ghz_checked=""
+else
+	enable5ghz_checked="$chkd"
 fi
 %>
 <% show_msg %>
@@ -130,6 +157,16 @@ fi
 		%>
 		<tr><th>Enable PoE passthrough:</th><td colspan="2">
 			<input type="checkbox" name="poe_passthrough" <%= ${poe_pt_checked} %>/>
+		</td></tr>
+		<% fi %>
+		<% if [ -n "$radio2" ] ; then %>
+		<tr><th>Enable 2.4 GHz WiFi device:</th><td colspan="2">
+			<input type="checkbox" name="enable24ghz" <%= ${enable24ghz_checked} %>/>
+		</td></tr>
+		<% fi %>
+		<% if [ -n "$radio5" ] ; then %>
+		<tr><th>Enable 5 GHz WiFi device:</th><td colspan="2">
+			<input type="checkbox" name="enable5ghz" <%= ${enable5ghz_checked} %>/>
 		</td></tr>
 		<% fi %>
 		
