@@ -228,4 +228,90 @@ wifiAddMesh() {
 	echo "${iface}"
 	return 0
 }
+
+wifiGetPhy() {
+	# Returns the wifi-device (radioX) for a given frequency (2 or 5)
+
+	if [ $# -ne "1" ]
+	then
+		return 1
+	fi
+
+	local freq=$1
+	local radio=""
+
+	for phy in $(iw phy | awk '/^Wiphy/{ print $2 }'); do
+		if iw phy "$phy" info | grep -q -m1 "${freq}... MHz"; then
+			radio="radio$(echo "$phy" | tr -d -C "0-9")"
+		fi
+	done
+	
+	echo "$radio"
+	return 0 # also returns success if outermost if is false
+}
+
+wifiSetActive() {
+	# En- or disables WiFi permanently (upgrade-safe)
+	#
+	# wifiSetActive <freq> <setto>
+	#
+	# freq: 2 or 5
+	# setto: 0 (disabled) or 1 (enabled)
+
+	if [ $# -ne "2" ]
+	then
+		return 1
+	fi
+
+	local freq=$1
+	local setto=$2
+	
+	[ "$setto" = "1" ] && disabled="0" || disabled="1"
+	
+	radio="$(wifiGetPhy "$freq")"
+	if [ -n "$radio" ] ; then
+		uci -q set fff.wifi=fff
+		if [ "$freq" = "2" ] ; then
+			uci -q set "fff.wifi.disable24ghz=$disabled"
+		else
+			uci -q set "fff.wifi.disable5ghz=$disabled"
+		fi
+		uci -q set "wireless.${radio}.disabled=$disabled"
+	else
+		return 1
+	fi
+	uci -q commit fff
+	uci -q commit wireless
+
+	return 0
+}
+
+wifiSetAllActive() {
+	# En- or disables all WiFi interfaces permanently (upgrade-safe)
+	#
+	# wifiSetActive <setto>
+	#
+	# setto: 0 (disabled) or 1 (enabled)
+
+	if [ $# -ne "1" ]
+	then
+		return 1
+	fi
+
+	local setto=$1
+	
+	[ "$setto" = "1" ] && disabled="0" || disabled="1"
+	
+	uci -q set fff.wifi=fff
+	uci -q set "fff.wifi.disablewifi=$disabled"
+	for phy in $(iw phy | awk '/^Wiphy/{ print $2 }'); do
+		radio="radio$(echo "$phy" | tr -d -C "0-9")"
+		uci -q set "wireless.${radio}.disabled=$disabled"
+	done
+	uci -q commit fff
+	uci -q commit wireless
+	
+	return 0
+}
+
 # vim: set noexpandtab:tabstop=4

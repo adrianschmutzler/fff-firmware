@@ -28,3 +28,24 @@ poe_passthrough=$(uci -q get "fff.poe_passthrough.active")
 if [ "$poe_passthrough" = "1" ] && [ -s /usr/lib/fff-support/activate_poe_passthrough.sh ] ; then
 	/usr/lib/fff-support/activate_poe_passthrough.sh
 fi
+
+. /lib/functions/fff/wireless
+
+if [ "$(uci -q get 'fff.wifi.disable24ghz')" = "1" ] ; then
+	radio="$(wifiGetPhy "2")"
+	[ -n "$radio" ] && uci -q set "wireless.${radio}.disabled=1"
+fi
+
+if [ "$(uci -q get 'fff.wifi.disable5ghz')" = "1" ] ; then
+	radio="$(wifiGetPhy "5")"
+	[ -n "$radio" ] && uci -q set "wireless.${radio}.disabled=1"
+fi
+
+if [ "$(uci -q get 'fff.wifi.disablewifi')" = "1" ] ; then
+	for phy in $(iw phy | awk '/^Wiphy/{ print $2 }'); do
+		radio="radio$(echo "$phy" | tr -d -C "0-9")"
+		uci -q set "wireless.${radio}.disabled=1"
+	done
+fi
+
+uci -q commit wireless
