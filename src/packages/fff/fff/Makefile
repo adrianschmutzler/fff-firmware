@@ -54,6 +54,7 @@ define Package/fff-layer3
     TITLE+=(Layer 3 Gateway)
     DEPENDS+=+fff-gateway \
              +fff-dhcp \
+             +fff-odhcpd \
              +fff-babeld \
              +fff-openvpn \
              +arptables \
