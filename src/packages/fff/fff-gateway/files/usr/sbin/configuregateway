@@ -9,11 +9,21 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
+
+# IMPORTANT!!
+# DO NOT RUN THIS IN CRONJOB!
+
 BOARD="$(uci get board.model.name)"
 . /etc/network.$BOARD
 
 #load uci functions
 . /lib/functions.sh
+. /usr/share/libubox/jshn.sh
+
+#load fff functions
+. /lib/functions/fff/wireless
+. /lib/functions/fff/network
+. /lib/functions/fff/keyxchange
 
 
 
@@ -86,6 +96,120 @@ if uci -q get gateway.@dns[0].server; then
     done
 else
     echo "WARNING: No DNS servers set!"
+fi
+
+
+
+## HOODFILE
+if [ -s "$hoodfilecopy" ]; then
+    json_load "$(cat "$hoodfilecopy")"
+
+    # ULA
+    json_select network
+    json_get_var prefix ula_prefix
+    json_select ".."
+    # Set $prefix::MAC as IP
+    if [ -n "$prefix" ] ; then
+        prefix="$(echo "$prefix" | sed -e 's,\\,,')"
+        mac="$(cat "/sys/class/net/br-mesh/address")"
+        addr="$(ipMacAssemble "$prefix" "$mac")"
+        addr="$(ipTidyColon "$addr")"
+        addr_eui="$(ipEUIAssemble "$prefix" "$mac")"
+        addr_eui="$(ipTidyColon "$addr_eui")"
+
+        # add new addresses
+        if ! ( uci get network.mesh.ip6addr | grep -q "$addr" ) ; then
+            uci add_list network.mesh.ip6addr="$addr"
+            echo "Set ULA address to br-mesh: $addr"
+        else
+            echo "Address already set."
+        fi
+        # Set $prefix::link-local as IP
+        if ! ( uci get network.mesh.ip6addr | grep -q "$addr_eui" ) ; then
+            uci add_list network.mesh.ip6addr="$addr_eui"
+            echo "Set ULA EUI-64 address to br-mesh: $addr_eui"
+        else
+            echo "Address already set."
+        fi
+    fi
+
+    # WIFI
+    json_select hood
+    json_get_var hood name
+    json_get_var mesh_id mesh_id
+    json_get_var mesh_bssid mesh_bssid
+    json_get_var mesh_essid mesh_essid
+    json_get_var essid essid
+    json_get_var chan2ghz channel2
+    json_get_var mesh_type2 mesh_type2
+    json_get_var chan5ghz channel5
+    json_get_var mesh_type5 mesh_type5
+    json_select ".."
+
+    echo "Setting hood name: $hood"
+    uci -q set "system.@system[0].hood=$hood"
+
+    if ! wifiDelIface; then
+        echo "Can't delete current wifi setup"
+        exit 1
+    fi
+
+    if ([ -n "$chan2ghz" ] && [ -n "$chan5ghz" ]) ; then
+        for phy in $(iw phy | awk '/^Wiphy/{ print $2 }'); do
+            radio="$(wifiAddPhyCond "$phy" "2" "$chan2ghz")"
+            radio5="$(wifiAddPhyCond "$phy" "5" "$chan5ghz")"
+            [ -n "$radio5" ] && radio="$radio5"
+
+            if ! wifiAddAP "$radio" "$essid" "mesh" "ap" "0"; then
+                echo "Can't add AP interface on $radio."
+                exit 1
+            fi
+
+            # add config ap
+            iface="configap2"
+            if [ -n "$radio5" ]; then
+                iface="configap5"
+            fi
+            uci set network.${iface}=interface
+            uci set network.${iface}.proto='static'
+            uci set network.${iface}.ip6addr='fe80::1/64'
+            if ! wifiAddAP "$radio" "config.franken.freifunk.net" "$iface" "configap" "1"; then
+                echo "Can't add Config interface on $radio."
+                exit 1
+            fi
+
+            # add 802.11s mesh if type == "802.11s"
+            if ( [ -n "$radio5" ] && [ "$mesh_type5" == "802.11s" ] ) || [ "$mesh_type2" == "802.11s" ]; then
+                if ! wifiAddMesh "$radio" "$mesh_id"; then
+                    echo "Can't add Mesh interface on $radio."
+                    exit 1
+                fi
+            fi
+
+            # add IBSS mesh if type == "ibss"
+            if ( [ -n "$radio5" ] && [ "$mesh_type5" == "ibss" ] ) || [ "$mesh_type2" == "ibss" ]; then
+                if ! wifiAddAdHocMesh "$radio" "$mesh_essid" "$mesh_bssid"; then
+                    echo "Can't add AdHocMesh interface on $radio."
+                    exit 1
+                fi
+            fi
+        done
+    fi
+
+    # LOCATION
+    json_select "hood"
+    json_select "location"
+    json_get_var lat lat
+    json_get_var lon lon
+    json_select ".."
+    json_select ".."
+
+    if [ -n "$lat" ] && [ -n "$lon" ]; then
+        uci -q set "fff.system.latitude=$lat"
+        uci -q set "fff.system.longitude=$lon"
+    fi
+else
+    echo "WARNING: No hoodfile!"
 fi
 
 
