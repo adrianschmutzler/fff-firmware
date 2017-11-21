@@ -19,6 +19,11 @@ config filter
 config filter
 	option type 'redistribute'
 	option local 'true'
+	option ip '2a0b:f4c0::/32'
+
+config filter
+	option type 'redistribute'
+	option local 'true'
 	option action 'deny'
 
 config filter
@@ -28,3 +33,7 @@ config filter
 config filter
 	option type 'redistribute'
 	option ip 'fd43:5602:29bd::/48'
+
+config filter
+	option type 'redistribute'
+	option ip '2a0b:f4c0::/32'
