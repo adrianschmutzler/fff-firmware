@@ -152,6 +152,19 @@ fi
 
 
 
+## batman
+# set interface
+#remove all eth interfaces
+if uci -q get gateway.@batman[0].vlan; then
+    uci set network.ethmesh.ifname="${SWITCHDEV}.$(uci get gateway.@batman[0].vlan)"
+elif uci -q get gateway.@batman[0].iface; then
+    uci set network.ethmesh.ifname="$(uci get gateway.@batman[0].iface)"
+else
+    echo "WARNING: No Interface for batman specified"
+fi
+
+
+
 ## HOODFILE
 if [ -s "$hoodfilecopy" ]; then
     json_load "$(cat "$hoodfilecopy")"
