@@ -34,6 +34,12 @@ if ! uci get gateway.@client[0] > /dev/null; then
 fi
 
 
+echo "This script might remove existing vlans, interfaces, addresses, etc."
+read -r -p "Do you really want to continue? (y/n) " response
+if ! [ "$response" == "y" ] || [ "$response" == "Y" ]; then
+    exit 1
+fi
+
 
 ## set hostname
 
