@@ -12,7 +12,7 @@ ipMacSuffix() {
 
 	local iface=$1
 
-	awk -F: '{ print "0:"$1$2":"$3$4":"$5$6 }' "/sys/class/net/${iface}/address"
+	uci -q get "network.${iface}.macaddr" | awk -F: '{ print "0:"$1$2":"$3$4":"$5$6 }'
 	return 0
 }
 
@@ -26,7 +26,7 @@ ipEUISuffix() {
 
 	local iface=$1
 
-	awk -F: '{ printf("%02x%s:%sff:fe%s:%s%s\n", xor(("0x"$1),2), $2, $3, $4, $5, $6) }' "/sys/class/net/${iface}/address"
+	uci -q get "network.${iface}.macaddr" | awk -F: '{ printf("%02x%s:%sff:fe%s:%s%s\n", xor(("0x"$1),2), $2, $3, $4, $5, $6) }'
 	return 0
 }
 

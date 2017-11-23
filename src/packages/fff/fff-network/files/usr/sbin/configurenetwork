@@ -218,7 +218,7 @@ else
 
     prefix="fdff:0::/64"
     # Set $prefix::MAC as IP
-    addr="$(ipMacAssemble "$prefix" "br-mesh")"
+    addr="$(ipMacAssemble "$prefix" "mesh")"
     ip -6 addr add $addr dev br-mesh
 
     uci -q del network.globals
@@ -233,7 +233,7 @@ else
     uci -q add_list network.mesh.ip6addr=$addr
 
     # Set $prefix::link-local as IP
-    addr="$(ipEUIAssemble "$prefix" "br-mesh")"
+    addr="$(ipEUIAssemble "$prefix" "mesh")"
     ip -6 addr add $addr dev br-mesh
     uci -q add_list network.mesh.ip6addr=$addr
 
