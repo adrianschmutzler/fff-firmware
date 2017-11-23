@@ -119,6 +119,18 @@ else
     echo "WARNING: No DHCP range start and/or limit set!"
 fi
 
+# set interface
+#remove all eth interfaces
+ifaces=$(uci get network.mesh.ifname | sed -e "s/ *eth\d\.\d//g" -e "s/ *eth\d//g" -e "s/^ //")
+if uci -q get gateway.@client[0].vlan; then
+    uci set network.mesh.ifname="${SWITCHDEV}.$(uci get gateway.@client[0].vlan) $ifaces"
+elif uci -q get gateway.@client[0].iface; then
+    uci set network.mesh.ifname="$(uci get gateway.@client[0].iface) $ifaces"
+else
+    echo "WARNING: No Interface for client specified"
+fi
+
+
 
 ## dns
 uci delete dhcp.@dnsmasq[0].server
