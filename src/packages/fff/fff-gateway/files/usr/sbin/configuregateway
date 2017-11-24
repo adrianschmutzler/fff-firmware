@@ -289,13 +289,14 @@ remove_babelpeer() {
             uci del network.$name
             # remove babel interface
             uci del babeld.$name
+            # remove wireguard config
+            uci -q del network.@wireguard_$name[0]
         fi
     fi
 }
 
 config_load babeld
 config_foreach remove_babelpeer interface
-
 
 #add new peers
 add_babelpeer() {
@@ -355,5 +356,77 @@ add_babelpeer() {
 config_load gateway
 config_foreach add_babelpeer babelpeer
 
+
+
+## wireguardpeer
+#add new peers
+add_wgpeer() {
+    local name="$1"
+
+    # prohibit cfg* as name
+    if echo $name | grep cfg > /dev/null; then
+        echo "ERROR: name $name is invalid for wireguardpeer!"
+        return
+    fi
+
+    # add interface
+    uci set network.$name=interface
+    uci set network.$name.proto=wireguard
+    if uci -q get gateway.$name.private_key > /dev/null; then
+        uci set network.$name.private_key="$(uci get gateway.$name.private_key)"
+    else
+        privkey=$(wg genkey)
+        uci set network.$name.private_key="$privkey"
+        uci set gateway.$name.private_key="$privkey"
+    fi
+    echo "WIREGUARD: publickey for ${name}: $(echo $(uci get gateway.$name.private_key) | wg pubkey)"
+
+    # configure wireguard
+    if uci -q get network.@wireguard_$name[0] > /dev/null
+    then
+        #config already exists
+        cfg="@wireguard_$name[0]"
+    else
+        #create new config
+        cfg=$(uci add network wireguard_$name)
+    fi
+    uci set network.$cfg.public_key="$(uci get gateway.$name.public_key)"
+    uci set network.$cfg.endpoint_host="$(uci get gateway.$name.endpoint_host)"
+    uci set network.$cfg.endpoint_port="$(uci get gateway.$name.endpoint_port)"
+    uci set network.$cfg.persistent_keepalive="$(uci get gateway.$name.persistent_keepalive)"
+    uci delete network.$cfg.allowed_ips
+    uci add_list network.$cfg.allowed_ips='::/0'
+    uci add_list network.$cfg.allowed_ips='0.0.0.0/0'
+
+    # remove old addresses
+    uci -q del network.$name.addresses
+
+    # link local
+    wgmac="$(cat "/sys/class/net/$SWITCHDEV/address")"
+    uci add_list network.$name.addresses="$(ipEUIAssemble "fe80::/64" "$wgmac")"
+
+    # peer_ip
+    if uci -q get gateway.@gateway[0].peer_ip; then
+        uci add_list network.$name.addresses="$(uci get gateway.@gateway[0].peer_ip)"
+    elif uci -q get gateway.@client[0].ipaddr; then
+        # use ipaddr (without subnet) if no peer_ip set
+        uci add_list network.$name.addresses="$(uci get gateway.@client[0].ipaddr | cut -d / -f1)"
+    else
+        echo "FATAL: Neither peer_ip nor ipaddr set! No peering ipv4 set!"
+    fi
+
+    # peer_ip6
+    if uci -q get gateway.@gateway[0].peer_ip6; then
+        uci add_list network.$name.addresses=$(uci get gateway.@gateway[0].peer_ip6)
+    fi
+
+    # add babel interface
+    uci set babeld.$name=interface
+    uci set babeld.$name.ifname="$name"
+    uci set babeld.$name.type='tunnel'
+}
+
+config_load gateway
+config_foreach add_wgpeer wireguardpeer
 
 exit 0
