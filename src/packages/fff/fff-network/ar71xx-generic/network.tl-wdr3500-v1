@@ -2,5 +2,6 @@ WANDEV=eth1
 SWITCHDEV=eth0
 CLIENT_PORTS="0t 1 2"
 BATMAN_PORTS="0t 3 4"
+CPUPORT="0t"
 
 ROUTERMAC=$(cat /sys/class/ieee80211/phy0/macaddress)

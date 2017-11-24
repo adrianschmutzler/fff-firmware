@@ -6,6 +6,7 @@ WANDEV=eth0
 SWITCHDEV=eth1
 BATMAN_PORTS="0t"
 CLIENT_PORTS="0t"
+CPUPORT="0t"
 
 ROUTERMAC=$(cat /sys/class/net/eth0/address)
 ETHMESHMAC="$(macFlipLocalBit "$ROUTERMAC")"
