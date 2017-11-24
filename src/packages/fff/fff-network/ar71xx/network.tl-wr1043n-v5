@@ -5,6 +5,7 @@ SWITCHDEV=eth0
 CLIENT_PORTS="1 2 0t"
 WAN_PORTS="5 0t"
 BATMAN_PORTS="3 4 0t"
+CPUPORT="0t"
 
 . /lib/functions/system.sh
 . /lib/functions/uci-defaults.sh
