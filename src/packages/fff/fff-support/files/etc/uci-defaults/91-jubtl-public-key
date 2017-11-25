@@ -1,9 +1,0 @@
-#!/bin/sh
-
-if [ ! -s /etc/dropbear/authorized_keys ] ; then
-	cat /etc/id_jubtl.pub >> /etc/dropbear/authorized_keys
-fi
-chmod 700 /etc/dropbear
-chmod 600 /etc/dropbear/authorized_keys
-
-exit 0
