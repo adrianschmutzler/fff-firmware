@@ -1,7 +1,40 @@
-#!/usr/bin/haserl
+#!/usr/bin/haserl --upload-dir=/tmp --upload-limit=1000
 
-<%in /www/ssl/cgi-bin/header %>
 <%
+# treat post
+if [ "$REQUEST_METHOD" == "POST" ] ; then
+	if [ "$POST_wifiupload" != "" ] ; then
+		if [ ! -f "$HASERL_nodelist_path" ] ; then
+			MSG='<span class="red">Node-Datei nicht gefunden!</span>'
+		elif [ "$(du -k "$HASERL_nodelist_path" | cut -f1)" == "0" ] ; then
+			MSG='<span class="red">Node-Datei ist leer!</span>'
+		else
+			mv "$HASERL_nodelist_path" /tmp/wifinodelist
+			MSG='<span class="green">Upload erfolgreich!</span>'
+		fi
+	fi
+	if [ "$POST_wifidownload" != "" ] ; then
+		if /bin/wget -T 10 -O /tmp/wifinodelist "https://monitoring.freifunk-franken.de/api/wifianalall" 2> /dev/null ; then
+			MSG='<span class="green">Download erfolgreich!</span>'
+		else
+			MSG='<span class="red">Download fehlgeschlagen!</span>'
+		fi
+	fi
+fi
+%>
+<%in /www/ssl/cgi-bin/header %>
+<%in /www/ssl/cgi-bin/helpers %>
+<% show_msg %>
+<%
+if [ -s /tmp/wifinodelist ] ; then
+	numentries="$(grep -c '^[^#]' /tmp/wifinodelist)"
+	filehood="$(grep -e "#Hood:" /tmp/wifinodelist | awk -F" " '{print $2}')"
+	[ -n "$filehood" ] || filehood="Alle Hoods"
+	havelist="<span style='color:green'>Ja (Hood: ${filehood}, ${numentries} Einträge)</span>"
+else
+	havelist='<span style="color:red">Nein</span>'
+fi
+
 readIWinfo() {
 	local iface=$1
 	local ssid=$2
@@ -12,6 +45,28 @@ readIWinfo() {
 		'{r = gensub(/.*Address: ([0-9A-F:]*)?.*ESSID: "?([^"\n]*)"?.*Mode: ([^ ]*).*Channel: ([0-9]*).*Signal: (-[0-9]*) dBm.*Encryption: ([^"]*).*/, \
 		"<!-- \\5 --><tr><'${ssid}'>\\2</'${ssid}'><td>\\4</td><td>\\5 dBm</td><td>\\3</td><'${mac}'>\\1</'${mac}'><td>\\6</td></tr>", "g"); print r;}' | sort -n | sed 's#&#\&amp;#'
 		# The HTML comment contains the signal quality to allow sorting
+}
+
+rewriteIWinfo() {
+	local data="$1"
+
+	echo "$data" | while read line ; do
+		mac="$(echo "$line" | sed -e 's#.*<mac>\(.*\)</mac>.*#\1#')"
+		routerid="$(grep -i -e "$mac" /tmp/wifinodelist | awk -F"|" '{print $2}')"
+		if [ -n "$routerid" ] ; then
+			ssid="<span style='color:green'>${routerid}</span>"
+		else
+			ssidtmp="$(echo "$line" | sed -e 's#.*<ssid>\(.*\)</ssid>.*#\1#')"
+			if [ "$ssidtmp" = "unknown" ] ; then
+				ssid="<span style='color:blue'>${ssidtmp}</span>"
+			else
+				ssid="$ssidtmp"
+			fi
+		fi
+		midpart=$(echo "$line" | sed -e 's#.*</ssid>\(.*\)<mac>.*#\1#')
+		endpart=$(echo "$line" | sed -e 's#.*</mac>\(.*\)</tr>.*#\1#')
+		echo "<tr><td>${ssid}</td>${midpart}<td>${mac}</td>${endpart}</tr>"
+	done
 }
 printWifiScan() {
 	local iface=$1
@@ -34,7 +89,12 @@ printWifiScan() {
 			</tr>
 
 <%
-	readIWinfo "$iface" "td" "td"
+	if [ -s /tmp/wifinodelist ] ; then
+		firststep="$(readIWinfo "$iface" "ssid" "mac")"
+		rewriteIWinfo "$firststep"
+	else
+		readIWinfo "$iface" "td" "td"
+	fi
 %>
 		</table>
 	</fieldset>
@@ -44,6 +104,21 @@ printWifiScan() {
 
 %>
 <table style="width: 100%">
+<tr><td>
+<form method="post" enctype="multipart/form-data">
+<fieldset>
+	<legend>Wifi Node File</legend>
+	<table>
+		<tr><th style="width: 20em;text-align:left;padding-bottom:10px">Alias Liste vorhanden:</th><td style="padding-bottom:10px"><%= "$havelist" %></td></tr>
+		<tr><th style="width: 20em;text-align:left">Upload Node-Liste:</th><td><input type="file" name="nodelist" /></td></tr>
+		<tr><td colspan="2" style="padding:10px 0">Hier kann eine Node-Liste (WiFiAnalyzer-Stil) hochgeladen werden.</td></tr>
+		<tr><td colspan="2"><input type="submit" name="wifiupload" value="Datei-Upload auf Router" /></td></tr>
+		<tr><td colspan="2" style="padding-top:20px">Wenn der Router mit dem Internet verbunden ist, kann die Node-Liste vom Monitoring bezogen werden.</td></tr>
+		<tr><td colspan="2" style="padding:10px 0"><input type="submit" name="wifidownload" value="Datei-Download von Monitoring" /></td></tr>
+	</table>
+</fieldset>
+</form>
+</td></tr>
 <%
 if uci -q get wireless.w2ap > /dev/null ; then
 	printWifiScan "w2ap"
