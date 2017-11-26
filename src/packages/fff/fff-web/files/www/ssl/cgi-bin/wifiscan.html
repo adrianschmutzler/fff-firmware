@@ -13,27 +13,45 @@ readIWinfo() {
 		"<!-- \\5 --><tr><'${ssid}'>\\2</'${ssid}'><td>\\4</td><td>\\5 dBm</td><td>\\3</td><'${mac}'>\\1</'${mac}'><td>\\6</td></tr>", "g"); print r;}' | sort -n | sed 's#&#\&amp;#'
 		# The HTML comment contains the signal quality to allow sorting
 }
+printWifiScan() {
+	local iface=$1
+	local freq="2.4 GHz"
+	if [ "$iface" = "w5ap" ] || [ "$iface" = "w5mesh" ] ; then
+		freq="5 GHz"
+	fi
 %>
-<table style="width: 100%">
-<tr><td>
-<fieldset>
-	<legend>Wifi Scan</legend>
-	<table class="wifitable">
-		<tr>
-			<th>Name</th>
-			<th>Kanal</th>
-			<th>Signal</th>
-			<th>Typ</th>
-			<th>MAC</th>
-			<th>Encryption</th>
-		</tr>
+	<tr><td>
+	<fieldset>
+		<legend>Wifi Scan: <%= "$freq" %></legend>
+		<table class="wifitable">
+			<tr>
+				<th>Name</th>
+				<th>Kanal</th>
+				<th>Signal</th>
+				<th>Typ</th>
+				<th>MAC</th>
+				<th>Encryption</th>
+			</tr>
 
 <%
-readIWinfo "w2mesh" "td" "td"
+	readIWinfo "$iface" "td" "td"
 %>
-	</table>
-</fieldset>
-</td></tr>
+		</table>
+	</fieldset>
+	</td></tr>
+<%
+}
+
+%>
+<table style="width: 100%">
+<%
+if uci -q get wireless.w2ap > /dev/null ; then
+	printWifiScan "w2ap"
+fi
+if uci -q get wireless.w5ap > /dev/null ; then
+	printWifiScan "w5ap"
+fi
+%>
 </table>
 
 <%in /www/ssl/cgi-bin/footer %>
