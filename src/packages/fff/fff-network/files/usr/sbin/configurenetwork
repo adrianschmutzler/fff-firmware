@@ -159,40 +159,12 @@ fi
 
 /etc/init.d/network restart
 
-if [[ -n "$ETHMESHMAC" ]]; then
-    if uci get network.ethmesh.macaddr
-    then
-        echo "MAC for ethmesh is set already"
-    else
-        echo "Fixing MAC on $SWITCHDEV.3 (ethmesh)"
-        sleep 10
-
-        uci set network.ethmesh.macaddr=$ETHMESHMAC
-        uci commit network
-
-        ifconfig $SWITCHDEV.3 down
-        ifconfig $SWITCHDEV.3 hw ether $ETHMESHMAC
-        ifconfig $SWITCHDEV.3 up
-        /etc/init.d/network restart
-    fi
+if [ -n "$ETHMESHMAC" ]; then
+    fixMac "$ETHMESHMAC" "${SWITCHDEV}.3" "ethmesh"
 fi
 
-if [[ -n "$ROUTERMAC" ]]; then
-    if uci get network.mesh.macaddr
-    then
-        echo "MAC for mesh is set already"
-    else
-        echo "Fixing MAC on br-mesh (mesh)"
-        sleep 10
-
-        uci set network.mesh.macaddr=$ROUTERMAC
-        uci commit network
-
-        ifconfig br-mesh down
-        ifconfig br-mesh hw ether $ROUTERMAC
-        ifconfig br-mesh up
-        /etc/init.d/network restart
-    fi
+if [ -n "$ROUTERMAC" ]; then
+    fixMac "$ROUTERMAC" "br-mesh" "mesh"
 fi
 
 if [[ -n "$ETH0MAC" ]]; then
