@@ -96,3 +96,34 @@ macFlipLocalBit() {
 	echo "$mac" | awk -F: '{ printf("%02x:%s:%s:%s:%s:%s\n", xor(("0x"$1),2), $2, $3, $4, $5, $6) }'
 	return 0
 }
+
+fixMac() {
+	# Update MAC address on device/interface
+	#
+	# fixMac <newmac> <dev> <iface> <overwrite (optional)>
+	#
+	# newmac: MAC address to be set
+	# dev: Device to be updated (e.g. br-mesh)
+	# iface: Interface to be updated (e.g. mesh)
+	# overwrite: If non-zero, the MAC is always replaced; if not set, the MAC is only written if none is present
+
+	local newmac=$1
+	local dev=$2
+	local iface=$3
+	local overwrite=$4
+
+	if uci get "network.${iface}.macaddr" && [ ! -n "$overwrite" ] ; then
+		echo "MAC for ${iface} is already set"
+	else
+		echo "Fixing MAC on ${dev} (${iface})"
+		sleep 10
+
+		uci set "network.${iface}.macaddr=$newmac"
+		uci commit network
+
+		ifconfig "$dev" down
+		ifconfig "$dev" hw ether "$newmac"
+		ifconfig "$dev" up
+		/etc/init.d/network restart
+	fi
+}
