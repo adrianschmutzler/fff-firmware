@@ -11,6 +11,8 @@
 
 . /lib/functions/fff/network
 
+sysctlfile="/etc/sysctl.d/50-configurenetwork.conf"
+
 setupPorts() {
     # Add a single port to the *_PORTS config
     # Usage: setupPorts <port id> <port mode>
@@ -60,15 +62,15 @@ fi
 
 if [ -n "$ETHPORT" ] ; then
     #LAN@AR150: default: BATMAN
-    setupPorts "$ETHPORT" "$ETHMODE"
+    setupPorts "$ETHPORT" "${ETHMODE}"
 fi
 if [ -n "$LAN0PORT" ] ; then
     #LAN0@two-port: default: BATMAN
-    setupPorts "$LAN0PORT" "$LAN0MODE"
+    setupPorts "$LAN0PORT" "${LAN0MODE}"
 fi
 if [ -n "$LAN1PORT" ] ; then
     #LAN1@two-port: default: BATMAN
-    setupPorts "$LAN1PORT" "$LAN1MODE"
+    setupPorts "$LAN1PORT" "${LAN1MODE}"
 fi
 
 if [ "$ONE_PORT" = "YES" ] ; then
@@ -111,8 +113,6 @@ else
 		uci set "network.${SWITCHDEV}_1.vlan=1"
 		uci set "network.${SWITCHDEV}_1.ports=$CLIENT_PORTS"
 
-		echo "# Allow IPv6 RAs on WAN Port" >> /etc/sysctl.conf
-
 		wanon="1"
 		if [ "$WANDEV" = "$SWITCHDEV" ] || [ -n "$WAN_PORTS" ]; then
 			WANDEV="${SWITCHDEV}.2"
@@ -136,10 +136,12 @@ else
 	fi
 fi
 if [ -n "$wanon" ]; then
-	echo "net.ipv6.conf.$WANDEV.accept_ra_defrtr = $wanon" >> /etc/sysctl.conf
-	echo "net.ipv6.conf.$WANDEV.accept_ra_pinfo = $wanon" >> /etc/sysctl.conf
-	echo "net.ipv6.conf.$WANDEV.autoconf = $wanon" >> /etc/sysctl.conf
-	echo "net.ipv6.conf.$WANDEV.accept_ra_rtr_pref = $wanon" >> /etc/sysctl.conf
+	echo "net.ipv6.conf.$WANDEV.accept_ra_defrtr=$wanon" > "$sysctlfile"
+	echo "net.ipv6.conf.$WANDEV.accept_ra_pinfo=$wanon" >> "$sysctlfile"
+	echo "net.ipv6.conf.$WANDEV.autoconf=$wanon" >> "$sysctlfile"
+	echo "net.ipv6.conf.$WANDEV.accept_ra_rtr_pref=$wanon" >> "$sysctlfile"
+	# Set values for current session, so no reboot is required
+	sysctl -p "$sysctlfile"
 fi
 
 /etc/init.d/network restart
