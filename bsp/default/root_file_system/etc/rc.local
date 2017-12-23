@@ -4,8 +4,4 @@
 
 /usr/sbin/configurenetwork
 
-sleep 3
-
-/usr/sbin/configurehood
-
 exit 0
