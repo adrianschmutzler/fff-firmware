@@ -4,6 +4,4 @@
 
 /usr/sbin/configurenetwork
 
-touch /tmp/started
-
 exit 0
