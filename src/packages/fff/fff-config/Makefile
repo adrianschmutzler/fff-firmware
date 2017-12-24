@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-config
-PKG_VERSION:=2
+PKG_VERSION:=3
 PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
@@ -31,6 +31,10 @@ endef
 
 define Build/Compile
     # nothing
+endef
+
+define Package/$(PKG_NAME)/install-overlay
+	$(CP) ./overlay/* $(1)/
 endef
 
 define Package/$(PKG_NAME)/install

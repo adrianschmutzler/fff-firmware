@@ -179,8 +179,8 @@ prebuild() {
     #create filesdir for our config
     /bin/rm -rf "$target"/files
     mkdir "$target"/files
+    mkdir "$target"/files/etc
 
-    cp -r ./bsp/default/root_file_system/* "$target"/files/
     cp ./bsp/"$machine"/.config "$target"/.config
 
     while IFS= read -r -d '' template
