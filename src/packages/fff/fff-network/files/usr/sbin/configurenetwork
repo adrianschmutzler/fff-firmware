@@ -154,10 +154,11 @@ if [ -n "$ROUTERMAC" ]; then
     fixMac "$ROUTERMAC" "br-mesh" "mesh"
 fi
 
-if uci get network.mesh.ip6addr
+if uci -q get "network.mesh.ip6addr" > /dev/null
 then
     echo "IPv6 for mesh is set already"
 else
+    echo "Setting IPv6 addresses"
     # Some time needed :(
     sleep 5
 
