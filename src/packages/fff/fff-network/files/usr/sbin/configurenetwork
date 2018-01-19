@@ -152,17 +152,13 @@ if [ -n "$ROUTERMAC" ]; then
     fixMac "$ROUTERMAC" "br-mesh" "mesh"
 fi
 
-if uci -q get "network.mesh.ip6addr" > /dev/null
+if uci -q get "network.mesh.ip6addr" > /dev/null | grep "fdff:0"
 then
     echo "IPv6 for mesh is set already"
 else
     echo "Setting IPv6 addresses"
     # Some time needed :(
     sleep 5
-
-    for ip in $(ip -6 addr show br-mesh | awk '/fdff/{ print $2 }'); do
-        ip -6 addr del $ip dev br-mesh
-    done
 
     prefix="fdff:0::/64"
     # Set $prefix::MAC as IP
