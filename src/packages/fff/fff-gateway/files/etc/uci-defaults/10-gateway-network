@@ -1,0 +1,5 @@
+#!/bin/sh
+
+uci batch <<EOF
+    set network.mesh.ip6addr='fe80::1/64'
+EOF
