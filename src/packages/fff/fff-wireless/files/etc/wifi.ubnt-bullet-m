@@ -1,0 +1,3 @@
+grep -i "Pico" /var/sysinfo/model && uci -q set wireless.radio0.antenna_gain=2
+grep -i "Loco" /var/sysinfo/model && uci -q set wireless.radio0.antenna_gain=9
+uci -q commit wireless
