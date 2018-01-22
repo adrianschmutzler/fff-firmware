@@ -1,0 +1,5 @@
+grep -i "Nano" /var/sysinfo/model && uci -q set wireless.radio0.antenna_gain=11
+grep -i "Pico" /var/sysinfo/model && uci -q set wireless.radio0.antenna_gain=12
+grep -i "Loco" /var/sysinfo/model && uci -q set wireless.radio0.antenna_gain=9
+grep -i "Power" /var/sysinfo/model && uci -q set wireless.radio0.antenna_gain=18
+uci -q commit wireless
