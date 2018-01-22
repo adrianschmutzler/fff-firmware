@@ -1,0 +1,17 @@
+#!/bin/sh
+# Copyright 2018 Adrian Schmutzler
+# License GPLv3
+
+sysctlfile="/etc/sysctl.d/90-disablewanipv6.conf"
+
+BOARD="$(uci get board.model.name)"
+. "/etc/network.$BOARD"
+
+if (! [ "$ONE_PORT" = "YES" ]) && [ "$WANDEV" = "$SWITCHDEV" ] ; then
+	WANDEV="${SWITCHDEV}.2"
+fi
+if [ -n "$WANDEV" ]; then
+	echo "net.ipv6.conf.$WANDEV.autoconf=0" > "$sysctlfile"
+	echo "net.ipv6.conf.$WANDEV.accept_ra=0" >> "$sysctlfile"
+	sysctl -p "$sysctlfile"
+fi
