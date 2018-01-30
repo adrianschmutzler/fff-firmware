@@ -243,7 +243,10 @@ crawl() {
 
         batman_adv_gateway_mode=$(batctl gw)
 
-        batman_adv_gateway_list=$(awk \
+        ETHMESHDEV="$(uci -q get network.ethmesh.ifname)"
+        [ -n "$ETHMESHDEV" ] && gwmac="$(cat "/sys/class/net/$ETHMESHDEV/address" 2>/dev/null)"
+        batman_adv_gateway_list="<gateway_0><selected>true</selected><gateway>$gwmac</gateway><link_quality>-1</link_quality><nexthop>$gwmac</nexthop><outgoing_interface>internal</outgoing_interface><gw_class>-</gw_class></gateway_0>"
+        batman_adv_gateway_list="$batman_adv_gateway_list$(awk \
             'BEGIN { FS=" "; i=0 }
             /B.A.T.M.A.N./ { next }
             /Gateway/ { next }
@@ -256,7 +259,7 @@ crawl() {
                 sub("   ", "false ", $0)
                 printf "<gateway_"i"><selected>"$1"</selected><gateway>"$2"</gateway><link_quality>"$3"</link_quality><nexthop>"$4"</nexthop><outgoing_interface>"$5"</outgoing_interface><gw_class>"$6" "$7" "$8"</gw_class></gateway_"i">"
                 i++
-            }' /sys/kernel/debug/batman_adv/bat0/gateways)
+            }' /sys/kernel/debug/batman_adv/bat0/gateways)"
     fi
     err "$(date): Collecting information about conected clients"
     #CLIENTS
