@@ -13,7 +13,7 @@ define Package/$(PKG_NAME)
     CATEGORY:=Freifunk
     TITLE:= Freifunk-Franken gateway configuration
     URL:=http://www.freifunk-franken.de
-    DEPENDS:=+fff-network
+    DEPENDS:=+fff-network +fff-hoodutils
 endef
 
 define Package/$(PKG_NAME)/description
