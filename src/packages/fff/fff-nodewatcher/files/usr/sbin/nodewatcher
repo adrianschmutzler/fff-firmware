@@ -11,7 +11,7 @@ fi
 trap "lock -u \"$lockfile\"" INT TERM EXIT
 
 
-SCRIPT_VERSION="adsc-52-1"
+SCRIPT_VERSION="52.3"
 
 # Load libraries
 . /lib/functions.sh # Required for simple-tc
@@ -247,7 +247,13 @@ crawl() {
 
         batman_adv_gateway_mode=$(/usr/sbin/batctl gw)
 
-        batman_adv_gateway_list=$(/usr/sbin/batctl gwl -H | awk \
+        # Show local gateway as its own gateway for Monitoring
+        if [ -s /etc/config/gateway ]; then
+            ETHMESHDEV="$(uci -q get network.ethmesh.ifname)"
+            [ -n "$ETHMESHDEV" ] && gwmac="$(cat "/sys/class/net/$ETHMESHDEV/address" 2>/dev/null)"
+            batman_adv_gateway_list="<gateway_0><selected>true</selected><gateway>$gwmac</gateway><link_quality>-1</link_quality><nexthop>$gwmac</nexthop><outgoing_interface>internal</outgoing_interface><gw_class>-</gw_class></gateway_0>"
+        fi
+        batman_adv_gateway_list="$batman_adv_gateway_list$(/usr/sbin/batctl gwl -H | awk \
             'BEGIN { FS=" "; i=0 }
             /No gateways/ { next }
             {   sub("\\(", "", $0)
@@ -258,7 +264,7 @@ crawl() {
                 sub("  ", "false ", $0)
                 printf "<gateway_"i"><selected>"$1"</selected><gateway>"$2"</gateway><link_quality>"$3"</link_quality><nexthop>"$4"</nexthop><outgoing_interface>"$5"</outgoing_interface><gw_class>"$6" "$7" "$8"</gw_class></gateway_"i">"
                 i++
-            }')
+            }')"
     fi
     err "$(date): Collecting information about conected clients"
     #CLIENTS
