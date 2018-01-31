@@ -114,6 +114,7 @@ if uci -q get gateway.@client[0].ip6addr; then
 else
     echo "WARNING: No client ip6addr set!"
 fi
+uci add_list network.mesh.ip6addr='fe80::1/64'
 
 # dhcp
 uci del dhcp.mesh.start
