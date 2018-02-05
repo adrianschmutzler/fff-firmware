@@ -50,6 +50,13 @@ else
 fi
 
 
+## set location
+
+if uci -q get gateway.@gateway[0].latitude && uci -q get gateway.@gateway[0].longitude; then
+    uci -q set fff.system.latitude='$(uci -q get gateway.@gateway[0].latitude)'
+    uci -q set fff.system.longitude='$(uci -q get gateway.@gateway[0].longitude)'
+fi
+
 
 ## configure vlans
 
