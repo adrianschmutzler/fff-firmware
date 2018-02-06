@@ -13,9 +13,9 @@
 
 builddir=./build
 
-OPENWRTREV="8ad1b09c6dcff814eb04084ef349f975025b7dc1" # LEDE from 2017-10-13
+OPENWRTREV="8e1065d681daff321f715ce5c6c172c12036bd6f" # LEDE master from 2018-03-24
 OPENWRTURL="https://git.openwrt.org/openwrt/openwrt.git"
-PACKAGEREV="21b2e3eb761ea79bf3a8d2b6368435887960f5c2" # lede-17.01.3
+PACKAGEREV="f5793af4a6882115c8fcfff61efcec7ad986fc31" # Package master from 2018-03-24
 PACKAGEURL="https://git.openwrt.org/feed/packages.git"
 
 ## Feed definition [0]: name aka directory, [1]: url, [2]: revision, [3..n]: patches
@@ -38,7 +38,7 @@ GLUON_PKGS="kmod-batman-adv-legacy micrond simple-tc uradvd"
 #official openwrt routing packages
 ROUTING=(routing
          https://git.openwrt.org/feed/routing.git
-         d11075cd40a88602bf4ba2b275f72100ddcb4767
+         63cae8f571a61ecffb6a1cdad08c551f14b5ae99
          "0001-alfred-Support-interface-IDs-with-more-than-two-digi.patch") # lede-17.01
 ROUTING_PKGS="kmod-batman-adv batctl alfred"
 
