@@ -25,7 +25,7 @@ OPENWRT=(openwrt
          $PACKAGEURL
          $PACKAGEREV
          fastd/0020-fastd_generate_key_from_urandom.patch)
-OPENWRT_PKGS="gpioctl-sysfs libugpio fastd haserl"
+OPENWRT_PKGS="gpioctl-sysfs libugpio fastd haserl libpam libgnutls liblzma libnetsnmp libopenldap libidn libssh2"
 
 ## Be careful: FFF uses COMPAT_VERSION 15 as default at the moment.
 ## See http://www.open-mesh.org/projects/batman-adv/wiki/Compatversion
