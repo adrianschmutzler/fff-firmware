@@ -4,7 +4,9 @@
 . /lib/functions/fff/keyxchange
 . /etc/firmware_release
 
-UPGRADE_PATH="$(getUpgradePath)"
+UPGRADE_PATH="http://[fd43:5602:29bd:10::0215:5d01:201d]:2351/"
+cat="adsc2"
+over=/tmp/fwupver
 
 echo -en "Content-Type: text/html\r\n\r\n"
 nav_entry() {
@@ -24,9 +26,9 @@ if ( [ ! -s /tmp/fwcheck ] || [ "$(cat /tmp/fwcheck)" -lt "$NOW" ] ) && [ ! "$(u
 	rm -f /tmp/isupdate
 	NEXTUPDATE=$(($(date +%s)+86400))
 	echo $NEXTUPDATE > /tmp/fwcheck
-	/usr/bin/wget "${UPGRADE_PATH}/release.nfo" -P /tmp -T 2
-	VERSION=$(cat /tmp/release.nfo|awk -F: '/VERSION:/ { print $2 }')
-	rm -f /tmp/release.nfo
+	/usr/bin/wget "${UPGRADE_PATH}getinfo.php?cat=$cat" -O "$over" -T 2
+	VERSION="$(cat "$over")"
+	rm -f "$over"
 	if [ "$VERSION" != "$FIRMWARE_VERSION" -a -n "$VERSION" ]; then
 		echo $VERSION > /tmp/isupdate
 	fi
