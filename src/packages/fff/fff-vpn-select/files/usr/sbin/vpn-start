@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ "$(ls /etc/fastd/fff/peers/* 2>/dev/null)" ] ; then
+	pidfile="/tmp/run/fastd.fff.pid"
+	([ -s "$pidfile" ] && [ -d "/proc/$(cat "$pidfile")" ]) || /etc/init.d/fastd start
+fi
+
+uci -q get tunneldigger.@broker[0] > /dev/null && /etc/init.d/tunneldigger start

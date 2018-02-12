@@ -1,0 +1,11 @@
+#!/bin/sh
+
+. /lib/functions/fff/vpn-select
+
+# remove old config in any case
+>/etc/config/tunneldigger
+[ ! -d /tmp/fastd_fff_peers ] && mkdir /tmp/fastd_fff_peers
+rm /tmp/fastd_fff_peers/*
+
+# Only write config if hood file is present and greater 0 byte
+[ -s "$hoodfile" ] && make_config

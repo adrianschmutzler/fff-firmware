@@ -1,0 +1,6 @@
+#!/bin/sh
+
+/etc/init.d/tunneldigger stop
+
+pidfile="/tmp/run/fastd.fff.pid"
+([ -s "$pidfile" ] && [ -d "/proc/$(cat "$pidfile")" ]) && /etc/init.d/fastd stop

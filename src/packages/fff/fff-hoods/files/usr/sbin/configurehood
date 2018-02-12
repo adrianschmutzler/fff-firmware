@@ -85,6 +85,7 @@ else
 		#UPLINK: No uplink download if internet present
 		#if no Internet, we connect to the hidden AP and download the file from another Node in range
 	else
+		/usr/sbin/vpn-stop # Stop VPN processes if router has no internet
 		# connect to wireless hidden ap here and download the json File from the nearest router
 		# Only do that, when we have no gateway in range. If the Uplinkrouter changed the hood, we lost the GW and do this automatically again, I think! Nice idea?
 		if ! isGatewayAvailable ; then
@@ -197,6 +198,8 @@ if [ -s "$hoodfile" ]; then
 	if [ "$sumnew" != "$sumold" ] ; then
 		echo "New file detected, we reconfigure the Node";
 
+		/usr/sbin/vpn-stop # stop VPN during reconfiguration (so we can start again with new config)
+		
 		json_select hood
 
 		json_get_var hood name
@@ -270,6 +273,8 @@ if [ -s "$hoodfile" ]; then
 		newntp="${ntpip}" # requires routable address, no link-local
 		[ "$newntp" = "$oldntp" ] || setTimeserver "${newntp}" # only rewrite if changed
 
+		/usr/sbin/vpn-configure # Configure VPN, but do not start it
+
 		# copy the file to webroot so that other mesh routers can download it;
 		# copy only after all other steps so IF can be reentered if something goes wrong
 		cp "$hoodfile" "$hoodfilecopy"
@@ -281,12 +286,9 @@ if [ -s "$hoodfile" ]; then
 		echo "We have no new file. We do nothing. We try it again in 5 minutes...";
 	fi
 	
-	# and now we get to vpn-select script and load VPNs directly from /tmp/keyxchangev2data
+	# Start already configured VPN if router has internet
+	hasInternet && /usr/sbin/vpn-start
 	
-	if hasInternet ; then
-		sh /usr/sbin/vpn-select
-	fi
-
 	# now we load the prefix from the hoodfile and set this to br-mesh
 	json_select network
 	json_get_var prefix ula_prefix
