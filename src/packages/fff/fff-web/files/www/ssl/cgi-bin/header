@@ -5,7 +5,7 @@
 . /etc/firmware_release
 
 UPGRADE_PATH="http://[fd43:5602:29bd:10::a]:2351/"
-cat="adsc2"
+cat="jubtl2"
 over=/tmp/fwupver
 
 echo -en "Content-Type: text/html\r\n\r\n"
