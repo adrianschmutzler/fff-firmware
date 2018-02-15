@@ -125,6 +125,11 @@ add_babelpeer() {
 	uci set babeld.$name=interface
 	uci set babeld.$name.ifname=$name
 	uci set babeld.$name.type=$type
+	
+	# babel penalty
+	if uci -q get gateway.$name.penalty; then
+		set_babelpenalty "$name" "$(uci -q get gateway.$name.penalty)"
+	fi
 }
 
 
