@@ -294,6 +294,8 @@ remove_babelpeer() {
             uci del babeld.$name
             # remove wireguard config
             uci -q del network.@wireguard_$name[0]
+            # remove penalties
+            uci -q del "babeld.F_$name"
         fi
     fi
 }
@@ -427,6 +429,16 @@ add_wgpeer() {
     uci set babeld.$name=interface
     uci set babeld.$name.ifname="$name"
     uci set babeld.$name.type='tunnel'
+    
+    # babel penalty
+    if uci -q get gateway.$name.babel_penalty; then
+        uci -q set "babeld.$name.rxcost=$(uci -q get gateway.$name.babel_penalty)"
+        uci -q set "babeld.F_$name=filter"
+        uci -q set "babeld.F_$name.type=in"
+        uci -q set "babeld.F_$name.if=$name"
+        uci -q set "babeld.F_$name.action=metric $(uci -q get gateway.$name.babel_penalty)"
+    fi
+    
 }
 
 config_load gateway
