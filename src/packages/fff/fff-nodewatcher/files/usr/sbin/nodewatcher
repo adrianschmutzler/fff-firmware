@@ -314,7 +314,12 @@ crawl() {
     DATA=$DATA"<batman_adv_gateway_mode>$batman_adv_gateway_mode</batman_adv_gateway_mode>"
     DATA=$DATA"<batman_adv_gateway_list>$batman_adv_gateway_list</batman_adv_gateway_list>"
 
-    BABELS=$(echo dump | nc ::1 33123 | awk '/^add neighbour/ {print "<neighbour>"$5"<outgoing_interface>"$7"</outgoing_interface></neighbour>"}')
+	#BABELS=$(echo dump | nc ::1 33123 | awk '/^add neighbour/ {print "<neighbour>"$5"<outgoing_interface>"$7"</outgoing_interface></neighbour>"}')
+	BABELS="$(echo dump | nc ::1 33123 | grep '^add neighbour' |
+		awk -v RS='\n' \
+		'{r = gensub(/.*add neighbour.*address ([0-9a-fA-F:]*) +if +([^ ]+).* cost +([0-9.]+).*/, \
+		"<neighbour>\\1<outgoing_interface>\\2</outgoing_interface><link_cost>\\3</link_cost></neighbour>", "g"); print r;}')"
+
     DATA=$DATA"<babel_neighbours>$BABELS</babel_neighbours>"
 
     DATA=$DATA"<client_count>$client_count</client_count>"
