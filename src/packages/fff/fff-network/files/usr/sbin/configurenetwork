@@ -28,39 +28,6 @@ setupPorts() {
     fi
 }
 
-setAutoConf() {
-    # Sets ipv6 auto configuration on an interface to on/off
-    # Usage: enableAutoConf <interface> <[0|1]>
-    local iface=$1
-    local on=$2
-
-    echo "# Generated from configurenetwork" > "/etc/sysctl.d/51-fff-network-$iface.conf"
-    echo "net.ipv6.conf.$iface.accept_ra = $on" >> "/etc/sysctl.d/51-fff-network-$iface.conf"
-    echo "net.ipv6.conf.$iface.accept_ra_defrtr = $on" >> "/etc/sysctl.d/51-fff-network-$iface.conf"
-    echo "net.ipv6.conf.$iface.accept_ra_pinfo = $on" >> "/etc/sysctl.d/51-fff-network-$iface.conf"
-    echo "net.ipv6.conf.$iface.autoconf = $on" >> "/etc/sysctl.d/51-fff-network-$iface.conf"
-    echo "net.ipv6.conf.$iface.accept_ra_rtr_pref = $on" >> "/etc/sysctl.d/51-fff-network-$iface.conf"
-    echo "net.ipv6.conf.$iface.forwarding = 0" >> "/etc/sysctl.d/51-fff-network-$iface.conf"
-
-    /sbin/sysctl -p "/etc/sysctl.d/51-fff-network-$iface.conf"
-}
-
-enableAutoConf() {
-    # Enables ipv6 auto configuration on an interface
-    # Usage: enableAutoConf <interface>
-    local iface=$1
-
-    setAutoConf "$iface" "1"
-}
-
-disableAutoConf() {
-    # Disables ipv6 auto configuration on an interface
-    # Usage: disableAutoConf <interface>
-    local iface=$1
-
-    setAutoConf "$iface" "0"
-}
-
 BOARD="$(uci get board.model.name)"
 . /etc/network.$BOARD
 
