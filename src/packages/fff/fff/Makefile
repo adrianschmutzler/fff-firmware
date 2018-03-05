@@ -63,6 +63,7 @@ define Package/fff-layer3
              +iptables-mod-filter \
              +iptables-mod-ipopt \
              +iptables-mod-conntrack-extra \
+             +kmod-ipt-nat \
              +gre \
              +@PACKAGE_grev4 \
              +@PACKAGE_grev6 \
