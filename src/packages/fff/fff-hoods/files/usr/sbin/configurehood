@@ -266,26 +266,35 @@ if [ -s "$hoodfile" ]; then
 		fi
 
 		for phy in $(iw phy | awk '/^Wiphy/{ print $2 }'); do
-			radio="$(wifiAddPhyCond "$phy" "2" "$chan2ghz")"
-			radio5="$(wifiAddPhyCond "$phy" "5" "$chan5ghz")"
-			[ -n "$radio5" ] && radio="$radio5"
+			radio="$(wifiAddPhyCond "$phy" "5" "$chan5ghz")"
+			
+			if [ -n "$radio" ] ; then
+				# 5 GHz
+				mesh_type="$mesh_type5"
+				disableap="fff.wifi.disablew5ap"
+				disablemesh="fff.wifi.disablew5mesh"
+			else
+				# 2.4 GHz
+				radio="$(wifiAddPhyCond "$phy" "2" "$chan2ghz")"
+				mesh_type="$mesh_type2"
+				disableap="fff.wifi.disablew2ap"
+				disablemesh="fff.wifi.disablew2mesh"
+			fi
 
-			if ! wifiAddAP "$radio" "$essid" "mesh" "ap" "0"; then
+			if [ "$(uci -q get "$disableap")" != "1" ] && ! wifiAddAP "$radio" "$essid" "mesh" "ap" "0"; then
 				echo "Can't add AP interface on $radio."
 				exit 1
 			fi
 
-			# add 802.11s mesh if type == "802.11s"
-			if ( [ -n "$radio5" ] && [ "$mesh_type5" == "802.11s" ] ) || [ "$mesh_type2" == "802.11s" ]; then
-				if ! wifiAddMesh "$radio" "$mesh_id"; then
+			if [ "$(uci -q get "$disablemesh")" != "1" ] ; then
+				# add 802.11s mesh if type = "802.11s"
+				if [ "$mesh_type" = "802.11s" ] && ! wifiAddMesh "$radio" "$mesh_id"; then
 					echo "Can't add Mesh interface on $radio."
 					exit 1
 				fi
-			fi
 
-			# add IBSS mesh if type == "ibss"
-			if ( [ -n "$radio5" ] && [ "$mesh_type5" == "ibss" ] ) || [ "$mesh_type2" == "ibss" ]; then
-				if ! wifiAddAdHocMesh "$radio" "$mesh_essid" "$mesh_bssid"; then
+				# add IBSS mesh if type = "ibss"
+				if [ "$mesh_type" = "ibss" ] && ! wifiAddAdHocMesh "$radio" "$mesh_essid" "$mesh_bssid"; then
 					echo "Can't add AdHocMesh interface on $radio."
 					exit 1
 				fi

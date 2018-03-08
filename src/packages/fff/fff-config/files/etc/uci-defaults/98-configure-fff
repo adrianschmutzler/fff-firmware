@@ -4,11 +4,19 @@
 
 touch /etc/config/fff
 
+# default config values
 if ! uci -q get fff.system > /dev/null ; then
 	uci -q set fff.system=fff
 	uci -q set "fff.system.hostname=FFF"
 fi
 
+uci -q set fff.wifi=fff
+uci -q get fff.wifi.disablew2ap > /dev/null || uci -q set "fff.wifi.disablew2ap=0"
+uci -q get fff.wifi.disablew5ap > /dev/null || uci -q set "fff.wifi.disablew5ap=0"
+uci -q get fff.wifi.disablew2mesh > /dev/null || uci -q set "fff.wifi.disablew2mesh=0"
+uci -q get fff.wifi.disablew5mesh > /dev/null || uci -q set "fff.wifi.disablew5mesh=0"
+
+# apply config to other uci entries
 FFF_hostname=$(uci -q get "fff.system.hostname")
 test -n "${FFF_hostname}" && uci -q set "system.@system[0].hostname=${FFF_hostname}"
 test -n "${FFF_hostname}" && echo "${FFF_hostname}" > /proc/sys/kernel/hostname
@@ -24,6 +32,7 @@ uci -q set "simple-tc.example.limit_egress=${traffic_out}"
 
 uci -q commit
 
+# run configuration scripts
 poe_passthrough=$(uci -q get "fff.poe_passthrough.active")
 if [ "$poe_passthrough" = "1" ] && [ -s /usr/lib/fff-support/activate_poe_passthrough.sh ] ; then
 	/usr/lib/fff-support/activate_poe_passthrough.sh
