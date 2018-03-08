@@ -137,7 +137,12 @@ else
 				wget -T15 -t5 "http://[fe80::1%w2sta]:2342/sectorfile" -O "$sectortmp" || wget -T15 -t5 "http://[fe80::1%w5sta]:2342/sectorfile" -O "$sectortmp"
 			fi
 		else
-			echo "We have a Gateway in Range, we load the keyxchangev2data from fe80::1"
+			echo "We have a Gateway in Range, we load the keyxchangev2data from network or gateway"
+
+			# We wait some time, so nodes without network connection can delete their $hoodfilecopy
+			# -> as a consequence, all hood files in the wired network are from devices with gateway connection
+			sleep 20;
+
 			# check eth first
 			oldhood=""
 			ethfile="${hoodfile}eth"
