@@ -145,6 +145,7 @@ else
 
 			# check eth first
 			oldhood=""
+			oldtime="0"
 			ethfile="${hoodfile}eth"
 			for eth in $(batctl if | grep "eth" | sed -nE 's/.*(eth[^:]+):.*/\1/p'); do
 				for mac in $(batctl n | grep "$eth" | sed -nE 's/.*eth[0-9.]+\s+([^\s]+)\s.*/\1/p'); do
@@ -154,6 +155,7 @@ else
 						json_load "$(cat "$ethfile")"
 						json_select hood
 						json_get_var newhood name
+						json_get_var newtime timestamp
 						if [ -n "$oldhood" ] && [ -n "$newhood" ] && ( ! [ "$newhood" = "$oldhood" ] ) ; then
 							# 2nd hood found, kill interface and go on (next try in 5 min.)
 							echo "Two hoods detected. Remove cables to stay in just one."
@@ -161,18 +163,28 @@ else
 							touch "$resetnetworkfile"
 							continue 2 # go to the next interface
 						fi
-						mv "$ethfile" "$hoodfile" # Only use hoodfile if sane
+						if [ "$oldtime" -lt "$newtime" ] ; then
+							mv "$ethfile" "$hoodfile" # Only use hoodfile if sane and newer
+							oldtime="$newtime"
+						fi
 						[ -n "$oldhood" ] || oldhood="$newhood" # only set oldhood once
 					fi
 				done
 			done
-			if [ ! -s "$hoodfile" ]; then
-				# Only load hoodfile from gateway if not already present from local network
-				# - This gives local network a precedence (take the hood from local network)
-				# - This prevents file insertion from a third person, as I will only connect via LAN to who I trust
-				wget -T15 -t5 "http://[fe80::1%br-mesh]:2342/keyxchangev2data" -O "$hoodfile"
+
+			# check gateway
+			wget -T15 -t5 "http://[fe80::1%br-mesh]:2342/keyxchangev2data" -O "$ethfile"
+			if [ -s "$ethfile" ]; then
+				json_load "$(cat "$ethfile")"
+				json_select hood
+				json_get_var newhood name
+				json_get_var newtime timestamp
+				if [ -z "$oldhood" ] || [ "$newhood" = "$oldhood" ] ; then
+					# Gateway on same hood, check for newer hood file
+					[ "$oldtime" -lt "$newtime" ] && mv "$ethfile" "$hoodfile" # Only use hoodfile if sane and newer
+				fi
 			fi
-			#UPLINK: Do nothing
+			#SECTORFILE: Do nothing
 		fi
 	fi
 fi
