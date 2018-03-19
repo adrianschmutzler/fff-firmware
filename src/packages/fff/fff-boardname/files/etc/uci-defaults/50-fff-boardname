@@ -46,6 +46,7 @@ case "$BOARD" in
         ;;
     unifiac-lite)
         BOARD=ubnt-unifiac-lite
+        grep -i "MESH" /var/sysinfo/model && BOARD=ubnt-unifiac-mesh
         ;;
     tl-wa850re)
         BOARD=tl-wa850re-v1
