@@ -1,1 +1,1 @@
-*/1 * * * * /usr/sbin/batctl gw off; sleep 1; /usr/sbin/batctl gw client
+2-59/10 * * * * /usr/sbin/batctl gw off; sleep 1; /usr/sbin/batctl gw client
