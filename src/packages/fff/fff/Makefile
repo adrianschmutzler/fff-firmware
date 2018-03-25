@@ -32,7 +32,7 @@ define Package/fff-base
              +fff-vpn-select \
              +simple-tc \
              +fff-hoods \
-             +fff-adsc
+             +fff-jubtl
 endef
 
 define Package/fff-base/description
