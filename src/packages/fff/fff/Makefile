@@ -40,7 +40,7 @@ define Package/fff-node
              +fff-firewall \
              +fff-uradvd \
              +fff-hoods \
-             +fff-adsc
+             +fff-jubtl
     VARIANT:=homenode
 endef
 
