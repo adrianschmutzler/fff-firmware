@@ -17,9 +17,23 @@ BOARD=$(uci get board.model.name)
 #decide SOC
 case $BOARD in
     tl-wdr4900-v1 )
-        SOC="mpc85xx" ;;
+        SOC="mpc85xx-g" ;;
+    tl-mr3020-v1 |\
+    tl-wa850re-v1 |\
+    tl-wa860re-v1 |\
+    tl-wa901nd-v2 |\
+    tl-wr740n-v4 |\
+    tl-wr741nd-v2 |\
+    tl-wr741nd-v4 |\
+    tl-wr841-v7 |\
+    tl-wr841-v8 |\
+    tl-wr841-v9 |\
+    tl-wr841-v10 |\
+    tl-wr841-v11 |\
+    tl-wr841-v12 )
+        SOC="ar71xx-tiny" ;;
     * )
-        SOC="ar71xx" ;;
+        SOC="ar71xx-g" ;;
 esac
 echo ""
 echo "Hardware: $BOARD"
@@ -27,9 +41,9 @@ echo "Hardware: $BOARD"
 #rewrite BOARD
 case $BOARD in
     cpe210 )
-        BOARD="cpe210-220" ;;
+        BOARD="cpe210-220-v1" ;;
     cpe510 )
-        BOARD="cpe510-520" ;;
+        BOARD="cpe510-520-v1" ;;
 esac
 
 wget "${UPGRADE_PATH}/release.nfo"
@@ -67,7 +81,7 @@ if [ "$VERSION" -eq "$FIRMWARE_VERSION" ]; then
   done
 fi
 
-FILE="fff-${VERSION}-${SOC}-g-${BOARD}-squashfs-sysupgrade.bin"
+FILE="fff-${VERSION}-${SOC}-${BOARD}-squashfs-sysupgrade.bin"
 echo "Downloading $FILE"
 echo ""
 wget "${UPGRADE_PATH}/${FILE}"
