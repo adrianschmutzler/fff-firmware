@@ -1,7 +1,7 @@
 From f4724465e4cdbfecdd934893f6fc0c81f7038e1b Mon Sep 17 00:00:00 2001
 From: Tim Niemeyer <tim@tn-x.org>
 Date: Sat, 8 Jul 2017 10:48:53 +0200
-Subject: [PATCH 4/7] ar71xx-4.9-l2tp-stats
+Subject: [PATCH] ar71xx-4.9-l2tp-stats
 
 ---
  ...-stats-counter-overflow-on-32-bit-systems.patch | 38 ++++++++++++++++++++++

@@ -17,7 +17,7 @@ Signed-off-by: David Bauer <mail@david-bauer.net>
  1 file changed, 22 insertions(+)
 
 diff --git a/target/linux/ar71xx/base-files/lib/ar71xx.sh b/target/linux/ar71xx/base-files/lib/ar71xx.sh
-index 58e92ab..ad96c3e 100755
+index a7c2ccb..d78facc 100755
 --- a/target/linux/ar71xx/base-files/lib/ar71xx.sh
 +++ b/target/linux/ar71xx/base-files/lib/ar71xx.sh
 @@ -98,6 +98,27 @@ ubnt_xm_board_detect() {
@@ -48,9 +48,9 @@ index 58e92ab..ad96c3e 100755
  cybertan_get_hw_magic() {
  	local part
  
-@@ -1105,6 +1126,7 @@ ar71xx_board_detect() {
+@@ -1300,6 +1321,7 @@ ar71xx_board_detect() {
  		;;
- 	*"UniFi-AC-LITE")
+ 	*"UniFi-AC-LITE/MESH")
  		name="unifiac-lite"
 +		ubnt_ac_lite_board_detect
  		;;
