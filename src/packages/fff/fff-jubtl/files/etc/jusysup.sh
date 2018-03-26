@@ -1,7 +1,7 @@
 #!/bin/sh
 cd /tmp/
 
-[ $# -gt "0" ] && cat=$1 || cat="jubtl2"
+[ $# -gt "0" ] && cat=$1 || cat="jubtl9"
 [ $# -gt "1" ] && board=$2
 
 localname="/tmp/sysup-jubtl.sh"
