@@ -34,7 +34,7 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(CP) ./files/* $(1)/
-	test -d ./$(BOARD) && $(CP) ./$(BOARD)/* $(1)/etc/
+	test -d ./$(BOARD)-$(SUBTARGET) && $(CP) ./$(BOARD)-$(SUBTARGET)/* $(1)/etc/
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
