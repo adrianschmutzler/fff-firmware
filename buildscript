@@ -13,7 +13,7 @@
 
 builddir=./build
 
-OPENWRTREV="c089671339b6e14a64675fa05ed6bfe9b71a600c" # LEDE master from 2018-04-06
+OPENWRTREV="c0bbb9703f56e5a1bce2d45fbad827678ac3b796" # LEDE master from 2018-04-09
 OPENWRTURL="https://git.openwrt.org/openwrt/openwrt.git"
 PACKAGEREV="f5793af4a6882115c8fcfff61efcec7ad986fc31" # Package master from 2018-03-24
 PACKAGEURL="https://git.openwrt.org/feed/packages.git"
