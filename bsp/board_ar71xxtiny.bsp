@@ -2,8 +2,7 @@ machine=ar71xxtiny
 chipset=ar71xx
 subtarget=tiny
 target=$builddir/$machine
-images=("openwrt-ar71xx-tiny-tl-mr3020-v1-squashfs-sysupgrade.bin"
-        "openwrt-ar71xx-tiny-tl-wa850re-v1-squashfs-sysupgrade.bin"
+images=("openwrt-ar71xx-tiny-tl-wa850re-v1-squashfs-sysupgrade.bin"
         "openwrt-ar71xx-tiny-tl-wa860re-v1-squashfs-sysupgrade.bin"
         "openwrt-ar71xx-tiny-tl-wa901nd-v2-squashfs-sysupgrade.bin"
         "openwrt-ar71xx-tiny-tl-wr740n-v4-squashfs-sysupgrade.bin"
