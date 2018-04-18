@@ -3,6 +3,8 @@ chipset=ar71xx
 subtarget=generic
 target=$builddir/$machine
 images=("openwrt-ar71xx-generic-archer-c25-v1-squashfs-sysupgrade.bin"
+        "openwrt-ar71xx-generic-archer-c60-v1-squashfs-sysupgrade.bin"
+        "openwrt-ar71xx-generic-archer-c60-v2-squashfs-sysupgrade.bin"
         "openwrt-ar71xx-generic-archer-c7-v2-squashfs-sysupgrade.bin"
         "openwrt-ar71xx-generic-cpe210-220-v1-squashfs-sysupgrade.bin"
         "openwrt-ar71xx-generic-cpe510-520-v1-squashfs-sysupgrade.bin"
