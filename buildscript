@@ -13,7 +13,7 @@
 
 builddir=./build
 
-OPENWRTREV="20d3c118ae115f47f18aad4da573c190f84d1602" # LEDE master from 2018-04-16
+OPENWRTREV="a656ea0bdb5d3d4a4948457942e84faa5a4f5cfe" # LEDE master from 2018-04-19
 OPENWRTURL="https://git.openwrt.org/openwrt/openwrt.git"
 PACKAGEREV="f448a5ad308a98342fb796022644f0c886140bc0" # Package master from 2018-04-16
 PACKAGEURL="https://git.openwrt.org/feed/packages.git"
@@ -25,7 +25,7 @@ OPENWRT=(openwrt
          $PACKAGEURL
          $PACKAGEREV
          fastd/0020-fastd_generate_key_from_urandom.patch)
-OPENWRT_PKGS="gpioctl-sysfs libugpio fastd haserl libpam libgnutls liblzma libnetsnmp libopenldap libidn libssh2"
+OPENWRT_PKGS="gpioctl-sysfs libugpio fastd haserl libpam libgnutls liblzma libnetsnmp libopenldap libidn2 libssh2"
 
 ## Be careful: FFF uses COMPAT_VERSION 15 as default at the moment.
 ## See http://www.open-mesh.org/projects/batman-adv/wiki/Compatversion
