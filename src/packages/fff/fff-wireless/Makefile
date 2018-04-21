@@ -21,20 +21,20 @@ define Package/$(PKG_NAME)/description
 endef
 
 define Build/Prepare
-    echo "all: " > $(PKG_BUILD_DIR)/Makefile
+	echo "all: " > $(PKG_BUILD_DIR)/Makefile
 endef
 
 define Build/Configure
-    # nothing
+	# nothing
 endef
 
 define Build/Compile
-    # nothing
+	# nothing
 endef
 
 define Package/$(PKG_NAME)/install
-    $(CP) ./files/* $(1)/
-    test -d ./$(BOARD)-$(SUBTARGET) && $(CP) ./$(BOARD)-$(SUBTARGET)/* $(1)/etc/ || true
+	$(CP) ./files/* $(1)/
+	test -d ./$(BOARD)-$(SUBTARGET) && $(CP) ./$(BOARD)-$(SUBTARGET)/* $(1)/etc/ || true
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
