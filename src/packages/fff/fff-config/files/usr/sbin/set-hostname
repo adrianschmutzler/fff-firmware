@@ -1,0 +1,17 @@
+#!/bin/sh
+# Copyright 2018 Adrian Schmutzler
+# License GPLv3
+
+if [ $# -ne "1" ]
+then
+	echo "Usage: set-hostname <hostname>"
+	exit 1
+fi
+
+hostname=$1
+
+uci set "fff.system.hostname=$hostname"
+echo "$(uci get "fff.system.hostname")" > /proc/sys/kernel/hostname
+uci set "system.@system[0].hostname=$hostname"
+uci commit system
+uci commit fff
