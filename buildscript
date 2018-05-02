@@ -38,8 +38,7 @@ GLUON_PKGS="kmod-batman-adv-legacy micrond simple-tc uradvd"
 #official openwrt routing packages
 ROUTING=(routing
          https://git.openwrt.org/feed/routing.git
-         63cae8f571a61ecffb6a1cdad08c551f14b5ae99
-         "0001-alfred-Support-interface-IDs-with-more-than-two-digi.patch") # lede-17.01
+         23aa2e7b4afafd702767b8ef38467aeda0f7fdaf) # master from 2018-05-02
 ROUTING_PKGS="kmod-batman-adv batctl alfred"
 
 FFF=(fff)
