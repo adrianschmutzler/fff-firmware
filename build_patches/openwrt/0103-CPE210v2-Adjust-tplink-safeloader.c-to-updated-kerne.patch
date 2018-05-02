@@ -1,0 +1,37 @@
+From 0538b170d6a730976c5f9083d78f1f476f878361 Mon Sep 17 00:00:00 2001
+From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+Date: Wed, 2 May 2018 23:10:06 +0200
+Subject: [PATCH 3/3] CPE210v2: Adjust tplink-safeloader.c to updated kernel
+ partition
+
+The changed partition for the CPE210/510 v1 is linked in
+generic-tp-link.mk, but has not been changed in
+tplink-safeloader.c so far.
+
+Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+---
+ tools/firmware-utils/src/tplink-safeloader.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/firmware-utils/src/tplink-safeloader.c b/tools/firmware-utils/src/tplink-safeloader.c
+index 5e88653..a7667a7 100644
+--- a/tools/firmware-utils/src/tplink-safeloader.c
++++ b/tools/firmware-utils/src/tplink-safeloader.c
+@@ -182,10 +182,10 @@ static struct device_info boards[] = {
+ 			{"device-info", 0x31400, 0x00400},
+ 			{"signature", 0x32000, 0x00400},
+ 			{"device-id", 0x33000, 0x00100},
+-			{"os-image", 0x40000, 0x170000},
+-			{"soft-version", 0x1b0000, 0x00100},
+-			{"support-list", 0x1b1000, 0x01000},
+-			{"file-system", 0x1c0000, 0x600000},
++			{"os-image", 0x40000, 0x1c0000},
++			{"file-system", 0x200000, 0x5b0000},
++			{"soft-version", 0x7b0000, 0x00100},
++			{"support-list", 0x7b1000, 0x01000},
+ 			{"user-config", 0x7c0000, 0x10000},
+ 			{"default-config", 0x7d0000, 0x10000},
+ 			{"log", 0x7e0000, 0x10000},
+-- 
+2.7.4
+
