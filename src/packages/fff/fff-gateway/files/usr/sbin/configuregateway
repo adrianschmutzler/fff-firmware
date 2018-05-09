@@ -86,7 +86,7 @@ configure() {
 	# ip6addr
 	#remove old ip6addr
 	for ip in $(uci get network.mesh.ip6addr); do
-		if ( echo "$ip" | grep -v -e "fd43:" -e "fdff:" ); then
+		if ( echo "$ip" | grep -v -e "fdff:" ); then
 			uci del_list network.mesh.ip6addr="$ip"
 		fi
 	done
