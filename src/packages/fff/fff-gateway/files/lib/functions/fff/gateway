@@ -124,6 +124,11 @@ add_babelpeer() {
 	uci set network.$name.proto=static
 	uci set network.$name.ifname=$iface
 
+	# fix mtu
+	if uci -q get gateway.$name.fix_mtu > /dev/null; then
+		uci set network.$name.fix_mtu="$(uci get gateway.$name.fix_mtu)"
+	fi
+
 	# add iif-rules
 	add_iifrules "$name" "10" "31"
 
@@ -176,6 +181,11 @@ add_wgpeer() {
 		uci set gateway.$name.private_key="$privkey"
 	fi
 	echo "WIREGUARD: publickey for ${name}: $(echo $(uci get gateway.$name.private_key) | wg pubkey)"
+
+	# fix mtu
+	if uci -q get gateway.$name.fix_mtu > /dev/null; then
+		uci set network.$name.fix_mtu="$(uci get gateway.$name.fix_mtu)"
+	fi
 
 	# configure wireguard
 	if uci -q get network.@wireguard_$name[0] > /dev/null
