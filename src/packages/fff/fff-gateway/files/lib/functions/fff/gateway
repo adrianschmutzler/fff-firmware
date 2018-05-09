@@ -63,6 +63,9 @@ remove_babelpeer() {
 		if ! uci -q get gateway.$name > /dev/null; then
 			# remove interface
 			uci del network.$name
+			# remove iif-rules
+			uci del network.${name}_rule
+			uci del network.${name}_rule6
 			# remove babel interface
 			uci del babeld.$name
 			# remove wireguard config
@@ -71,6 +74,22 @@ remove_babelpeer() {
 			uci -q del "babeld.F_$name"
 		fi
 	fi
+}
+
+add_iifrules() {
+	local name="$1"
+	local lookup="$2"
+	local prio="$3"
+
+	uci set network.${name}_rule=rule
+	uci set network.${name}_rule.in="$name"
+	uci set network.${name}_rule.lookup="$lookup"
+	uci set network.${name}_rule.priority="$prio"
+
+	uci set network.${name}_rule6=rule6
+	uci set network.${name}_rule6.in="$name"
+	uci set network.${name}_rule6.lookup="$lookup"
+	uci set network.${name}_rule6.priority="$prio"
 }
 
 add_babelpeer() {
@@ -105,6 +124,9 @@ add_babelpeer() {
 	uci set network.$name=interface
 	uci set network.$name.proto=static
 	uci set network.$name.ifname=$iface
+
+	# add iif-rules
+	add_iifrules "$name" "10" "31"
 
 	# peer_ip
 	if uci -q get gateway.@gateway[0].peer_ip; then
@@ -179,6 +201,9 @@ add_wgpeer() {
 	# link local
 	wgmac="$(cat "/sys/class/net/$SWITCHDEV/address")"
 	uci add_list network.$name.addresses="$(ipEUIAssemble "fe80::/64" "$wgmac")"
+
+	# add iif-rules
+	add_iifrules "$name" "10" "31"
 
 	# peer_ip
 	if uci -q get gateway.@gateway[0].peer_ip; then
