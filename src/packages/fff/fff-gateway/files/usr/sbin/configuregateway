@@ -289,6 +289,7 @@ apply_changes() {
 	echo "$(uci get "system.@system[0].hostname")" > /proc/sys/kernel/hostname
 	/etc/init.d/network restart
 	/etc/init.d/babeld restart
+	/usr/sbin/fixmtu
 }
 
 
