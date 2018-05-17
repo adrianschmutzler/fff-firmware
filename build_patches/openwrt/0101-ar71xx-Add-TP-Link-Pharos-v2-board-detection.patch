@@ -1,4 +1,4 @@
-From 000c2d089ee19a5630843ceeb69d6a95713ce12d Mon Sep 17 00:00:00 2001
+From fd9a6e2cbc2857d57b3c74384ea99229be67ed96 Mon Sep 17 00:00:00 2001
 From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
 Date: Fri, 19 Jan 2018 12:58:40 +0100
 Subject: [PATCH 1/2] ar71xx: Add TP-Link Pharos v2 board detection
@@ -16,7 +16,7 @@ Signed-off-by: Robert Marko <robimarko@gmail.com>
  2 files changed, 33 insertions(+), 14 deletions(-)
 
 diff --git a/target/linux/ar71xx/base-files/lib/ar71xx.sh b/target/linux/ar71xx/base-files/lib/ar71xx.sh
-index 7249cb6..760a25f 100755
+index 42bd80d..71460b6 100755
 --- a/target/linux/ar71xx/base-files/lib/ar71xx.sh
 +++ b/target/linux/ar71xx/base-files/lib/ar71xx.sh
 @@ -371,7 +371,7 @@ tplink_pharos_get_model_string() {
@@ -73,7 +73,7 @@ index 7249cb6..760a25f 100755
  		;;
  	*"EAP300 v2")
  		name="eap300v2"
-@@ -1346,11 +1358,11 @@ ar71xx_board_detect() {
+@@ -1352,11 +1364,11 @@ ar71xx_board_detect() {
  		;;
  	*"WBS210")
  		name="wbs210"
@@ -88,7 +88,7 @@ index 7249cb6..760a25f 100755
  	"WeIO"*)
  		name="weio"
 diff --git a/target/linux/ar71xx/base-files/lib/upgrade/platform.sh b/target/linux/ar71xx/base-files/lib/upgrade/platform.sh
-index 376984a..893bca0 100755
+index 284582f..be58c49 100755
 --- a/target/linux/ar71xx/base-files/lib/upgrade/platform.sh
 +++ b/target/linux/ar71xx/base-files/lib/upgrade/platform.sh
 @@ -97,10 +97,11 @@ tplink_pharos_check_support_list() {
@@ -130,7 +130,7 @@ index 376984a..893bca0 100755
  		echo "Unsupported image (model not in support-list)"
  		return 1
  	}
-@@ -575,7 +578,11 @@ platform_check_image() {
+@@ -576,7 +579,11 @@ platform_check_image() {
  	eap120|\
  	wbs210|\
  	wbs510)
