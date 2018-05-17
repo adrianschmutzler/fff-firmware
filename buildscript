@@ -13,9 +13,9 @@
 
 builddir=./build
 
-OPENWRTREV="419238fdb3d9847a431d82e809269dda97ceb48d" # master from 2018-05-09
+OPENWRTREV="13f64a1e597e00e7bc9cf73866533f668482c4fa" # openwrt-18.06.0-rc1
 OPENWRTURL="https://git.openwrt.org/openwrt/openwrt.git"
-PACKAGEREV="0cb460a2a7c6b208babb47af70ab63f37e17a269" # master from 2018-05-09
+PACKAGEREV="d83dc7cfb81680eff063acb7343eb9d6b0c9a6ab" # openwrt-18.06.0-rc1
 PACKAGEURL="https://git.openwrt.org/feed/packages.git"
 
 ## Feed definition [0]: name aka directory, [1]: url, [2]: revision, [3..n]: patches
@@ -38,9 +38,8 @@ GLUON_PKGS="kmod-batman-adv-legacy micrond simple-tc uradvd"
 #official openwrt routing packages
 ROUTING=(routing
          https://git.openwrt.org/feed/routing.git
-         ae4dda6dada941c58d192b93d1b1f895bf268fd7
-         "0001-Revert-babeld-release-1.8.1.patch") # master from 2018-05-09
-ROUTING_PKGS="kmod-batman-adv batctl alfred babeld"
+         1b9d1c419f0ecefda51922a7845ab2183d6acd76) # openwrt-18.06.0-rc1
+ROUTING_PKGS="kmod-batman-adv batctl alfred"
 
 FFF=(fff)
 FFF_PKGS="-a"
