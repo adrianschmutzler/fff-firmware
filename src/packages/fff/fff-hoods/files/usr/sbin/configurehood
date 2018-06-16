@@ -36,15 +36,6 @@ hasInternet() {
 	return 1
 }
 
-removeTimestamp() {
-	# Remove timestamp from file (by setting it to zero)
-	# Usage: removeTimestamp <filename>
-
-	local file=$1
-
-	cat "$file" 2>/dev/null | sed 's/"timestamp": *"[0-9]*"/"timestamp":0/'
-}
-
 # Hidden AP check
 
 if [ -s "$hoodfilecopy" ] && isGatewayAvailable ; then
@@ -146,8 +137,10 @@ if [ -s "$hoodfile" ]; then
 		json_get_var mesh_type5 mesh_type5
 	fi
 
-	sumnew="$(removeTimestamp "$hoodfile" | sha256sum | cut -f1 -d " ")"
-	sumold="$(removeTimestamp "$hoodfilecopy" | sha256sum | cut -f1 -d " ")"
+	catnew="$(cat "$hoodfile" | sed 's/"timestamp”: *"[0-9]*"/"timestamp":0/')"
+	catold="$(cat "$hoodfilecopy" 2>/dev/null | sed 's/"timestamp”: *"[0-9]*"/"timestamp":0/')"
+	sumnew=$(echo "$catnew" | sha256sum | cut -f1 -d " ")
+	sumold=$(echo "$catold" | sha256sum | cut -f1 -d " ")
 
 	json_load "$(cat "$hoodfile")"
 
