@@ -2,7 +2,7 @@
 # Netmon Nodewatcher (C) 2010-2012 Freifunk Oldenburg
 # License; GPL v3
 
-SCRIPT_VERSION="48"
+SCRIPT_VERSION="49"
 
 test -f /tmp/started || exit
 
@@ -94,7 +94,7 @@ crawl() {
     ' /proc/cpuinfo)
     model="<model>$(cat /var/sysinfo/model)</model>"
     local_time="$(date +%s)"
-    load=$(awk '{ printf "<loadavg>"$3"</loadavg><processes>"$4"</processes>" }' /proc/loadavg)
+    load=$(awk '{ printf "<loadavg1>"$1"</loadavg1><loadavg5>"$2"</loadavg5><loadavg15>"$3"</loadavg15><processes>"$4"</processes>" }' /proc/loadavg)
 
     err "$(date): Collecting version information"
 
