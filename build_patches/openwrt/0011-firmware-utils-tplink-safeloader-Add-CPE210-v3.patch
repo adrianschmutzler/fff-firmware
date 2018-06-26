@@ -9,7 +9,7 @@ Signed-off-by: Robert Marko <robimarko@gmail.com>
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/tools/firmware-utils/src/tplink-safeloader.c b/tools/firmware-utils/src/tplink-safeloader.c
-index b2cc96b..8164c1c 100644
+index 78092bc..52dc78e 100644
 --- a/tools/firmware-utils/src/tplink-safeloader.c
 +++ b/tools/firmware-utils/src/tplink-safeloader.c
 @@ -155,7 +155,7 @@ static struct device_info boards[] = {
