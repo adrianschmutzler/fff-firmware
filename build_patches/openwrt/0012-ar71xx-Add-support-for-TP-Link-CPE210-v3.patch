@@ -1,4 +1,4 @@
-From 48fa09c7f70c71bac9788265e73adec8e90df398 Mon Sep 17 00:00:00 2001
+From 28cdf7096102ba9cc2ecf760cca57b505e5c4968 Mon Sep 17 00:00:00 2001
 From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
 Date: Wed, 10 Oct 2018 20:13:09 +0200
 Subject: [PATCH 2/2] ar71xx: Add support for TP-Link CPE210 v3
@@ -35,10 +35,10 @@ Signed-off-by: Robert Marko <robimarko@gmail.com>
  7 files changed, 21 insertions(+), 2 deletions(-)
 
 diff --git a/target/linux/ar71xx/base-files/etc/board.d/01_leds b/target/linux/ar71xx/base-files/etc/board.d/01_leds
-index 592133ac28..89cc0cbff7 100755
+index edca185c62..79f452d8cf 100755
 --- a/target/linux/ar71xx/base-files/etc/board.d/01_leds
 +++ b/target/linux/ar71xx/base-files/etc/board.d/01_leds
-@@ -249,6 +249,7 @@ cf-e530n)
+@@ -252,6 +252,7 @@ cf-e530n)
  	;;
  cpe210|\
  cpe210-v2|\
@@ -46,7 +46,7 @@ index 592133ac28..89cc0cbff7 100755
  cpe510|\
  wbs210|\
  wbs510)
-@@ -259,7 +260,8 @@ wbs510)
+@@ -262,7 +263,8 @@ wbs510)
  	ucidef_set_led_rssi "rssihigh" "RSSIHIGH" "tp-link:green:link4" "wlan0" "76" "100" "-75" "13"
  
  	case "$board" in
@@ -57,10 +57,10 @@ index 592133ac28..89cc0cbff7 100755
  		;;
  	*)
 diff --git a/target/linux/ar71xx/base-files/etc/board.d/02_network b/target/linux/ar71xx/base-files/etc/board.d/02_network
-index 6f5f07e1c5..0905a93785 100755
+index 13dfd2b000..e2135f7af2 100755
 --- a/target/linux/ar71xx/base-files/etc/board.d/02_network
 +++ b/target/linux/ar71xx/base-files/etc/board.d/02_network
-@@ -75,6 +75,7 @@ ar71xx_setup_interfaces()
+@@ -74,6 +74,7 @@ ar71xx_setup_interfaces()
  	cf-e380ac-v1|\
  	cf-e380ac-v2|\
  	cpe210-v2|\
@@ -69,10 +69,10 @@ index 6f5f07e1c5..0905a93785 100755
  	eap120|\
  	eap300v2|\
 diff --git a/target/linux/ar71xx/base-files/lib/ar71xx.sh b/target/linux/ar71xx/base-files/lib/ar71xx.sh
-index ccbd4e77c3..2200069c64 100755
+index f0f6f0398b..af7707292f 100755
 --- a/target/linux/ar71xx/base-files/lib/ar71xx.sh
 +++ b/target/linux/ar71xx/base-files/lib/ar71xx.sh
-@@ -583,6 +583,10 @@ ar71xx_board_detect() {
+@@ -586,6 +586,10 @@ ar71xx_board_detect() {
  		name="cpe210-v2"
  		tplink_pharos_board_detect "$(tplink_pharos_v2_get_model_string)"
  		;;
@@ -84,10 +84,10 @@ index ccbd4e77c3..2200069c64 100755
  		name="cpe505n"
  		;;
 diff --git a/target/linux/ar71xx/base-files/lib/upgrade/platform.sh b/target/linux/ar71xx/base-files/lib/upgrade/platform.sh
-index ca1270b7fd..a04dd7441d 100755
+index 21ad3075bd..c86fbc75e9 100755
 --- a/target/linux/ar71xx/base-files/lib/upgrade/platform.sh
 +++ b/target/linux/ar71xx/base-files/lib/upgrade/platform.sh
-@@ -587,7 +587,8 @@ platform_check_image() {
+@@ -589,7 +589,8 @@ platform_check_image() {
  		tplink_pharos_check_image "$1" "7f454c46" "$(tplink_pharos_get_model_string)" '' && return 0
  		return 1
  		;;
@@ -112,10 +112,10 @@ index ceb1769ddd..f25a69f08e 100644
  	     cpe510_setup);
  
 diff --git a/target/linux/ar71xx/files/arch/mips/ath79/machtypes.h b/target/linux/ar71xx/files/arch/mips/ath79/machtypes.h
-index 80f6e1d95b..c82cb17cf6 100644
+index 974b69fda6..fb832390c1 100644
 --- a/target/linux/ar71xx/files/arch/mips/ath79/machtypes.h
 +++ b/target/linux/ar71xx/files/arch/mips/ath79/machtypes.h
-@@ -75,6 +75,7 @@ enum ath79_mach_type {
+@@ -76,6 +76,7 @@ enum ath79_mach_type {
  	ATH79_MACH_CF_E530N,			/* COMFAST CF-E530N */
  	ATH79_MACH_CPE210,			/* TP-LINK CPE210 v1 */
  	ATH79_MACH_CPE210_V2,			/* TP-LINK CPE210 v2 */
@@ -124,10 +124,10 @@ index 80f6e1d95b..c82cb17cf6 100644
  	ATH79_MACH_CPE510,			/* TP-LINK CPE510 */
  	ATH79_MACH_CPE830,			/* YunCore CPE830 */
 diff --git a/target/linux/ar71xx/image/generic-tp-link.mk b/target/linux/ar71xx/image/generic-tp-link.mk
-index 338b2db2d6..571235a3b3 100644
+index 84ae62c383..85e0204c4e 100644
 --- a/target/linux/ar71xx/image/generic-tp-link.mk
 +++ b/target/linux/ar71xx/image/generic-tp-link.mk
-@@ -195,6 +195,13 @@ define Device/cpe210-v2
+@@ -198,6 +198,13 @@ define Device/cpe210-v2
  endef
  TARGET_DEVICES += cpe210-v2
  
