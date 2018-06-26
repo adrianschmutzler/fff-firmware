@@ -276,13 +276,15 @@ cp_firmware() {
     for image in ${images[@]}; do
         filename_build=${image//lede/fff-${version}}
         filename_build=${filename_build//generic/g}
-        cp "$target/bin/targets/${chipset}/${subtarget}/$image" "./bin/$filename_build"
+        cp "$target/bin/targets/${chipset}/${subtarget}/$image" "./bin/$filename_build" && \
+        echo "Success: $filename_build"
 
         for region in "" "-eu" "-us"; do
             image_factory=${image/sysupgrade/factory$region}
             if [[ -f "$target/bin/targets/${chipset}/${subtarget}/$image_factory" ]]; then
               filename_build_factory=${filename_build/sysupgrade/factory$region}
-              cp "$target/bin/targets/${chipset}/${subtarget}/$image_factory" "./bin/$filename_build_factory"
+              cp "$target/bin/targets/${chipset}/${subtarget}/$image_factory" "./bin/$filename_build_factory" && \
+              echo "Success: $filename_build_factory"
             fi
         done
 
