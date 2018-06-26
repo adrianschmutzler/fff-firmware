@@ -13,7 +13,7 @@
 
 builddir=./build
 
-OPENWRTREV="8a0ad2660a027e88550a08268093b7e0c993b556" # openwrt-18.06 from 2018-07-19
+OPENWRTREV="af4b23dde2886ffea7374cbb22807d0be8a21b76" # openwrt master from 2018-07-27
 OPENWRTURL="https://git.openwrt.org/openwrt/openwrt.git"
 PACKAGEREV="fd57c8cfeb80bc6aa8bb7d01c5a6766f41f9da16" # openwrt-18.06 from 2018-07-19
 PACKAGEURL="https://git.openwrt.org/feed/packages.git"
