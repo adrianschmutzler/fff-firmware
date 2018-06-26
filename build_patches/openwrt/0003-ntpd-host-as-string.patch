@@ -3,15 +3,15 @@ Date: Sat, 8 Jul 2017 10:47:56 +0200
 Subject: ntpd host as string
 
 diff --git a/package/utils/busybox/files/sysntpd b/package/utils/busybox/files/sysntpd
-index e693e4031c04a6efaf6055522aaa0fa4cbf44b95..12383a4937db2134c0bee0aa46f406a828f9d42e 100755
+index 52866ba32acd26a490f9c9024fc3e43e0f757496..b6b28cd02527b89c0a4cc2f9adef52bb4c8427b0 100755
 --- a/package/utils/busybox/files/sysntpd
 +++ b/package/utils/busybox/files/sysntpd
 @@ -30,7 +30,7 @@ get_dhcp_ntp_servers() {
  
  validate_ntp_section() {
- 	uci_validate_section system timeserver "${1}" \
+ 	uci_load_validate system timeserver "$1" "$2" \
 -		'server:list(host)' 'enabled:bool:1' 'enable_server:bool:0' 'use_dhcp:bool:1' 'dhcp_interface:list(string)'
 +		'server:list(string)' 'enabled:bool:1' 'enable_server:bool:0' 'use_dhcp:bool:1' 'dhcp_interface:list(string)'
  }
  
- start_service() {
+ start_ntpd_instance() {

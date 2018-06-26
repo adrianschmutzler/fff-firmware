@@ -13,17 +13,17 @@
 
 builddir=./build
 
-# OpenWrt: openwrt-18.06.4 from 2019-06-30
-OPENWRTREV="f6429577c5110fe3ad5575c797e884e87027726c"
-PACKAGEREV="68461c4c5490065212ece28de1d44ede177536f5"
-ROUTINGREV="bb156bf355b54236a52279522fabbec1e8dd7043"
+# OpenWrt: openwrt-19.07 from 2019-07-26
+OPENWRTREV="0a64b70e4e95d585df3ef79d04cc6e48c8919d7c"
+PACKAGEREV="c708a1c18b046006a519610e47bd7e8539261096"
+ROUTINGREV="bef6617141a979dd29ae657c81ebb82587957261"
 
-# Gluon packages: master from 2019-05-02
-GLUONREV="9a364fb8d0a4f9fecb6a3aac7525fedf759fe81a"
+# Gluon packages: master from 2019-07-26
+GLUONREV="63e6e0da0647263c1de9e12dd434a47c1f5a9b7e"
 
-OPENWRT_PKGS="gpioctl-sysfs libugpio fastd haserl libpam libgnutls liblzma libnetsnmp libopenldap libidn2 libssh2 jansson"
+OPENWRT_PKGS="gpioctl-sysfs libugpio fastd haserl micrond libpam libgnutls liblzma libnetsnmp libopenldap libidn2 libssh2 jansson"
 ROUTING_PKGS="kmod-batman-adv batctl alfred babeld"
-GLUON_PKGS="micrond simple-tc uradvd"
+GLUON_PKGS="simple-tc uradvd"
 
 OPENWRTURL="https://git.openwrt.org/openwrt/openwrt.git"
 
