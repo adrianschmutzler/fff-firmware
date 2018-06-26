@@ -288,13 +288,13 @@ cp_firmware() {
         done
 
         if echo "$filename_build" | grep -q "bullet-m" ; then
-            cp "./bin/$filename_build" "./bin/${filename_build/bullet-m/pico-m}"
+            cp "./bin/$filename_build" "./bin/${filename_build/bullet-m/pico-m}" && \
             cp "./bin/$filename_build_factory" "./bin/${filename_build_factory/bullet-m/pico-m}"
-            cp "./bin/$filename_build" "./bin/${filename_build/bullet-m/loco-m}"
+            cp "./bin/$filename_build" "./bin/${filename_build/bullet-m/loco-m}" && \
             cp "./bin/$filename_build_factory" "./bin/${filename_build_factory/bullet-m/loco-m}"
         fi
         if echo "$filename_build" | grep -q "loco-m-xw" ; then
-            cp "./bin/$filename_build" "./bin/${filename_build/loco-m-xw/power-m-xw}"
+            cp "./bin/$filename_build" "./bin/${filename_build/loco-m-xw/power-m-xw}" && \
             cp "./bin/$filename_build_factory" "./bin/${filename_build_factory/loco-m-xw/power-m-xw}"
         fi
         if echo "$filename_build" | grep -q "unifiac-lite" ; then
