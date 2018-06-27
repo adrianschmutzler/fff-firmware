@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-boardname
-PKG_VERSION:=6
+PKG_VERSION:=7
 PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
@@ -33,7 +33,8 @@ define Build/Compile
 endef
 
 define Package/$(PKG_NAME)/install
-    $(CP) ./files/* $(1)/
+	$(CP) ./files/* $(1)/
+	test -d ./$(BOARD)-$(SUBTARGET) && $(CP) ./$(BOARD)-$(SUBTARGET)/* $(1)/etc/ || $(CP) ./default/* $(1)/etc/
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
