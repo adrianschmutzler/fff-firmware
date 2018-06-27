@@ -1,0 +1,3 @@
+config model 'model'
+        option target 'mpc85xx'
+        option subtarget 'generic'

@@ -1,0 +1,3 @@
+config model 'model'
+        option target 'ath79'
+        option subtarget 'tiny'
