@@ -85,10 +85,11 @@ case "$BOARD" in
     ubnt,unifi)
         BOARD=ubnt_unifi
         ;;
-    ubnt,ubnt-unifiac-lite)
-        BOARD=ubnt-unifiac-lite
-        MODEL="$(ubnt_ac_lite_board_detect)"
-        echo "$MODEL" | grep -iq "MESH" && BOARD=ubnt-unifiac-mesh
+    ubnt,unifiac-lite)
+        BOARD=ubnt_unifiac-lite
+        ;;
+    ubnt,unifiac-mesh)
+        BOARD=ubnt_unifiac-mesh
         ;;
 esac
 

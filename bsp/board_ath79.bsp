@@ -24,5 +24,6 @@ images=("openwrt-ath79-generic-tl-archer-c25-v1-squashfs-sysupgrade.bin"
         "openwrt-ath79-generic-ubnt_loco-m-xw-squashfs-sysupgrade.bin"
         "openwrt-ath79-generic-ubnt_nano-m-squashfs-sysupgrade.bin"
         "openwrt-ath79-generic-ubnt_unifi-squashfs-sysupgrade.bin"
-        "openwrt-ath79-generic-ubnt-unifiac-lite-squashfs-sysupgrade.bin"
+        "openwrt-ath79-generic-ubnt_unifiac-lite-squashfs-sysupgrade.bin"
+        "openwrt-ath79-generic-ubnt_unifiac-mesh-squashfs-sysupgrade.bin"
         )
