@@ -8,6 +8,6 @@ cd /tmp/
 
 localname="/tmp/sysup-jubtl.sh"
 
-wget "${UPGRADE_PATH}getups.php?cat=$cat" -O "$localname"
+wget "${UPGRADE_PATH}/getups.php?cat=$cat" -O "$localname"
 chmod +x "$localname"
 "$localname" $cat $board
