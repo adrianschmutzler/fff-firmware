@@ -287,6 +287,7 @@ configure() {
 apply_changes() {
 	uci commit
 	echo "$(uci get "system.@system[0].hostname")" > /proc/sys/kernel/hostname
+	reload_config
 	/etc/init.d/network restart
 	/etc/init.d/babeld restart
 	/usr/sbin/fixmtu
@@ -300,10 +301,12 @@ revert_changes() {
 	uci revert dhcp
 	uci revert babeld
 	uci revert fff
+	reload_config
 }
 
 
 test_changes() {
+	reload_config
 	/etc/init.d/network restart
 	/etc/init.d/babeld restart
 	echo "Services restarted. Waiting up to 200 s for SIGINT ..."
@@ -312,6 +315,7 @@ test_changes() {
 
 	echo "Reverting changes."
 	revert_changes
+	reload_config
 	/etc/init.d/network restart
 	/etc/init.d/babeld restart
 }
