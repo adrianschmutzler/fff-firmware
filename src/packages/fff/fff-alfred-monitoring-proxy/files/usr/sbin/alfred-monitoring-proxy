@@ -1,6 +1,6 @@
 #!/bin/ash
 
-api_url="http://monitoring.freifunk-franken.de/api/alfred"
+api_url="https://monitoring.freifunk-franken.de/api/alfred"
 
 fetch_id="64"
 
