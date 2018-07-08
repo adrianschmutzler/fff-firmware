@@ -3,6 +3,7 @@
 . /lib/functions/fff/keyxchange
 
 ln -s "$hoodfilewww" /www/hood/keyxchangev2data
+ln -s "$sectorfilewww" /www/hood/sectorfile
 
 uci batch <<EOF
   delete uhttpd.main

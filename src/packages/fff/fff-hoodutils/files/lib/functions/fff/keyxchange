@@ -8,6 +8,8 @@ hoodfiletmp="/tmp/hoodfile"
 hoodfileref="/tmp/hoodfileref"
 hoodfilewww="/tmp/hoodfilewww"
 
+sectorfilewww="/tmp/sectorfilewww"
+
 getJsonPath() {
 	jsonfile=""
 	if [ -s "$hoodfilewww" ] ; then
