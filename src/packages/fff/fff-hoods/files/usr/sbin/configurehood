@@ -77,7 +77,7 @@ if [ -s "$hoodfilelocal" ]; then
 else
 	# if we have Internet, we download the Hoodfile from the keyxchangev2
 	if hasInternet ; then
-		getKeyserverHoodfile "$hoodfiletmp"
+		getKeyserverHoodfile "$hoodfiletmp" && cp "$hoodfiletmp" "$hoodfilewww"
 
 		rm -f "$sectortmp"
 		[ -s "$sectorlocal" ] || rm -f "$sectorcopy" # If internet present, no custom config should be distributed, except when local file is present
@@ -113,7 +113,7 @@ else
 			# -> as a consequence, all hood files in the wired network are from devices with gateway connection
 			sleep 20;
 
-			getGatewayHoodfile "$hoodfiletmp"
+			getGatewayHoodfile "$hoodfiletmp" && cp "$hoodfiletmp" "$hoodfilewww"
 			#SECTORFILE: Do nothing
 		fi
 	fi
@@ -233,7 +233,6 @@ if [ -s "$hoodfiletmp" ]; then
 		# copy the file to webroot so that other mesh routers can download it;
 		# copy only after all other steps so IF can be reentered if something goes wrong
 		cp "$hoodfiletmp" "$hoodfileref"
-		cp "$hoodfiletmp" "$hoodfilewww"
 		[ -s "$sectortmp" ] && cp "$sectortmp" "$sectorcopy"
 
 		# This is a workaround to enable alfred on devices which do not see a configap during initial setup
