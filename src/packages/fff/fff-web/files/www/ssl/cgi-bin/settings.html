@@ -6,7 +6,7 @@
 # write
 radio2="$(wifiGetPhy "2")"
 radio5="$(wifiGetPhy "5")"
-if [ "$REQUEST_METHOD" == "POST" ] ; then
+if [ "$REQUEST_METHOD" = "POST" ] ; then
 	#check for valid hostname as specified in rfc 1123
 	#see http://stackoverflow.com/a/3824105
 	regex='^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])'
@@ -28,7 +28,7 @@ if [ "$REQUEST_METHOD" == "POST" ] ; then
 
 		# Bitratenbegrenzung
 		uci -q get "fff.trafficcontrol" > /dev/null || uci -q set fff.trafficcontrol=fff
-		if [ "$POST_traffic_limit" == "on" ] ; then
+		if [ "$POST_traffic_limit" = "on" ] ; then
 			uci -q set "fff.trafficcontrol.enabled=1"
 			uci -q set "simple-tc.example.enabled=1"
 		else
@@ -44,14 +44,14 @@ if [ "$REQUEST_METHOD" == "POST" ] ; then
 		
 		# Restliche Einstellungen
 		uci -q set "fff.notifyupdate=webui"
-		if [ "$POST_upgrade_notification" == "on" ] ; then
+		if [ "$POST_upgrade_notification" = "on" ] ; then
 			uci -q set "fff.notifyupdate.value=1"
 		else
 			uci -q set "fff.notifyupdate.value=0"
 			rm -f /tmp/fwcheck
 			rm -f /tmp/isupdate
 		fi
-		if [ "$POST_upgrade_reset" == "on" ] ; then
+		if [ "$POST_upgrade_reset" = "on" ] ; then
 			uci -q set "fff.notifyupdate.resetonupgrade=1"
 		else
 			uci -q set "fff.notifyupdate.resetonupgrade=0"
@@ -59,7 +59,7 @@ if [ "$REQUEST_METHOD" == "POST" ] ; then
 		
 		if uci -q get system.poe_passthrough > /dev/null ; then
 			uci -q set "fff.poe_passthrough=fff"
-			if [ "$POST_poe_passthrough" == "on" ] ; then
+			if [ "$POST_poe_passthrough" = "on" ] ; then
 				uci -q set "fff.poe_passthrough.active=1"
 				uci -q set "system.poe_passthrough.value=1"
 			else
@@ -68,12 +68,12 @@ if [ "$REQUEST_METHOD" == "POST" ] ; then
 			fi
 		fi
 		
-		if [ "$POST_enable24ghz" == "on" ] ; then
+		if [ "$POST_enable24ghz" = "on" ] ; then
 			wifiSetActive "2" "1"
 		else
 			wifiSetActive "2" "0"
 		fi
-		if [ "$POST_enable5ghz" == "on" ] ; then
+		if [ "$POST_enable5ghz" = "on" ] ; then
 			wifiSetActive "5" "1"
 		else
 			wifiSetActive "5" "0"
@@ -92,17 +92,17 @@ fi
 <%
 # read
 chkd='checked="checked" '
-if [ "$(uci -q get 'fff.trafficcontrol.enabled')" == "1" ] ; then # not set=0
+if [ "$(uci -q get 'fff.trafficcontrol.enabled')" = "1" ] ; then # not set=0
 	traffic_checked="$chkd"
 else
 	traffic_checked=""
 fi
-if [ "$(uci -q get 'fff.notifyupdate.value')" == "0" ] ; then # not set=1
+if [ "$(uci -q get 'fff.notifyupdate.value')" = "0" ] ; then # not set=1
 	upgrade_checked=""
 else
 	upgrade_checked="$chkd"
 fi
-if [ "$(uci -q get 'fff.notifyupdate.resetonupgrade')" == "0" ] ; then # not set=1
+if [ "$(uci -q get 'fff.notifyupdate.resetonupgrade')" = "0" ] ; then # not set=1
 	upgrade_reset_checked=""
 else
 	upgrade_reset_checked="$chkd"
@@ -162,7 +162,7 @@ fi
 		
 		<%
 		if uci -q get system.poe_passthrough > /dev/null ; then
-			if [ "$(uci -q get 'fff.poe_passthrough.active')" == "1" ] ; then # not set=0
+			if [ "$(uci -q get 'fff.poe_passthrough.active')" = "1" ] ; then # not set=0
 				poe_pt_checked="$chkd"
 			else
 				poe_pt_checked=""

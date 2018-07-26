@@ -2,11 +2,11 @@
 
 <%
 # treat post
-if [ "$REQUEST_METHOD" == "POST" ] ; then
+if [ "$REQUEST_METHOD" = "POST" ] ; then
 	if [ "$POST_wifiupload" != "" ] ; then
 		if [ ! -f "$HASERL_nodelist_path" ] ; then
 			MSG='<span class="red">Node-Datei nicht gefunden!</span>'
-		elif [ "$(du -k "$HASERL_nodelist_path" | cut -f1)" == "0" ] ; then
+		elif [ "$(du -k "$HASERL_nodelist_path" | cut -f1)" = "0" ] ; then
 			MSG='<span class="red">Node-Datei ist leer!</span>'
 		else
 			mv "$HASERL_nodelist_path" /tmp/wifinodelist
