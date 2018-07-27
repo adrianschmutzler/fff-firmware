@@ -32,7 +32,7 @@ if [ "$REQUEST_METHOD" == "POST" ] ; then
 	elif [ "$POST_downgrade" != "" ] ; then
 		# downgrade preparation script
 		/usr/sbin/prepare_firmware_downgrade.sh
-		MSG='<span class="green">Firmware-Downgrade-Vorbereitung durchgeführt.</span>'
+		MSG='<span class="green">Firmware-Downgrade-Vorbereitung durchgef&uuml;hrt.</span>'
 	fi
 fi
 if grep -q '/etc/config/system' /etc/sysupgrade.conf 2> /dev/null ; then
@@ -55,7 +55,7 @@ fi
 		<tr><td colspan="2"></td></tr>
 		<tr><th style="width: 18em;">Firmware&nbsp;Image:</th><td><input type="file" name="firmware" style="width:40em" /></td></tr>
 		<tr><th>Konfiguration&nbsp;erhalten:</th><td><input type="checkbox" name="keep_config" checked="checked" /></td></tr>
-		<tr><th>Downgrade-Skript ausführen:</th><td><input type="checkbox" name="pre_downgrade" /></td></tr>
+		<tr><th>Downgrade-Skript ausf&uuml;hren:</th><td><input type="checkbox" name="pre_downgrade" /></td></tr>
 		<tr><td colspan="2"></td></tr>
 		<tr><td colspan="2"><input type="submit" name="upgrade" value="Upgrade" /></td></tr>
 	</table>
