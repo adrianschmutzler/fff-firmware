@@ -112,14 +112,14 @@ else
 		uci set "network.${SWITCHDEV}_1.vlan=1"
 		uci set "network.${SWITCHDEV}_1.ports=$CLIENT_PORTS"
 
+		# This defines the VLAN for WAN ports inside the switch.
+		# This is required even if the WAN eth is separate, but the WAN port is in the switch!
 		if [ "$WANDEV" = "$SWITCHDEV" ] || [ -n "$WAN_PORTS" ]; then
-			WANDEV="${SWITCHDEV}.2"
 			uci set "network.${SWITCHDEV}_2=switch_vlan"
 			uci set "network.${SWITCHDEV}_2.device=$SWITCHHW"
 			uci set "network.${SWITCHDEV}_2.vlan=2"
 			uci set "network.${SWITCHDEV}_2.ports=$WAN_PORTS"
 		fi
-		enableAutoConf "$WANDEV"
 
 		ETHMESHDEV="$SWITCHDEV.3"
 		uci set "network.${SWITCHDEV}_3=switch_vlan"
@@ -128,8 +128,15 @@ else
 		uci set "network.${SWITCHDEV}_3.ports=$BATMAN_PORTS"
 
 		uci set network.mesh.ifname="$SWITCHDEV.1 bat0"
-		uci set network.wan.ifname="$WANDEV"
 		uci set network.ethmesh.ifname="$ETHMESHDEV"
+
+		# This defines the WAN interface. We use the VLAN ID only if we do NOT have a separate eth.
+		# This is different from the criterion for the WAN port dealt with above!
+		# If the WANDEV is different from the SWITCHDEV, but the WAN port is in the switch,
+		# the WAN eth has to be connected to the switch untagged!
+		[ "$WANDEV" = "$SWITCHDEV" ] && WANDEV="${SWITCHDEV}.2"
+		enableAutoConf "$WANDEV"
+		uci set network.wan.ifname="$WANDEV"
 
 		uci -q commit network
 	fi
