@@ -24,18 +24,21 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 fi
 
 #helpers
+all_vlans() {
+	swconfig dev switch0 show | grep VLAN | sed 's/VLAN \(.*\):/\1/'
+}
 format_state() {
-	batmanports=$(swconfig dev switch0 vlan 3 show | grep 'ports:')
-	clientports=$(swconfig dev switch0 vlan 1 show | grep 'ports:')
-	wanports=$(swconfig dev switch0 vlan 2 show | grep 'ports:')
+	batmanports="$(swconfig dev switch0 vlan 3 get ports)"
+	clientports="$(swconfig dev switch0 vlan 1 get ports)"
+	wanports="$(swconfig dev switch0 vlan 2 get ports)"
 	
-	if (echo "$clientports" | grep -q "${1}") && (echo "$batmanports" | grep -q "${1}") ; then
+	if [ $2 -gt 1 ] ; then
 		echo -n "<span class=\"assign\" style=\"color:black\">Multi-Link"
-	elif echo "$clientports" | grep -q "${1}" ; then
+	elif echo "$clientports" | grep -q "$1" ; then
 		echo -n "<span class=\"assign\" style=\"color:orange\">CLIENT"
-	elif echo "$batmanports" | grep -q "${1}" ; then
+	elif echo "$batmanports" | grep -q "$1" ; then
 		echo -n "<span class=\"assign\" style=\"color:green\">BATMAN"
-	elif echo "$wanports" | grep -q "${1}" ; then
+	elif echo "$wanports" | grep -q "$1" ; then
 		echo -n "<span class=\"assign\" style=\"color:blue\">WAN"
 	else
 		echo -n "<span class=\"assign\" style=\"color:red\">Unknown"
@@ -43,30 +46,37 @@ format_state() {
 	echo "</span><br />"
 }
 format_port() {
-	port=$(echo "$1" | sed 's/.* port:\([^ ]*\) .*/\1/')
-	link=$(echo "$1" | sed 's/.* link:\([^ ]*\).*/\1/')
+	local port="$1"
+	local data="$(swconfig dev switch0 port "$port" get link)"
+	local link=$(echo "$data" | sed 's/.* link:\([^ ]*\).*/\1/')
 	if [ "$link" = "up" ] ; then
-		speed=$(echo "$1" | sed 's/.* speed:\([^ ]*\).*/\1/')
-		duplex=$(echo "$1" | sed 's/.* \([^ ]*-duplex\).*/\1/')
+		speed=$(echo "$data" | sed 's/.* speed:\([^ ]*\).*/\1/')
+		duplex=$(echo "$data" | sed 's/.* \([^ ]*-duplex\).*/\1/')
 	else
 		speed="no link"
 		duplex=""
 	fi
-	echo "<img src=\"/port_${link}.png\" alt=\"${link}\" /><br /><br />"
-	format_state "${port}"
-	echo "<span class=\"stat\">$speed<br />$duplex</span><br /><br />"
-	
-	swconfig dev switch0 show | grep -E "VLAN\s[0-9]+:[ \t]*$" | while read line ; do
-		vid=$(echo "$line" | sed 's/.*VLAN \([^:]*\).*/\1/')
-		vports=$(swconfig dev switch0 vlan "$vid" show | grep 'ports:')
+
+	local vlist=""
+	local count=0
+	for vlan in $(all_vlans) ; do
+		vports="$(swconfig dev switch0 vlan "$vlan" get ports)"
 		if echo "$vports" | grep -q "${port}t" ; then
-			echo "<span class=\"vassign\">tagged</span><br />"
-		elif echo "$vports" | grep -q "${port}" ; then
-			echo "<span class=\"vassign\">untagged</span><br />"
+			vlist="${vlist}<span class=\"vassign\">tagged</span><br />"
+			count=$((count+1))
+		elif echo "$vports" | grep -q "$port" ; then
+			vlist="${vlist}<span class=\"vassign\">untagged</span><br />"
+			count=$((count+1))
 		else
-			echo "<span class=\"vassign\">-</span><br />"
+			vlist="${vlist}<span class=\"vassign\">-</span><br />"
 		fi
 	done
+
+	echo "<span class=\"port\">Port #${port}</span><br />"
+	echo "<img src=\"/port_${link}.png\" alt=\"${link}\" /><br /><br />"
+	format_state "$port" "$count"
+	echo "<span class=\"stat\">$speed<br />$duplex</span><br /><br />"
+	echo "$vlist"
 }
 
 
@@ -85,21 +95,16 @@ format_port() {
 			<tr>
 				<%
 				echo "<td class=\"swport\" style=\"vertical-align:bottom\">"
-				swconfig dev switch0 show | grep -E "VLAN\s[0-9]+:[ \t]*$" | while read line ; do
-					vid=$(echo "$line" | sed 's/.*VLAN \([^:]*\).*/\1/')
-					echo "<span class=\"vassign\" style=\"font-weight:bold;font-style:italic\">VLAN $vid </span><br />"
+				for vlan in $(all_vlans) ; do
+					echo "<span class=\"vassign\" style=\"font-weight:bold;font-style:italic\">VLAN $vlan </span><br />"
 				done
 				echo "</td>"
 				echo "<td class=\"swport\" style=\"width:2em\"></td>"
-				
-				if [ ! "$(awk -F= '/WANDEV=/ { print $2 }' /etc/network.$board_name)" = "$(awk -F= '/SWITCHDEV=/ { print $2 }' /etc/network.$board_name)" ] ; then
-					wanif=$(uci -q get network.wan.ifname)
-					link=$(cat /sys/class/net/${wanif}/operstate)
-					if [ "$link" = "up" ] ; then
-						speed="connected"
-					else
-						speed="no link"
-					fi
+
+				if [ -z "$(swconfig dev switch0 vlan 2 get ports)" ] ; then
+					wanif="$(uci -q get network.wan.ifname)"
+					link="$(cat /sys/class/net/${wanif}/operstate)"
+					[ "$link" = "up" ] && speed="connected" || speed="no link"
 					echo "<td class=\"swport\">"
 					echo "<span class=\"port\" style=\"color:blue\">WAN-Port</span><br />"
 					echo "<img src=\"/port_${link}.png\" alt=\"${link}\" /><br /><br />"
@@ -107,32 +112,21 @@ format_port() {
 					echo "<span class=\"stat\">$speed</span>"
 					echo "</td>"
 				fi
-				
+
 				if grep -q 'PORTORDER=' /etc/network.$board_name ; then
 					portorder=$(awk -F= '/PORTORDER=/ { print $2 }' /etc/network.$board_name | sed "s/\"//g")
 				fi
-				for internalport in $portorder
-				do
-					line=$(swconfig dev switch0 port "$internalport" show | tr -d '\n' | tr -d '\t')
-					port=$(echo "$line" | sed 's/.* port:\([^ ]*\) .*/\1/')
+				for internalport in $portorder ; do
 					echo "<td class=\"swport\">"
-					echo "<span class=\"port\">Port #${port}</span><br />"
-					format_port "${line}"
+					format_port "$internalport"
 					echo "</td>"
 				done
-				if [ -n "$portorder" ] ; then
-					echo "<td class=\"swport\" style=\"width:4em\"></td>"
-				fi
-				
-				swconfig dev switch0 show | grep "\t*link:" | while read line ; do
-					line=$(echo "$line" | tr -d '\n' | tr -d '\t')
-					port=$(echo "$line" | sed 's/.* port:\([^ ]*\) .*/\1/')
-					if echo "$portorder" | grep -q "$port" ; then
-						continue
-					fi
+				[ -n "$portorder" ] && echo "<td class=\"swport\" style=\"width:4em\"></td>"
+
+				for port in $(swconfig dev switch0 show | grep "link:" | sed 's/.*port:\([0-9]*\) .*/\1/') ; do
+					echo "$portorder" | grep -q "$port" && continue
 					echo "<td class=\"swport\">"
-					echo "<span class=\"port\">Port #${port}</span><br />"
-					format_port "${line}"
+					format_port "$port"
 					echo "</td>"
 				done
 				%>
