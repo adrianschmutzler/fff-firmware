@@ -22,4 +22,4 @@
 ## For example this is the case for: gl-ar150, tl-mr3020-v1, tl-wa850re-v1,
 ## tl-wa860re-v1, tl-wa901nd-v2, ubnt-bullet-m, ubnt-loco-m-xw, ubnt-nano-m,
 ## ubnt-unifi
-ETHMODE="BATMAN"
+ETHMODE="CLIENT"
