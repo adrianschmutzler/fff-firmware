@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. /lib/functions/fff/keyxchange
+
+ln -s "$hoodfilewww" /www/hood/keyxchangev2data
+ln -s "$sectorfilewww" /www/hood/sectorfile
+
+exit 0
