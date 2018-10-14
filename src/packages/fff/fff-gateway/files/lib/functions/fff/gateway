@@ -34,6 +34,28 @@ remove_vlan() {
 
 ## babelpeer
 
+set_babelpenalty() {
+	# Usage: set_babelpenalty <interface> <cost>
+	
+	local name="$1"
+	local penalty="$2"
+
+	uci -q set "babeld.$name.rxcost=$penalty"
+	uci -q set "babeld.F_$name=filter"
+	uci -q set "babeld.F_$name.type=in"
+	uci -q set "babeld.F_$name.if=$name"
+	uci -q set "babeld.F_$name.action=metric $penalty"
+}
+
+remove_babelpenalty() {
+	# Usage: remove_babelpenalty <interface>
+	
+	local name="$1"
+
+	uci -q del "babeld.F_$name"
+	uci -q del "babeld.$name.rxcost"
+}
+
 remove_babelpeer() {
 	local name="$1"
 	if ! echo $name | grep cfg > /dev/null; then # do not delete default interface
@@ -44,6 +66,8 @@ remove_babelpeer() {
 			uci del babeld.$name
 			# remove wireguard config
 			uci -q del network.@wireguard_$name[0]
+			# remove penalties
+			uci -q del "babeld.F_$name"
 		fi
 	fi
 }
@@ -100,6 +124,11 @@ add_babelpeer() {
 	uci set babeld.$name=interface
 	uci set babeld.$name.ifname=$name
 	uci set babeld.$name.type=$type
+	
+	# babel penalty
+	if uci -q get gateway.$name.penalty; then
+		set_babelpenalty "$name" "$(uci -q get gateway.$name.penalty)"
+	fi
 }
 
 
@@ -169,4 +198,9 @@ add_wgpeer() {
 	uci set babeld.$name=interface
 	uci set babeld.$name.ifname="$name"
 	uci set babeld.$name.type='tunnel'
+	
+	# babel penalty
+	if uci -q get gateway.$name.babel_penalty; then
+		set_babelpenalty "$name" "$(uci -q get gateway.$name.babel_penalty)"
+	fi
 }
