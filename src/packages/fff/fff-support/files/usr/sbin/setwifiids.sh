@@ -17,4 +17,4 @@ uci -q delete "fff.wifi.mesh_id"
 [ -n "$mesh_id" ] && uci -q set "fff.wifi.mesh_id=$mesh_id"
 uci -q commit fff
 
-rm -f "$hoodfilecopy" # delete this, so settings will be applied during next run of configurehood
+rm -f "$hoodfileref" # delete this, so settings will be applied during next run of configurehood
