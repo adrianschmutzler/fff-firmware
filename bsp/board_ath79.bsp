@@ -2,10 +2,10 @@ machine=ath79
 chipset=ath79
 subtarget=generic
 target=$builddir/$machine
-images=("openwrt-ath79-generic-tl-archer-c25-v1-squashfs-sysupgrade.bin"
-        "openwrt-ath79-generic-tl-archer-c60-v1-squashfs-sysupgrade.bin"
-        "openwrt-ath79-generic-tl-archer-c60-v2-squashfs-sysupgrade.bin"
-        "openwrt-ath79-generic-tl-archer-c7-v2-squashfs-sysupgrade.bin"
+images=("openwrt-ath79-generic-archer-c25-v1-squashfs-sysupgrade.bin"
+        "openwrt-ath79-generic-archer-c60-v1-squashfs-sysupgrade.bin"
+        "openwrt-ath79-generic-archer-c60-v2-squashfs-sysupgrade.bin"
+        "openwrt-ath79-generic-archer-c7-v2-squashfs-sysupgrade.bin"
         "openwrt-ath79-generic-tl-cpe210-220-v1-squashfs-sysupgrade.bin"
         "openwrt-ath79-generic-tl-cpe210-v2-squashfs-sysupgrade.bin"
         "openwrt-ath79-generic-tl-cpe510-520-v1-squashfs-sysupgrade.bin"
