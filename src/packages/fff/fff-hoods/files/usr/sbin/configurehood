@@ -76,6 +76,7 @@ if [ -s "$hoodfilelocal" ]; then
 else
 	# if we have Internet, we download the Hoodfile from the keyxchangev2
 	if hasInternet ; then
+		sleep $(/usr/bin/random 1 10)
 		getKeyserverHoodfile "$hoodfiletmp" && cp "$hoodfiletmp" "$hoodfilewww"
 
 		rm -f "$sectorfiletmp"
@@ -110,7 +111,7 @@ else
 
 			# We wait some time, so nodes without network connection can delete their $hoodfilecopy
 			# -> as a consequence, all hood files in the wired network are from devices with gateway connection
-			sleep 20;
+			sleep $(/usr/bin/random 20 30)
 
 			getGatewayHoodfile "$hoodfiletmp" && cp "$hoodfiletmp" "$hoodfilewww"
 			#SECTOR FILE: Do nothing
