@@ -2,9 +2,18 @@
 # Netmon Nodewatcher (C) 2010-2012 Freifunk Oldenburg
 # License; GPL v3
 
-SCRIPT_VERSION="50"
-
 test -f /tmp/started || exit
+
+# Allow only one instance
+lockfile="/var/lock/${0##*/}.lock"
+if ! lock -n "$lockfile"; then
+        echo "Only one instance of $0 allowed."
+        exit 1
+fi
+trap "lock -u \"$lockfile\"" INT TERM EXIT
+
+
+SCRIPT_VERSION="50"
 
 # Load libraries
 . /lib/functions.sh # Required for simple-tc
