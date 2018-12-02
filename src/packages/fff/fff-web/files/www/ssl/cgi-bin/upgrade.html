@@ -18,9 +18,6 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 		elif ! error=$(sysupgrade -T "$HASERL_firmware_path") ; then
 			MSG="<span class=\"red\">Firmware Datei ung&uuml;ltig: <tt>${error}</tt></span>"
 		else
-			if [ "$POST_pre_downgrade" = "on" ] ; then
-				/usr/sbin/prepare_firmware_downgrade.sh
-			fi
 			if [ "$POST_keep_config" = "on" ] ; then
 				args=""
 			else
@@ -29,16 +26,7 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 			do_sysupgrade=1
 			MSG='<span class="green">Firmware Upgrade wird gestartet...</span>'
 		fi
-	elif [ "$POST_downgrade" != "" ] ; then
-		# downgrade preparation script
-		/usr/sbin/prepare_firmware_downgrade.sh
-		MSG='<span class="green">Firmware-Downgrade-Vorbereitung durchgef&uuml;hrt.</span>'
 	fi
-fi
-if grep -q '/etc/config/system' /etc/sysupgrade.conf 2> /dev/null ; then
-	downgrade_text='<p>&gt; <span style="color:green">Downgrade wurde bereits vorbereitet.</span></p>'
-else
-	downgrade_text='<p>&gt; <span style="color:red">Downgrade muss durch Klicken auf "Skript ausf&uuml;hren" vorbereitet werden.</span></p>'
 fi
 
 %>
@@ -55,17 +43,8 @@ fi
 		<tr><td colspan="2"></td></tr>
 		<tr><th style="width: 18em;">Firmware&nbsp;Image:</th><td><input type="file" name="firmware" style="width:40em" /></td></tr>
 		<tr><th>Konfiguration&nbsp;erhalten:</th><td><input type="checkbox" name="keep_config" checked="checked" /></td></tr>
-		<tr><th>Downgrade-Skript ausf&uuml;hren:</th><td><input type="checkbox" name="pre_downgrade" /></td></tr>
 		<tr><td colspan="2"></td></tr>
 		<tr><td colspan="2"><input type="submit" name="upgrade" value="Upgrade" /></td></tr>
-	</table>
-</fieldset>
-<fieldset style="min-height: 7em;">
-	<legend>Firmware-Downgrade vorbereiten</legend>
-	<table>
-		<tr><td colspan="2" style="font-style:italic">Bei einem Downgrade auf KeyXchange-V1-Firmware (adsc_*, jubtl_*, 20170918) muss zuvor die Konfiguration angepasst werden.</td></tr>
-		<tr><td colspan="2"><%= "$downgrade_text" %></td></tr>
-		<tr><td colspan="2"><input type="submit" name="downgrade" value="Skript ausf&uuml;hren" /></td></tr>
 	</table>
 </fieldset>
 </td><td>
