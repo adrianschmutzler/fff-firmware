@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-hoods
 PKG_VERSION:=adsc-5
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -13,7 +13,7 @@ define Package/$(PKG_NAME)
     CATEGORY:=Freifunk
     TITLE:= Freifunk-Franken hoods
     URL:=http://www.freifunk-franken.de
-    DEPENDS:=+fff-hoodutils +fff-macnock +fff-started +fff-vpn-select
+    DEPENDS:=+fff-hoodutils +fff-macnock +fff-started +fff-vpn-select +fff-firewall
 endef
 
 define Package/$(PKG_NAME)/description
