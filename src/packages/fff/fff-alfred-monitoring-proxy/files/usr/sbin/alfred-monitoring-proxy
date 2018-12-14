@@ -1,10 +1,14 @@
 #!/bin/ash
 
-api_urls='https://monitoring.freifunk-franken.de/api/alfred'
+api_urls='https://monitoring.freifunk-franken.de/api/alfred2'
 
-fetch_id="64"
+fetchid="64"
 
-data=$(alfred-json -r "$fetch_id")
+alfredjson=/bin/alfred-json
+header="Content-type: application/json; charset=UTF-8"
+verbose=-v
+
 for api_url in $api_urls; do
-    curl -k -v -H "Content-type: application/json; charset=UTF-8" -X POST --data "{\"$fetch_id\": $data}" $api_url
+    /bin/sleep 1
+    $alfredjson -r "$fetchid" | /usr/bin/curl -k $verbose -H "$header" --data-binary @- "$api_url"
 done
