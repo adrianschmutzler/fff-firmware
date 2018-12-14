@@ -4,17 +4,18 @@
 # Copyright Adrian Schmutzler, 2018.
 # License GPLv3
 #
-# Gateway-Firmware Version 1.4.3
+# Gateway-Firmware Version 1.4.6
+#
 
 # Config
-api_urls="https://monitoring.freifunk-franken.de/api/gwinfo"
+api_urls="https://monitoring.freifunk-franken.de/api/gwinfo" # space-separated list of addresses (api_urls="url1 url2")
 batctlpath=/usr/sbin/batctl
 hostname="$(uci -q get system.@system[0].hostname)"
 statslink="$(uci -q get gateway.@gateway[0].statslink)"
 
 # Code
 tmp=$(/bin/mktemp)
-echo "{\"version\":\"1.4\",\"hostname\":\"$hostname\",\"stats_page\":\"$statslink\",\"netifs\":[" > $tmp
+echo "{\"version\":\"1.4.6\",\"hostname\":\"$hostname\",\"stats_page\":\"$statslink\",\"netifs\":[" > $tmp
 
 comma=""
 for netif in $(ls /sys/class/net); do
@@ -23,16 +24,18 @@ for netif in $(ls /sys/class/net); do
 	fi
 	mac="$(cat "/sys/class/net/$netif/address")"
 	batctl="$("$batctlpath" -m "$netif" if | grep "eth" | sed -n 's/:.*//p')"
+
 	ipv4=""
 	ipv6=""
 	dhcpstart=""
 	dhcpend=""
 	if [ "$netif" = "bat0" ]; then
-		ipv4="$(ip -4 addr show dev br-mesh | grep " 10\." | sed 's/.*\(10\.[^ ]*\/[^ ]*\) .*/\1/')"
-		ipv6="$(ip -6 addr show dev br-mesh | grep " fd43" | grep '::' | sed 's/.*\(fd43[^ ]*\) .*/\1/')"
+		ipv4="$(ip -4 addr show dev br-mesh | grep " 10\." | sed 's/.* \(10\.[^ ]*\/[^ ]*\) .*/\1/')"
+		ipv6="$(ip -6 addr show dev br-mesh | grep " fd43" | grep '::' | sed 's/.* \(fd43[^ ]*\) .*/\1/')"
 		[ "$(echo "$ipv6" | wc -l)" = "1" ] || ipv6=""
 		dhcpstart="$(uci -q get dhcp.mesh.start)"
 	fi
+
 	echo "$comma{\"mac\":\"$mac\",\"netif\":\"$netif\",\"vpnif\":\"$batctl\",\"ipv4\":\"$ipv4\",\"ipv6\":\"$ipv6\",\"dhcpstart\":\"$dhcpstart\",\"dhcpend\":\"$dhcpend\"}" >> $tmp
 	comma=","
 done
@@ -50,4 +53,3 @@ for api_url in $api_urls; do
 	/usr/bin/curl -k -v -H "Content-type: application/json; charset=UTF-8" -X POST --data-binary @$tmp $api_url
 done
 /bin/rm "$tmp"
-
