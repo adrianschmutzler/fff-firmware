@@ -1,4 +1,4 @@
-machine=ath79_tiny
+machine=ath79-tiny
 chipset=ath79
 subtarget=tiny
 target=$builddir/$machine

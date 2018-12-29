@@ -1,4 +1,4 @@
-machine=ar71xxtiny
+machine=ar71xx-tiny
 chipset=ar71xx
 subtarget=tiny
 target=$builddir/$machine
