@@ -162,6 +162,7 @@ add_wireguardpeer() {
 
 	# set up interface
 	uci set network.$name.proto=wireguard
+	uci set network.$name.fwmark='0xc8'
 	if privkey=$(uci -q get gateway.$name.private_key); then
 		uci set network.$name.private_key="$privkey"
 	else
