@@ -36,7 +36,7 @@ GLUON_PKGS="kmod-batman-adv-legacy micrond simple-tc uradvd"
 #official openwrt routing packages
 ROUTING=(routing
          https://git.openwrt.org/feed/routing.git
-         c7f14ce93267c5048456511dd0a7b0d6ceb4c376) # master from 2018-10-14
+         a7c447903cc77fdf43193d1325b5517e6b97da05) # master from 2018-12-29
 ROUTING_PKGS="kmod-batman-adv batctl alfred babeld"
 
 FFF=(fff)
