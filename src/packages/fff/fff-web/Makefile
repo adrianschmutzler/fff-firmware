@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-web
-PKG_VERSION:=6
-PKG_RELEASE:=2
+PKG_VERSION:=adsc-6.2
+PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
