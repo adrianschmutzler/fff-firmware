@@ -1,4 +1,4 @@
-From 3280eb51202a8b6b4af55165b1b795fbd3c7318c Mon Sep 17 00:00:00 2001
+From b9a9e7d7de8331ded4d880f31a381a73c686c494 Mon Sep 17 00:00:00 2001
 From: Tim Niemeyer <tim@tn-x.org>
 Date: Sat, 8 Jul 2017 10:48:53 +0200
 Subject: [PATCH 4/4] ar71xx-4.9-l2tp-stats

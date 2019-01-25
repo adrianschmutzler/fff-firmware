@@ -13,9 +13,9 @@
 
 builddir=./build
 
-OPENWRTREV="4fa4b5edaf79a3574e1485ebb04ba7e0d2289d63" # openwrt-18.06.1+ from 2018-10-14
+OPENWRTREV="76037756d0c97eb2cbb9f227b3d3b11705b5abe0" # pre openwrt-18.06.2 from 2019-01-25
 OPENWRTURL="https://git.openwrt.org/openwrt/openwrt.git"
-PACKAGEREV="971efb45af7b2761c14bde4647451a8a5bcf2546" # openwrt-18.06.1+ from 2018-10-14
+PACKAGEREV="6f84d68c946b795b042b5752678b7328bc6c0032" # pre openwrt-18.06.2 from 2019-01-25
 PACKAGEURL="https://git.openwrt.org/feed/packages.git"
 
 ## Feed definition [0]: name aka directory, [1]: url, [2]: revision, [3..n]: patches
