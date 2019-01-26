@@ -115,7 +115,7 @@ else
 
 			#SECTOR FILE: Set up uplink data on first contact:
 			if [ -s /tmp/keyxchangev2data ]; then
-				wget -T15 -t5 "http://[fe80::1%w2sta]:2342/sectorfile" -O "$sectorfiletmp" || wget -T15 -t5 "http://[fe80::1%w5sta]:2342/sectorfile" -O "$sectorfiletmp"
+				wget -T15 "http://[fe80::1%w2sta]:2342/sectorfile" -O "$sectorfiletmp" || wget -T15 "http://[fe80::1%w5sta]:2342/sectorfile" -O "$sectorfiletmp"
 			fi
 		else
 			echo "We have a Gateway in Range, we load the keyxchangev2data from network or gateway"
