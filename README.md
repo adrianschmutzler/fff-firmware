@@ -4,24 +4,23 @@ firmware
 # Was ist Freifunk?
 Freifunk ist eine nicht-kommerzielle Initiative für freie Funknetzwerke. Jeder Nutzer im Freifunk-Netz stellt einen günstigen WLAN-Router für sich selbst und den Datentransfer der anderen Teilnehmer zur Verfügung. Dieses Netzwerk kann von jedem genutzt werden.
 
-# Firmware selbst kompilieren
+Weitere Informationen gibt es auf <https://freifunk.net/> und auf <https://wiki.freifunk-franken.de/w/Hauptseite>.
 
-## Benutzung des Buildscripts
-### Prerequisites
-* `apt-get install zlib1g-dev lua5.2 build-essential unzip libncurses-dev gawk git subversion realpath libssl-dev` (Sicherlich müssen noch mehr Abhängigkeiten Installiert werden, diese Liste wird sich hoffentlich nach und nach Füllen. Ein erster Ansatzpunkt sind die Abhängigkeiten von OpenWrt selbst)
+# Firmware selbst kompilieren
+## Voraussetzungen
+* `apt-get install zlib1g-dev lua5.2 build-essential unzip libncurses-dev gawk git subversion realpath libssl-dev` (Sicherlich müssen noch mehr Abhängigkeiten installiert werden, diese Liste wird sich hoffentlich nach und nach füllen. Ein erster Ansatzpunkt sind die Abhängigkeiten von OpenWrt selbst)
 * `git clone https://github.com/FreifunkFranken/firmware.git`
 * `cd firmware`
 
-### Erste Schritte
-Mit Hilfe der Community-Files werden Parameter, wie die ESSID, der Kanal sowie z.B. die Netmon-IP gesetzt. Diese Einstellungen sind Community weit einheitlich und müssen i.d.R. nicht geändert werden.
-* `./buildscript selectcommunity community/franken.cfg`
-Je nach dem, für welche Hardware die Firmware gebaut werden soll muss das BSP gewählt werden:
-* `./buildscript selectbsp bsp/board wr1043nd.bsp`
-* `./buildscript`
+## Erste Schritte
+Je nachdem, für welche Hardware die Firmware gebaut werden soll, muss das BSP gewählt werden:
+
+* `./buildscript selectbsp bsp/board_ar71xx.bsp`
+* Um die vorhandenen BSPs zu sehen, kann `./buildscript selectbsp help` ausgeführt werden.
 
 ## Was ist ein BSP?
 Ein BSP (Board-Support-Package) beschreibt, was zu tun ist, damit ein Firmware Image für eine spezielle Hardware gebaut werden kann.
-Typischerweise ist eine folgene Ordner-Struktur vorhanden:
+Typischerweise ist eine Ordner-Struktur wie folgt vorhanden:
 * .config
 * root_file_system/
   * etc/
@@ -33,24 +32,33 @@ Typischerweise ist eine folgene Ordner-Struktur vorhanden:
     * crontabs/
       * root
 
-Die Daten des BSP werden nie alleine verwendet. Zu erst werden immer die Daten aus dem "default"-BSP zum Ziel kopiert, erst danach werden die Daten des eigentlichen BSPs dazu kopiert. Durch diesen Effekt kann ein BSP die "default" Daten überschreiben.
+Die Daten des BSP werden nie alleine verwendet. Zuerst werden immer die Daten aus dem "default"-BSP zum Ziel kopiert, erst danach werden die Daten des eigentlichen BSPs dazu kopiert. Durch diesen Effekt kann ein BSP die "default" Daten überschreiben.
 
-## Der Verwendung des Buildscripts
-Das BSP file durch das Buildscript automatisch als dot-Script geladen, somit stehen dort alle Funktionen zur Verfügung.
-Das Buildscript lädt ebenfalls automatisch das Community file und generiert ein dynamisches sed-Script, dies geschieht, damit die Templates mit den richtigen Werten gefüllt werden können.
+## Die Verwendung des Buildscripts
+Die BSP-Datei wird durch das Buildscript automatisch als dot-Script geladen, somit stehen dort alle Funktionen zur Verfügung.
+Das Buildscript generiert ein dynamisches sed-Script. Dies geschieht, damit die Templates mit den richtigen Werten gefüllt werden können.
 
 ### `./buildscript prepare`
 * Sourcen werden in einen separaten src-Folder geladen, sofern diese nicht schon da sind. Zu den Sourcen zählen folgende Komponenten:
   * OpenWrt
-  * Sämtliche Packages (ggfs werden Patches angewandt)
+  * Sämtliche Packages (ggf. werden Patches angewandt)
 
-* Ein ggfs altes Target wird gelöscht
+* Ein ggf. altes Target wird gelöscht
 * OpenWrt wird ins Target exportiert (kopiert)
 * Eine OpenWrt Feed-Config wird mit dem lokalen Source Verzeichnis als Quelle angelegt
 * Die Feeds werden geladen
 * Spezielle Auswahl an Paketen wird geladen
 * Patches werden angewandt
-* board_prepare() aus dem BSP wird aufgerufen (wird. z.B. fur Patches für eine bestimmte HW verwendet)
+* board_prepare() aus dem BSP wird aufgerufen (wird z.B. für Patches für eine bestimmte Hardware verwendet)
+
+### `./buildscript config openwrt`
+Um das Arbeiten mit den .config-Dateien von OpenWrt zu vereinfachen, bietet das Buildscript die Möglichkeit das `menuconfig` von OpenWrt aufzurufen. Nachdem man die gewünschten Einstellungen vorgenommen hat, hat man die Möglichkeit, die frisch editierte Konfiguration in das BSP zu übernehmen.
+Dieses Kommando arbeitet folgendermaßen:
+* prebuild
+* OpenWrt: `make menuconfig`
+* Speichern, y/n?
+* Config-Format vereinfachen
+* Config ins BSP zurück speichern
 
 ### `./buildscript build`
 * prebuild
@@ -65,14 +73,6 @@ Das Buildscript lädt ebenfalls automatisch das Community file und generiert ein
 * postbuild
   * board_postbuild() wird aufgerufen
 
-### `./buildscript config`
-Um das Arbeiten mit den OpenWrt .config's zu vereinfachen bietet das Buildscript die Möglichkeit die OpenWrt menuconfig und die OpenWrt kernel_menuconfig aufzurufen. Im Anschluss hat man die Möglichkeit die frisch editierten Configs in das BSP zu übernehmen.
-* prebuild
-* OpenWrt: `make menuconfig ; make kernel_menuconfig`
-* Speichern, y/n?
-* Config-Format vereinfachen
-* Config ins BSP zurück speichern
-
 ## Erweiterung eines BSPs
 Beispielhaftes Vorgehen um den WR1043V2 zu unterstützen.
 
@@ -82,16 +82,17 @@ git clone https://github.com/FreifunkFranken/firmware.git
 cd firmware
 ```
 
-### Erstes Images erzeugen
-Du fügst im board_postbuild ein, dass auch die Images für den wr1043v2 kopiert werden:
+### Erste Images erzeugen
+Du fügst die Dateinamen der Images, die zusätzlich kopiert werden sollen, in das `images`-Array ein:
+
 ```
-vim bsp/board_wr1043nd.bsp
-board_postbuild() {
-    cp $target/bin/ar71xx/openwrt-ar71xx-generic-tl-wr1043nd-v1-squashfs-factory.bin ./bin/
-    cp $target/bin/ar71xx/openwrt-ar71xx-generic-tl-wr1043nd-v1-squashfs-sysupgrade.bin ./bin/
-    cp $target/bin/ar71xx/openwrt-ar71xx-generic-tl-wr1043nd-v2-squashfs-factory.bin ./bin/
-    cp $target/bin/ar71xx/openwrt-ar71xx-generic-tl-wr1043nd-v2-squashfs-sysupgrade.bin ./bin/
-}
+vim bsp/board_ar71xx.bsp
+images=(
+    // ...
+    openwrt-${chipset}-${subtarget}-tl-wr1043nd-v2-squashfs-sysupgrade.bin"
+    openwrt-${chipset}-${subtarget}-tl-wr1043nd-v2-squashfs-factory.bin"
+    // ...
+)
 ```
 
 Dann muss auf jeden Fall noch das Netzwerk richtig konfiguriert werden. Dazu muss man den Router sehr gut kennen, i.d.R. lernt man den erst beim Verwenden kennen, daher ist ein guter Startpunkt die Config vom v1 zu kopieren und erstmal zu gucken was passiert:
@@ -101,7 +102,6 @@ cp bsp/wr1043nd/root_file_system/etc/network.tl-wr1043nd-v1 bsp/wr1043nd/root_fi
 Anschließend kann ein erstes Image erzeugt werden:
 ```
 ./buildscript selectbsp bsp/board_wr1043nd.bsp
-./buildscript selectcommunity community/franken.cfg
 
 ./buildscript prepare
 ./buildscript build
@@ -124,7 +124,7 @@ reboot
 ```
 
 ### Einstellungen testen und ins BSP übernehmen
-Wenn jetzt die Ports immer noch alle korrekt funktionieren kann man die datei auf den eigenen PC kopieren:
+Wenn jetzt die Ports immer noch alle korrekt funktionieren kann man die Datei auf den eigenen PC kopieren:
 ```
 scp root@[ipv6ll%scope]:/etc/network.tl-wr1043nd-v2 /path/to/git/firmware/bsp/wr1043nd/root_file_system/etc/network.tl-wr1043nd-v2
 ```
@@ -134,3 +134,8 @@ Nun kann man mit `git status` die Änderungen sehen. Mit `git add` staged man di
 
 ### Patch schicken
 Auf der Mailingliste franken-dev@freifunk.net kannst du natürlich jederzeit Fragen stellen, falls etwas nicht klar sein sollte.
+
+## Hinzufügen von Paketen zum Image
+Das Hinzufügen von Paketen sollte mit Bedacht erfolgen, da dies (bei unvorsichtiger Konfiguration) den Betrieb des Routers und eventuell des Freifunk-Netzes beeinträchtigen könnte.
+Mit dem Firmware-Verzeichnis als Arbeitsverzeichnis kann mittels des Befehls `./build/<target>/scripts/feeds install <paket>` ein Paket zur menuconfig hinzugefügt werden.
+Mittels des schon bekannten `./buildscript config openwrt` kann das Paket dann ausgewählt werden. Es wird beim anschließenden Build zum Image hinzugefügt.
