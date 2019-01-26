@@ -78,5 +78,5 @@ case "$BOARD" in
         ;;
 esac
 
-uci set board.model.name="$(echo "$BOARD" | sed 's/^tplink,//' | sed 's/,/_/')" # remove tplink prefix and replace "vendor,device" with "vendor_device"
+uci set board.model.name="$(echo "$BOARD" | sed 's/^tplink,//' | sed 's/^glinet,//' | sed 's/,/_/')" # remove tplink/glinet prefix and replace "vendor,device" with "vendor_device"
 uci commit board
