@@ -21,6 +21,7 @@ images=("openwrt-${chipset}-${subtarget}-tplink_archer-c25-v1-squashfs-sysupgrad
         "openwrt-${chipset}-${subtarget}-tplink_tl-wr1043nd-v4-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_tl-wr1043n-v5-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt_bullet-m-squashfs-sysupgrade.bin"
+        "openwrt-${chipset}-${subtarget}-ubnt_bullet-m-xw-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt_loco-m-xw-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt_nano-m-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt_unifi-squashfs-sysupgrade.bin"
