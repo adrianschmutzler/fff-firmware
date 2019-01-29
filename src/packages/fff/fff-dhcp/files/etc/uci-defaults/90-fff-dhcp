@@ -30,9 +30,9 @@ uci batch <<EOF
   set dhcp.mesh.interface='mesh'
   set dhcp.mesh.ra='server'
   set dhcp.mesh.ra_management='0'
-  set dhcp.mesh.leasetime='12h'
+  set dhcp.mesh.leasetime='1h'
 EOF
 
-uci commit
+uci commit dhcp
 
 exit 0
