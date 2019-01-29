@@ -10,7 +10,12 @@ config interface
 config filter
 	option type 'redistribute'
 	option local 'true'
-	option ip '10.0.0.0/8'
+	option ip '10.50.0.0/16'
+
+config filter
+	option type 'redistribute'
+	option local 'true'
+	option ip '10.83.0.0/16'
 
 config filter
 	option type 'redistribute'
@@ -24,7 +29,11 @@ config filter
 
 config filter
 	option type 'redistribute'
-	option ip '10.0.0.0/8'
+	option ip '10.50.0.0/16'
+
+config filter
+	option type 'redistribute'
+	option ip '10.83.0.0/16'
 
 config filter
 	option type 'redistribute'
