@@ -1,7 +1,15 @@
 #!/bin/ash
 
-api_url="https://monitoring.freifunk-franken.de/api/alfred2"
-fetch_id="64"
+api_urls='https://monitoring.freifunk-franken.de/api/alfred2'
 
-/bin/alfred-json -r "$fetch_id" | \
-    /usr/bin/curl -k -v -H "Content-type: application/json; charset=UTF-8" --data-binary @- "$api_url"
+fetchid="64"
+
+alfredjson=/bin/alfred-json
+header="Content-type: application/json; charset=UTF-8"
+verbose=-v # -v for verbose output, nothing for standard output
+certs=-k # -k to allow insecure SSL connections, nothing for standard
+
+for api_url in $api_urls; do
+    /bin/sleep 1
+    $alfredjson -r "$fetchid" | /usr/bin/curl $certs $verbose -H "$header" --data-binary @- "$api_url"
+done
