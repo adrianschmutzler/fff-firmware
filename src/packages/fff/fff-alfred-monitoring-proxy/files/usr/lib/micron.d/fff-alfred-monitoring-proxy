@@ -1,1 +1,1 @@
-1-59/5 * * * * sleep $(/usr/bin/random 10 25); /usr/sbin/alfred-monitoring-proxy
+*/5 * * * * sleep $(/usr/bin/random 70 85); /usr/sbin/alfred-monitoring-proxy
