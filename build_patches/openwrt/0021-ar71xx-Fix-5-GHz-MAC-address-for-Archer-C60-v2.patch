@@ -1,4 +1,4 @@
-From 0cab33260de54f0c836725861beaa4256e3d7328 Mon Sep 17 00:00:00 2001
+From 449e1ebabffe79c94df1836888a3954b01820997 Mon Sep 17 00:00:00 2001
 From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
 Date: Sat, 26 Jan 2019 13:57:33 +0100
 Subject: [PATCH] ar71xx: Fix 5 GHz MAC address for Archer C60 v2
@@ -13,7 +13,7 @@ Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata b/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
-index 53f5377..d21d413 100644
+index 53f53775fd..d21d4134d4 100644
 --- a/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
 +++ b/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
 @@ -168,13 +168,18 @@ case "$FIRMWARE" in
@@ -37,5 +37,5 @@ index 53f5377..d21d413 100644
  		ath10kcal_extract "art" 20480 12064
  		;;
 -- 
-2.7.4
+2.11.0
 
