@@ -12,16 +12,16 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
 define Package/alfred-json
-    SECTION:=utils
-    CATEGORY:=Utilities
-    TITLE:=A.L.F.R.E.D - JSON Client
-    URL:=https://github.com/FreifunkFranken/alfred-json
-    DEPENDS:=+jansson +zlib +alfred
+	SECTION:=utils
+	CATEGORY:=Utilities
+	TITLE:=A.L.F.R.E.D - JSON Client
+	URL:=https://github.com/FreifunkFranken/alfred-json
+	DEPENDS:=+jansson +zlib +alfred
 endef
 
 define Package/alfred-json/install
-    $(INSTALL_DIR) $(1)/bin/
-    $(CP) $(PKG_INSTALL_DIR)/usr/bin/alfred-json $(1)/bin/
+	$(INSTALL_DIR) $(1)/bin/
+	$(CP) $(PKG_INSTALL_DIR)/usr/bin/alfred-json $(1)/bin/
 endef
 
 $(eval $(call BuildPackage,alfred-json))
