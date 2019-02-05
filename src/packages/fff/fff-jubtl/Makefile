@@ -8,17 +8,17 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
-    SECTION:=base
-    CATEGORY:=Freifunk
-    TITLE:=Freifunk-Franken JU BT-Land Customizations
-    URL:=http://www.freifunk-franken.de
-    DEPENDS:=+fff-wififix
+	SECTION:=base
+	CATEGORY:=Freifunk
+	TITLE:=Freifunk-Franken JU BT-Land Customizations
+	URL:=http://www.freifunk-franken.de
+	DEPENDS:=+fff-wififix
 endef
 
 define Package/$(PKG_NAME)/description
-    This is the JU Bayreuth-Land customization package.
-    It is introduced in the adsc* branches, but only
-    selected for the jubtl* ones.
+	This is the JU Bayreuth-Land customization package.
+	It is introduced in the adsc* branches, but only
+	selected for the jubtl* ones.
 endef
 
 define Build/Prepare

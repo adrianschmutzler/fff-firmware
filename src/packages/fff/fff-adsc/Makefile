@@ -8,15 +8,15 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
-    SECTION:=base
-    CATEGORY:=Freifunk
-    TITLE:=Freifunk-Franken adsc Customizations
-    URL:=http://www.freifunk-franken.de
-    DEPENDS:=+fff-wififix
+	SECTION:=base
+	CATEGORY:=Freifunk
+	TITLE:=Freifunk-Franken adsc Customizations
+	URL:=http://www.freifunk-franken.de
+	DEPENDS:=+fff-wififix
 endef
 
 define Package/$(PKG_NAME)/description
-    This is the adsc customization package.
+	This is the adsc customization package.
 endef
 
 define Build/Prepare

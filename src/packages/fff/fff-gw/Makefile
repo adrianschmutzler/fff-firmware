@@ -8,14 +8,14 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
-    SECTION:=base
-    CATEGORY:=Freifunk
-    TITLE:=Freifunk-Franken gw Customizations
-    URL:=http://www.freifunk-franken.de
+	SECTION:=base
+	CATEGORY:=Freifunk
+	TITLE:=Freifunk-Franken gw Customizations
+	URL:=http://www.freifunk-franken.de
 endef
 
 define Package/$(PKG_NAME)/description
-    This is the gw customization package.
+	This is the gw customization package.
 endef
 
 define Build/Prepare

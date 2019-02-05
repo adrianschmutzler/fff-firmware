@@ -8,15 +8,15 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
-    SECTION:=base
-    CATEGORY:=Freifunk
-    TITLE:= Freifunk-Franken Fix MTU
-    URL:=http://www.freifunk-franken.de
-    DEPENDS:=+fff-network
+	SECTION:=base
+	CATEGORY:=Freifunk
+	TITLE:= Freifunk-Franken Fix MTU
+	URL:=http://www.freifunk-franken.de
+	DEPENDS:=+fff-network
 endef
 
 define Package/$(PKG_NAME)/description
-    This package fixes the MTU based on user settings
+	This package fixes the MTU based on user settings
 endef
 
 define Build/Prepare

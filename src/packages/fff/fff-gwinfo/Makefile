@@ -8,15 +8,15 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
-    SECTION:=base
-    CATEGORY:=Freifunk
-    TITLE:= Freifunk-Franken GWinfo
-    URL:=http://www.freifunk-franken.de
-    DEPENDS:=+fff-network +fff-gateway
+	SECTION:=base
+	CATEGORY:=Freifunk
+	TITLE:= Freifunk-Franken GWinfo
+	URL:=http://www.freifunk-franken.de
+	DEPENDS:=+fff-network +fff-gateway
 endef
 
 define Package/$(PKG_NAME)/description
-    This package sends data about the gateway to the Monitoring
+	This package sends data about the gateway to the Monitoring
 endef
 
 define Build/Prepare

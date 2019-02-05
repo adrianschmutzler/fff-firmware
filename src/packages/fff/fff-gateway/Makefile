@@ -9,15 +9,15 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
-    SECTION:=base
-    CATEGORY:=Freifunk
-    TITLE:=Freifunk-Franken gateway configuration
-    URL:=http://www.freifunk-franken.de
-    DEPENDS:=+fff-network +fff-hoodutils +fff-macnock +fff-fixmtu
+	SECTION:=base
+	CATEGORY:=Freifunk
+	TITLE:=Freifunk-Franken gateway configuration
+	URL:=http://www.freifunk-franken.de
+	DEPENDS:=+fff-network +fff-hoodutils +fff-macnock +fff-fixmtu
 endef
 
 define Package/$(PKG_NAME)/description
-    This package configures the gateway
+	This package configures the gateway
 endef
 
 define Build/Prepare
