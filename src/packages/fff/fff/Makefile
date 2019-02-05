@@ -45,7 +45,7 @@ define Package/fff-node
 endef
 
 define Package/fff-node/description
-    $(call Package/fff/base/description)
+	$(call Package/fff/base/description)
 endef
 
 define Package/fff-layer3
