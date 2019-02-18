@@ -6,7 +6,7 @@ images=("openwrt-${chipset}-${subtarget}-tplink_tl-mr3020-v1-squashfs-sysupgrade
         "openwrt-${chipset}-${subtarget}-tplink_tl-wa850re-v1-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_tl-wa860re-v1-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_tl-wa901nd-v2-squashfs-sysupgrade.bin"
-        "openwrt-${chipset}-${subtarget}-tplink_tl-wr740nd-v4-squashfs-sysupgrade.bin"
+        "openwrt-${chipset}-${subtarget}-tplink_tl-wr740n-v4-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_tl-wr741nd-v2-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_tl-wr741nd-v4-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_tl-wr841-v7-squashfs-sysupgrade.bin"
