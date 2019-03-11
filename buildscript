@@ -290,7 +290,7 @@ cp_firmware() {
             fi
         done
 
-        if echo "$filename_build" | grep -q "bullet-m-squashfs" ; then
+        if echo "$filename_build" | grep -q "bullet-m-sysupgrade" ; then
             cp "./bin/$filename_build" "./bin/${filename_build/bullet-m/pico-m}" && \
             cp "./bin/$filename_build_factory" "./bin/${filename_build_factory/bullet-m/pico-m}"
             cp "./bin/$filename_build" "./bin/${filename_build/bullet-m/loco-m}" && \
