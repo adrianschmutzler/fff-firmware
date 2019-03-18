@@ -1,0 +1,71 @@
+configure() {
+	# IPv4 address
+	#remove old ipaddr
+	uci -q del network.mesh.ipaddr
+	#set new ipaddr
+	if ipaddr=$(uci -q get gateway.@client[0].ipaddr); then
+		for ip in $ipaddr; do
+			uci add_list network.mesh.ipaddr=$ip
+		done
+	else
+		echo "WARNING: No client IPv4 address set!"
+	fi
+	#put interface routes from set addresses into fff table
+	uci set network.mesh.ip4table='fff'
+
+	# IPv6 address
+	#remove old ip6addr
+	for ip in $(uci get network.mesh.ip6addr); do
+		if echo "$ip" | grep -q -v -e "^fdff:" -e "fe80::1/64"; then
+			uci del_list network.mesh.ip6addr="$ip"
+		fi
+	done
+	#set new ip6addr
+	if ip6addr=$(uci -q get gateway.@client[0].ip6addr); then
+		for ip in $ip6addr; do
+			uci add_list network.mesh.ip6addr=$ip
+		done
+	else
+		echo "WARNING: No client IPv6 address set!"
+	fi
+	#put interface routes from set addresses into fff table
+	uci set network.mesh.ip6table='fff'
+
+	# dhcp
+	uci -q del dhcp.mesh.start
+	uci -q del dhcp.mesh.limit
+	if dhcp_start=$(uci -q get gateway.@client[0].dhcp_start); then
+		uci set dhcp.mesh=dhcp
+		uci set dhcp.mesh.interface=mesh
+		uci set dhcp.mesh.start=$dhcp_start
+	else
+		echo "WARNING: No DHCP range start set!"
+	fi
+	if dhcp_limit=$(uci -q get gateway.@client[0].dhcp_limit); then
+		uci set dhcp.mesh.limit=$dhcp_limit
+	else
+		echo "WARNING: No DHCP range limit set!"
+	fi
+
+	# set interface
+	#Just replace existing eth0.x or ethX assigned to mesh.ifname
+	if vlan=$(uci -q get gateway.@client[0].vlan); then
+		newmesh="$(uci get network.mesh.ifname | sed "s/\(eth\d\.\)\d*/\1$vlan/g")"
+		uci set network.mesh.ifname="$newmesh"
+	elif iface=$(uci -q get gateway.@client[0].iface); then
+		newmesh="$(uci get network.mesh.ifname | sed "s/ *eth[^ ]* *//g")"
+		uci set network.mesh.ifname="$newmesh $iface"
+	else
+		echo "WARNING: No interface for client specified!"
+	fi
+}
+
+apply() {
+	uci commit network
+	uci commit dhcp
+}
+
+revert() {
+	uci revert network
+	uci revert dhcp
+}
