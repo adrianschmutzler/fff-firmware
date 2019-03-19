@@ -1,4 +1,4 @@
-From dc634e3bbd66089ea9d92f19983182bfdf2de13c Mon Sep 17 00:00:00 2001
+From be7702f19f4ca0aa37e9552c18c9f40c01e4e0fc Mon Sep 17 00:00:00 2001
 From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
 Date: Wed, 10 Oct 2018 20:05:53 +0200
 Subject: [PATCH 1/2] firmware-utils: tplink-safeloader: Add CPE210 v3

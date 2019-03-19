@@ -1,4 +1,4 @@
-From 2eca1d93647356939a7388847a65cb2533cc5858 Mon Sep 17 00:00:00 2001
+From 48fa09c7f70c71bac9788265e73adec8e90df398 Mon Sep 17 00:00:00 2001
 From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
 Date: Wed, 10 Oct 2018 20:13:09 +0200
 Subject: [PATCH 2/2] ar71xx: Add support for TP-Link CPE210 v3
