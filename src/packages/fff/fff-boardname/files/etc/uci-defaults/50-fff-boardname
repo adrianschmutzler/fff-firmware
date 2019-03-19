@@ -34,6 +34,9 @@ case "$BOARD" in
     nanostation-m)
         BOARD=ubnt-nano-m
         ;;
+    nanostation-m-xw)
+        BOARD=ubnt-nano-m-xw
+        ;;
     bullet-m)
         BOARD=ubnt-bullet-m
         grep -i "Pico" /var/sysinfo/model && BOARD=ubnt-pico-m

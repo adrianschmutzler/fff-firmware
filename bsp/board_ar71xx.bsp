@@ -24,6 +24,7 @@ images=("openwrt-${chipset}-${subtarget}-archer-c25-v1-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt-bullet-m-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt-loco-m-xw-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt-nano-m-squashfs-sysupgrade.bin"
+        "openwrt-${chipset}-${subtarget}-ubnt-nano-m-xw-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt-unifi-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt-unifiac-lite-squashfs-sysupgrade.bin"
         )
