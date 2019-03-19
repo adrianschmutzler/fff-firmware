@@ -13,7 +13,7 @@ fi
 trap "lock -u \"$lockfile\"" INT TERM EXIT
 
 
-SCRIPT_VERSION="adsc-51-3"
+SCRIPT_VERSION="adsc-52-1"
 
 # Load libraries
 . /lib/functions.sh # Required for simple-tc
