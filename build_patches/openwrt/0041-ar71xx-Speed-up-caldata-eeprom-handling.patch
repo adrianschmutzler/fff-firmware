@@ -1,0 +1,102 @@
+From df6505e5adfaaf04231e459afac492ffadde69ec Mon Sep 17 00:00:00 2001
+From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+Date: Thu, 7 Mar 2019 09:40:08 +0100
+Subject: [PATCH 1/2] ar71xx: Speed up caldata/eeprom handling
+
+Reading and writing to and from flash storage is slowed down
+enormously by some functions which use a block size of 1.
+
+This patch reworks the extraction scripts to be much faster and
+efficient by reading and writing in possibly one big block.
+
+This is based on the initial commit a69e101 for ipq40xx by
+Christian Lamparter <chunkeey@gmail.com>.
+
+Speed comparison @ TP-Link TL-WDR4300 (just manually) results
+in a time reduction by three orders of magnitude (99.9 %).
+
+> time dd if=/dev/mtd3 of=/lib/firmware/test-slow bs=1 count=4096 skip=4096
+4096+0 records in
+4096+0 records out
+real    0m 15.85s
+user    0m 0.06s
+sys     0m 13.28s
+
+> time dd if=/dev/mtd3 of=/lib/firmware/test-fast bs=4096 count=1 skip=4096 iflag=skip_bytes
+1+0 records in
+1+0 records out
+real    0m 0.02s
+user    0m 0.00s
+sys     0m 0.02s
+
+Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+---
+ .../linux/ar71xx/base-files/etc/hotplug.d/firmware/10-ath9k-eeprom  | 6 +++---
+ .../ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata      | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/10-ath9k-eeprom b/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/10-ath9k-eeprom
+index 94bce7d335..208d5f6bff 100644
+--- a/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/10-ath9k-eeprom
++++ b/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/10-ath9k-eeprom
+@@ -20,7 +20,7 @@ ath9k_eeprom_extract() {
+ 	[ -n "$mtd" ] || \
+ 		ath9k_eeprom_die "no mtd device found for partition $part"
+ 
+-	dd if=$mtd of=/lib/firmware/$FIRMWARE bs=1 skip=$offset count=$count 2>/dev/null || \
++	dd if=$mtd of=/lib/firmware/$FIRMWARE iflag=skip_bytes bs=$count skip=$offset count=1 2>/dev/null || \
+ 		ath9k_eeprom_die "failed to extract from $mtd"
+ }
+ 
+@@ -35,7 +35,7 @@ ath9k_ubi_eeprom_extract() {
+ 	[ -n "$ubi" ] || \
+ 		ath9k_eeprom_die "no UBI volume found for $part"
+ 
+-	dd if=/dev/$ubi of=/lib/firmware/$FIRMWARE bs=1 skip=$offset count=$count 2>/dev/null || \
++	dd if=/dev/$ubi of=/lib/firmware/$FIRMWARE iflag=skip_bytes bs=$count skip=$offset count=1 2>/dev/null || \
+ 		ath9k_eeprom_die "failed to extract from $ubi"
+ }
+ 
+@@ -62,7 +62,7 @@ ath9k_patch_firmware_mac() {
+ 
+ 	[ -z "$mac" ] && return
+ 
+-	macaddr_2bin $mac | dd of=/lib/firmware/$FIRMWARE conv=notrunc bs=1 seek=2 count=6
++	macaddr_2bin $mac | dd of=/lib/firmware/$FIRMWARE conv=notrunc oflag=seek_bytes bs=6 seek=2 count=1
+ }
+ 
+ board=$(board_name)
+diff --git a/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata b/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+index d21d4134d4..39551e41a8 100644
+--- a/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
++++ b/target/linux/ar71xx/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+@@ -10,7 +10,7 @@ ath10kcal_from_file() {
+ 	local offset=$2
+ 	local count=$3
+ 
+-	dd if=$source of=/lib/firmware/$FIRMWARE bs=1 skip=$offset count=$count 2>/dev/null || \
++	dd if=$source of=/lib/firmware/$FIRMWARE iflag=skip_bytes bs=$count skip=$offset count=1 2>/dev/null || \
+ 		ath10kcal_die "failed to extract calibration data from $source"
+ }
+ 
+@@ -30,7 +30,7 @@ ath10kcal_extract() {
+ 	[ "$count" = "$cal_size" ] || \
+ 		ath10kcal_die "no calibration data found in $part"
+ 
+-	dd if=$mtd of=/lib/firmware/$FIRMWARE bs=1 skip=$offset count=$count 2>/dev/null || \
++	dd if=$mtd of=/lib/firmware/$FIRMWARE iflag=skip_bytes bs=$count skip=$offset count=1 2>/dev/null || \
+ 		ath10kcal_die "failed to extract calibration data from $mtd"
+ }
+ 
+@@ -39,7 +39,7 @@ ath10kcal_patch_mac() {
+ 
+ 	[ -z "$mac" ] && return
+ 
+-	macaddr_2bin $mac | dd of=/lib/firmware/$FIRMWARE conv=notrunc bs=1 seek=6 count=6
++	macaddr_2bin $mac | dd of=/lib/firmware/$FIRMWARE conv=notrunc oflag=seek_bytes bs=6 seek=6 count=1
+ }
+ 
+ [ -e /lib/firmware/$FIRMWARE ] && exit 0
+-- 
+2.11.0
+
