@@ -14,5 +14,5 @@ config interface 'wan'
 
 config interface 'ethmesh'
         option mtu '1528'
-        option proto 'batadv'
-        option mesh 'bat0'
+        option proto 'batadv_hardif'
+        option master 'bat0'

@@ -119,8 +119,8 @@ wifiAddAdHocMesh() {
 
 		set network.${iface}='interface'
 		set network.${iface}.mtu='1528'
-		set network.${iface}.proto='batadv'
-		set network.${iface}.mesh='bat0'
+		set network.${iface}.proto='batadv_hardif'
+		set network.${iface}.master='bat0'
 		commit network
 	__EOF__
 
@@ -218,8 +218,8 @@ wifiAddMesh() {
 
 		set network.${iface}='interface'
 		set network.${iface}.mtu='1528'
-		set network.${iface}.proto='batadv'
-		set network.${iface}.mesh='bat0'
+		set network.${iface}.proto='batadv_hardif'
+		set network.${iface}.master='bat0'
 		commit network
 	__EOF__
 
