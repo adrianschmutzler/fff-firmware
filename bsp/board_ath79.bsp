@@ -24,6 +24,7 @@ images=("openwrt-${chipset}-${subtarget}-glinet_gl-ar150-squashfs-sysupgrade.bin
         "openwrt-${chipset}-${subtarget}-ubnt_bullet-m-xw-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt_loco-m-xw-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt_nanostation-m-squashfs-sysupgrade.bin"
+        "openwrt-${chipset}-${subtarget}-ubnt_nanostation-m-xw-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt_unifi-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt_unifiac-lite-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-ubnt_unifiac-mesh-squashfs-sysupgrade.bin"
