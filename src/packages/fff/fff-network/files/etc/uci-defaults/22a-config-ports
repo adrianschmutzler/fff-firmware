@@ -21,8 +21,8 @@ rm -f /etc/config/network
 uci set network.ethmesh=interface
 uci set network.ethmesh.type=bridge
 uci set network.ethmesh.auto=1
-uci set network.ethmesh.proto=batadv
-uci set network.ethmesh.mesh=bat0
+uci set network.ethmesh.proto=batadv_hardif
+uci set network.ethmesh.master=bat0
 
 # set up mesh
 uci set network.mesh=interface
