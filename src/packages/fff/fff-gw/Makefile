@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-gw
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -12,6 +12,7 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Freifunk
 	TITLE:=Freifunk-Franken gw Customizations
 	URL:=http://www.freifunk-franken.de
+	DEPENDS:=+fff-adsc
 endef
 
 define Package/$(PKG_NAME)/description

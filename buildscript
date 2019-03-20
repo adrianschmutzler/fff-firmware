@@ -125,6 +125,27 @@ patch_target() {
     fi
 }
 
+get_make_variant() {
+    local variant=$(cat selected_variant)
+
+    if [ -n "$1" ]; then
+        variant=$1
+    fi
+
+    echo "$variant" | sed 's/[0-9]*$//'
+}
+
+get_file_variant() {
+    echo "src/packages/fff/fff/variant-$(get_make_variant $1).mk"
+}
+
+set_variant() {
+    # set the variant for this build
+    cp "./$(get_file_variant)" "$target"/variant.mk
+    # force the reevaluation of this Makefile to make note of the new variant
+    touch ./src/packages/fff/fff/Makefile
+}
+
 prepare() {
     get_source
 
@@ -136,9 +157,7 @@ prepare() {
     patch_target
 
     # set the variant for this build
-    cp "./src/packages/fff/fff/variant-$(cat selected_variant).mk" "$target"/variant.mk
-    # force the reevaluation of this Makefile to make note of the new variant
-    touch ./src/packages/fff/fff/Makefile
+    set_variant
 
     ## generate own feeds.conf
     #this local variable should be globally configure variable used in get_source and here
@@ -196,6 +215,9 @@ prebuild() {
     if [ 0 -ne $? ]; then
         version=$(git log -1 --pretty=format:%h)
     fi
+    variant=$(cat selected_variant)
+    version="${variant}_${version#*_}"
+    echo "Building version: $version"
 
     {
         echo "FIRMWARE_VERSION=\"$version\""
@@ -211,6 +233,8 @@ prebuild() {
 }
 
 build() {
+    set_variant
+
     prebuild
 
     opath=$(pwd)
@@ -427,10 +451,10 @@ case "$1" in
             echo
             echo "Usage: $0 $1 <name of variant>"
             echo "available variants: "
-            /bin/ls src/packages/fff/fff/variant-*.mk | sed 's#.*/variant-\(.*\)\.mk#\1#g'
+            /bin/ls src/packages/fff/fff/variant-*.mk | sed 's#.*/variant-\(.*\)\.mk#\1*#g'
             echo
         else
-            if [ ! -f "src/packages/fff/fff/variant-$2.mk" ]; then
+            if [ ! -f "$(get_file_variant $2)" ]; then
                 echo "Could not find variant $2"
             else
                 setVariant $2

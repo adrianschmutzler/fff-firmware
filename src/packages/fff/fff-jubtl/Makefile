@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-jubtl
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -12,13 +12,11 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Freifunk
 	TITLE:=Freifunk-Franken JU BT-Land Customizations
 	URL:=http://www.freifunk-franken.de
-	DEPENDS:=+fff-wififix
+	DEPENDS:=+fff-adsc
 endef
 
 define Package/$(PKG_NAME)/description
 	This is the JU Bayreuth-Land customization package.
-	It is introduced in the adsc* branches, but only
-	selected for the jubtl* ones.
 endef
 
 define Build/Prepare

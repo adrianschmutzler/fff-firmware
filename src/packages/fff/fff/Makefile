@@ -39,8 +39,7 @@ define Package/fff-node
 	DEPENDS+=+fff-fastd \
 			 +fff-firewall \
 			 +fff-uradvd \
-			 +fff-hoods \
-			 +fff-adsc
+			 +fff-hoods
 	VARIANT:=homenode
 endef
 
@@ -77,8 +76,7 @@ define Package/fff-layer3
 			 +kmod-wireguard \
 			 +wireguard-tools \
 			 +iperf3 \
-			 +tcpdump \
-			 +fff-gw
+			 +tcpdump
 	VARIANT:=layer3
 endef
 
