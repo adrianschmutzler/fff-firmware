@@ -24,15 +24,17 @@ Stock TFTP server IP:192.168.0.100
 Stock device TFTP address:192.168.0.254
 
 Signed-off-by: Robert Marko <robimarko@gmail.com>
+[Adjusted device definition for dynamic partitioning]
+Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
 ---
- target/linux/ar71xx/base-files/etc/board.d/01_leds      | 4 +++-
- target/linux/ar71xx/base-files/etc/board.d/02_network   | 1 +
- target/linux/ar71xx/base-files/lib/ar71xx.sh            | 4 ++++
- target/linux/ar71xx/base-files/lib/upgrade/platform.sh  | 3 ++-
- target/linux/ar71xx/files/arch/mips/ath79/mach-cpe510.c | 3 +++
- target/linux/ar71xx/files/arch/mips/ath79/machtypes.h   | 1 +
- target/linux/ar71xx/image/generic-tp-link.mk            | 7 +++++++
- 7 files changed, 21 insertions(+), 2 deletions(-)
+ target/linux/ar71xx/base-files/etc/board.d/01_leds      |  4 +++-
+ target/linux/ar71xx/base-files/etc/board.d/02_network   |  1 +
+ target/linux/ar71xx/base-files/lib/ar71xx.sh            |  4 ++++
+ target/linux/ar71xx/base-files/lib/upgrade/platform.sh  |  3 ++-
+ target/linux/ar71xx/files/arch/mips/ath79/mach-cpe510.c |  3 +++
+ target/linux/ar71xx/files/arch/mips/ath79/machtypes.h   |  1 +
+ target/linux/ar71xx/image/generic-tp-link.mk            | 12 ++++++++++++
+ 7 files changed, 26 insertions(+), 2 deletions(-)
 
 diff --git a/target/linux/ar71xx/base-files/etc/board.d/01_leds b/target/linux/ar71xx/base-files/etc/board.d/01_leds
 index 592133ac28..89cc0cbff7 100755
@@ -124,17 +126,22 @@ index 80f6e1d95b..c82cb17cf6 100644
  	ATH79_MACH_CPE510,			/* TP-LINK CPE510 */
  	ATH79_MACH_CPE830,			/* YunCore CPE830 */
 diff --git a/target/linux/ar71xx/image/generic-tp-link.mk b/target/linux/ar71xx/image/generic-tp-link.mk
-index 338b2db2d6..571235a3b3 100644
+index 338b2db2d6..387909ee00 100644
 --- a/target/linux/ar71xx/image/generic-tp-link.mk
 +++ b/target/linux/ar71xx/image/generic-tp-link.mk
-@@ -195,6 +195,13 @@ define Device/cpe210-v2
+@@ -195,6 +195,18 @@ define Device/cpe210-v2
  endef
  TARGET_DEVICES += cpe210-v2
  
 +define Device/cpe210-v3
-+  $(Device/cpe210-v2)
++  $(Device/cpexxx)
 +  DEVICE_TITLE := TP-LINK CPE210 v3
 +  BOARDNAME := CPE210V3
++  TPLINK_BOARD_ID := CPE210V3
++  KERNEL := kernel-bin | patch-cmdline | lzma | tplink-v1-header
++  TPLINK_HWID := 0x0
++  TPLINK_HWREV := 0
++  TPLINK_HEADER_VERSION := 1
 +endef
 +TARGET_DEVICES += cpe210-v3
 +
