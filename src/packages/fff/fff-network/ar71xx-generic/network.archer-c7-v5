@@ -1,0 +1,15 @@
+PORTORDER="1 2 3 4 5"
+
+WANDEV=eth0
+SWITCHDEV=eth0
+CLIENT_PORTS="4 5 0t"
+WAN_PORTS="1 0t"
+BATMAN_PORTS="2 3 0t"
+CPUPORT="0t"
+
+# Use WAN-MAC, which is LAN-MAC + 1
+. /lib/functions.sh
+. /lib/functions/system.sh
+
+ROUTERMAC=$(cat /sys/class/net/eth0/address)
+ETHMESHMAC=$(macaddr_add $ROUTERMAC 1)
