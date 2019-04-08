@@ -99,16 +99,14 @@ get_source() {
             checkout_git "$NAME" "$URL" "$REV"
 
             # Patches for feeds are stored in known directories like feed_patches/$NAME/
-            if [ "$(find ../../feed_patches/${NAME}/*.patch | wc -l)" -ge 1 ]; then
-                for PATCH in ../../feed_patches/${NAME}/*.patch; do
-                    if [ ! -z "$PATCH" ] ; then
-                        echo "Applying $PATCH"
-                        git -C "$NAME" am --whitespace=nowarn "../$PATCH"
-                    else
-                        echo "Warning, $PATCH not found."
-                    fi
-                done
-            fi
+            for PATCH in $(ls ../../feed_patches/${NAME}/*.patch 2>/dev/null); do
+                if [ -s "$PATCH" ] ; then
+                    echo "Applying $PATCH"
+                    git -C "$NAME" am --whitespace=nowarn "../$PATCH"
+                else
+                    echo "Empty patch $PATCH ignored."
+                fi
+            done
         fi
     done
 
