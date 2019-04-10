@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# This sets the port mode on CPE210 v1 and CPE510 v1
+
+if ! [ "$(uci -q get fff.ui.portsetup)" = "cpev1" ] ; then
+	echo "Wrong device. This is for CPE210 v1 or CPE510 v1 only!"
+	exit 1
+fi
+
+LAN0MODE=$1
+LAN1MODE=$2
+
+CLIENT_PORTS="0t"
+WAN_PORTS="0t"
+BATMAN_PORTS="0t"
+
+if [ "$LAN0MODE" = "WAN" ] ; then
+	WAN_PORTS="$WAN_PORTS 5"
+elif [ "$LAN0MODE" = "CLIENT" ] ; then
+	CLIENT_PORTS="$CLIENT_PORTS 5"
+elif [ "$LAN0MODE" = "BATMAN" ] ; then
+	BATMAN_PORTS="$BATMAN_PORTS 5"
+else
+	echo "Wrong port mode for 1st port. Choose one of: WAN, CLIENT, BATMAN"
+	exit 1
+fi
+
+if [ "$LAN1MODE" = "WAN" ] ; then
+	WAN_PORTS="$WAN_PORTS 4"
+elif [ "$LAN1MODE" = "CLIENT" ] ; then
+	CLIENT_PORTS="$CLIENT_PORTS 4"
+elif [ "$LAN1MODE" = "BATMAN" ] ; then
+	BATMAN_PORTS="$BATMAN_PORTS 4"
+else
+	echo "Wrong port mode for 2nd port. Choose one of: WAN, CLIENT, BATMAN"
+	exit 1
+fi
+
+uci set "network.eth0_1.ports=$CLIENT_PORTS"
+uci set "network.eth0_2.ports=$WAN_PORTS"
+uci set "network.eth0_3.ports=$BATMAN_PORTS"
+uci commit network
+
+/etc/init.d/network restart
+
+echo "Ports updated successfully."

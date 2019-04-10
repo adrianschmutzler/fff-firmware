@@ -11,6 +11,9 @@ if ! uci -q get fff.system > /dev/null ; then
 	uci set "fff.system.hostname=FFF"
 fi
 
+uci set fff.ui=fff
+uci -q get fff.ui.portsetup > /dev/null || uci set "fff.ui.portsetup=default"
+
 uci set fff.wifi=fff
 
 uci -q get fff.wifi.disable24ghz > /dev/null || uci set "fff.wifi.disable24ghz=0"

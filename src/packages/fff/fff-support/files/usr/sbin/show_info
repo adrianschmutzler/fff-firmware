@@ -3,6 +3,7 @@
 . /etc/firmware_release
 . /lib/functions/fff/evalhoodinfo
 . /lib/functions/fff/evalbytes
+. /lib/functions/fff/portorder
 . /lib/functions.sh # required for config_load and config_foreach
 
 board_name=$(uci -q get board.model.name)
@@ -188,13 +189,9 @@ fi
 echo "Download-Limit: $(uci -q get 'simple-tc.example.limit_ingress') kBit/s"
 echo "Upload-Limit: $(uci -q get 'simple-tc.example.limit_egress') kBit/s"
 
-if grep -q 'PORTORDER=' /etc/network.$board_name ; then
-	portorder=$(awk -F= '/PORTORDER=/ { print $2 }' /etc/network.$board_name | sed "s/\"//g")
-fi
-
 echo ""
 if swconfig list | grep -q switch0 ; then
-	if [ -n "$portorder" ] ; then
+	if [ -n "$PORTORDER" ] ; then
 		echo "-> SWITCH (tatsaechliche Portreihenfolge)"
 	else
 		echo "-> SWITCH (interne logische Portreihenfolge)"
@@ -214,13 +211,13 @@ if swconfig list | grep -q switch0 ; then
 		printf '%-10s%-5s%-13s%s\n' "WAN-Port: " "${link} " "- WAN " "@ $speed"
 	fi
 
-	for internalport in $portorder ; do
+	for internalport in $PORTORDER ; do
 		format_port "$internalport"
 	done
 	echo ""
 
 	for port in $(swconfig dev switch0 show | grep "link:" | sed 's/.*port:\([0-9]*\) .*/\1/') ; do
-		echo "$portorder" | grep -q "$port" && continue
+		echo "$PORTORDER" | grep -q "$port" && continue
 		format_port "$port"
 	done
 else

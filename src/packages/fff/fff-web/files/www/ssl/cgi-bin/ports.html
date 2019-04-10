@@ -2,22 +2,27 @@
 
 <%
 board_name=$(uci -q get board.model.name)
+LOCALUPGRADESCRIPT="/etc/firstbootfff"
+
 # write
 if [ "$REQUEST_METHOD" = "POST" ] ; then
 	if [ "$POST_change_mode" != "" ] ; then
-		sed -i '/^.*# set via WebUI/d' /etc/network.config
-		echo "ETHMODE=\"${POST_mode}\" # set via WebUI" >> /etc/network.config
-		sed -i '/^FORCEPARSE/d' /etc/network.config
-		echo "FORCEPARSE='2'" >> /etc/network.config
+		if [ "$(uci -q get fff.ui.portsetup)" = "oneport" ]; then
+			setoneport "${POST_mode}"
+			sed -i '/^setoneport.*/d' $LOCALUPGRADESCRIPT
+			echo "setoneport \"${POST_mode}\" # set via WebUI" >> $LOCALUPGRADESCRIPT
+		elif [ "$(uci -q get fff.ui.portsetup)" = "2ndport" ]; then
+			set2ndport "${POST_mode}"
+			sed -i '/^set2ndport.*/d' $LOCALUPGRADESCRIPT
+			echo "set2ndport \"${POST_mode}\" # set via WebUI" >> $LOCALUPGRADESCRIPT
+		fi
 		do_reboot=1
 		MSG='<span class="green">Port Modus ge&auml;ndert! Router startet neu...</span>'
 	fi
 	if [ "$POST_change_twoport" != "" ] ; then
-		sed -i '/^.*# set via WebUI/d' /etc/network.config
-		echo "LAN0MODE=\"${POST_mode0}\" # set via WebUI" >> /etc/network.config
-		echo "LAN1MODE=\"${POST_mode1}\" # set via WebUI" >> /etc/network.config
-		sed -i '/^FORCEPARSE/d' /etc/network.config
-		echo "FORCEPARSE='2'" >> /etc/network.config
+		setcpev1 "${POST_mode0}" "${POST_mode1}"
+		sed -i '/^setcpev1.*/d' $LOCALUPGRADESCRIPT
+		echo "setcpev1 \"${POST_mode0}\" \"${POST_mode1}\" # set via WebUI" >> $LOCALUPGRADESCRIPT
 		do_reboot=1
 		MSG='<span class="green">Port Modus ge&auml;ndert! Router startet neu...</span>'
 	fi
@@ -113,18 +118,16 @@ format_port() {
 					echo "</td>"
 				fi
 
-				if grep -q 'PORTORDER=' /etc/network.$board_name ; then
-					portorder=$(awk -F= '/PORTORDER=/ { print $2 }' /etc/network.$board_name | sed "s/\"//g")
-				fi
-				for internalport in $portorder ; do
+				. /lib/functions/fff/portorder
+				for internalport in $PORTORDER ; do
 					echo "<td class=\"swport\">"
 					format_port "$internalport"
 					echo "</td>"
 				done
-				[ -n "$portorder" ] && echo "<td class=\"swport\" style=\"width:4em\"></td>"
+				[ -n "$PORTORDER" ] && echo "<td class=\"swport\" style=\"width:4em\"></td>"
 
 				for port in $(swconfig dev switch0 show | grep "link:" | sed 's/.*port:\([0-9]*\) .*/\1/') ; do
-					echo "$portorder" | grep -q "$port" && continue
+					echo "$PORTORDER" | grep -q "$port" && continue
 					echo "<td class=\"swport\">"
 					format_port "$port"
 					echo "</td>"
@@ -135,7 +138,7 @@ format_port() {
 		<table>
 			<tr><td></td></tr>
 			<tr><td>
-				<% if [ -n "$portorder" ] ; then %>
+				<% if [ -n "$PORTORDER" ] ; then %>
 				Dies zeigt die tats&auml;chliche Zuordnung der Ports, wobei der WAN Port auf der linken Seite liegt. Die Nummerierung entspricht der internen Zuordnung!<br />
 				<% else %>
 				Die Nummerierung und Reihenfolge der Ports entspricht nicht notwendigerweise der der Netzwerkanschl&uuml;sse am Router!<br />
@@ -146,12 +149,7 @@ format_port() {
 	</fieldset>
 	</td></tr>
 <% fi %>
-<% if grep -q "ONE_PORT" "/etc/network.$board_name" || grep -q "ETHPORT" "/etc/network.$board_name" ; then %>
-	<%
-		# Device has a port set by $ETHMODE
-		. /etc/network.mode
-		. /etc/network.config
-	%>
+<% if [ "$(uci -q get fff.ui.portsetup)" = "oneport" ] || [ "$(uci -q get fff.ui.portsetup)" = "2ndport" ] ; then %>
 	<tr><td>
 	<fieldset>
 		<legend>Ethernet Anschluss</legend>
@@ -160,10 +158,10 @@ format_port() {
 				<th style="width: 1em;">Anschluss&nbsp;Modus:</th>
 				<td>
 					<select name="mode">
-						<option value="BATMAN" <% [ "$ETHMODE" = "BATMAN" ] && echo -n 'selected="selected" ' %>>BATMAN</option>
-						<option value="CLIENT" <% [ "$ETHMODE" = "CLIENT" ] && echo -n 'selected="selected" ' %>>CLIENT</option>
-						<% if grep -q "ONE_PORT" "/etc/network.$board_name" ; then %>
-						<option value="WAN" <% [ "$ETHMODE" = "WAN" ] && echo -n 'selected="selected" ' %>>WAN</option>
+						<option value="BATMAN">BATMAN</option>
+						<option value="CLIENT">CLIENT</option>
+						<% if [ "$(uci -q get fff.ui.portsetup)" = "oneport" ] ; then %>
+						<option value="WAN">WAN</option>
 						<% fi %>
 					</select>
 				</td>
@@ -172,7 +170,7 @@ format_port() {
 			<tr><td colspan="2"></td></tr>
 			<tr><td colspan="2">
 				WAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zum Internet her.<br />
-				Client: Normale Clients stellen &uuml;ber Ethernet Anschluss des Knotens Verbindung zum Freifunk Netz her.<br />
+				CLIENT: Normale Clients stellen &uuml;ber Ethernet Anschluss des Knotens Verbindung zum Freifunk Netz her.<br />
 				BATMAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zu anderen MESH Knoten her.<br /><br />
 
 				Wenn diese Einstellung ver&auml;ndert wird, wird eine evtl. vorhandene manuelle Netzwerkkonfiguration in der
@@ -183,12 +181,7 @@ format_port() {
 	</fieldset>
 	</td></tr>
 <% fi %>
-<% if grep -q "LAN0PORT" "/etc/network.$board_name" || grep -q "LAN1PORT" "/etc/network.$board_name" ; then %>
-	<%
-		# Device has two ports
-		. /etc/network.mode
-		. /etc/network.config
-	%>
+<% if [ "$(uci -q get fff.ui.portsetup)" = "cpev1" ] ; then %>
 	<tr><td>
 	<fieldset>
 		<legend>Ethernet Anschl&uuml;sse</legend>
@@ -201,16 +194,16 @@ format_port() {
 			<tr>
 				<td>
 					<select name="mode0">
-						<option value="BATMAN" <% [ "$LAN0MODE" = "BATMAN" ] && echo -n 'selected="selected" ' %>>BATMAN</option>
-						<option value="CLIENT" <% [ "$LAN0MODE" = "CLIENT" ] && echo -n 'selected="selected" ' %>>CLIENT</option>
-						<option value="WAN" <% [ "$LAN0MODE" = "WAN" ] && echo -n 'selected="selected" ' %>>WAN</option>
+						<option value="BATMAN">BATMAN</option>
+						<option value="CLIENT">CLIENT</option>
+						<option value="WAN">WAN</option>
 					</select>
 				</td>
 				<td>
 					<select name="mode1">
-						<option value="BATMAN" <% [ "$LAN1MODE" = "BATMAN" ] && echo -n 'selected="selected" ' %>>BATMAN</option>
-						<option value="CLIENT" <% [ "$LAN1MODE" = "CLIENT" ] && echo -n 'selected="selected" ' %>>CLIENT</option>
-						<option value="WAN" <% [ "$LAN1MODE" = "WAN" ] && echo -n 'selected="selected" ' %>>WAN</option>
+						<option value="BATMAN">BATMAN</option>
+						<option value="CLIENT">CLIENT</option>
+						<option value="WAN">WAN</option>
 					</select>
 				</td>
 				<td><input type="submit" name="change_twoport" /></td>
@@ -218,7 +211,7 @@ format_port() {
 			<tr><td colspan="3"></td></tr>
 			<tr><td colspan="3">
 				WAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zum Internet her.<br />
-				Client: Normale Clients stellen &uuml;ber Ethernet Anschluss des Knotens Verbindung zum Freifunk Netz her.<br />
+				CLIENT: Normale Clients stellen &uuml;ber Ethernet Anschluss des Knotens Verbindung zum Freifunk Netz her.<br />
 				BATMAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zu anderen MESH Knoten her.<br /><br />
 
 				Wenn diese Einstellung ver&auml;ndert wird, wird eine evtl. vorhandene manuelle Netzwerkkonfiguration in der

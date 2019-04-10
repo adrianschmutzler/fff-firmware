@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# This sets the port mode on one-port devices
+
+if ! [ "$(uci -q get fff.ui.portsetup)" = "oneport" ] ; then
+	echo "Wrong device. This is for one-port devices only!"
+	exit 1
+fi
+
+. /lib/functions/fff/networksetup
+
+ETHMODE=$1
+DEV=$2
+
+[ -n "$DEV" ] || DEV="eth0"
+
+if [ "$ETHMODE" = "WAN" ] || [ "$ETHMODE" = "CLIENT" ] || [ "$ETHMODE" = "BATMAN" ]; then
+	setupOnePort "$DEV" "$ETHMODE"
+	/etc/init.d/network restart
+	echo "Port updated successfully."
+else
+	echo "Wrong port mode. Choose one of: WAN, CLIENT, BATMAN"
+	exit 1
+fi

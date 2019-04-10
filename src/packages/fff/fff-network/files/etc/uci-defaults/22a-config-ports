@@ -31,11 +31,13 @@ case "$BOARD" in
 		# Default: LAN0: WAN, LAN1: CLIENT
 		setupSwitch "eth0" "0t 4" "0t" "0t 5"
 		setupWan "eth0.2"
+		uci set "fff.ui.portsetup=cpev1"
 		;;
 	gl-ar150)
 		# Default: CLIENT
 		setupSwitch "eth1" "0t 1" "0t"
 		setupWan "eth0"
+		uci set "fff.ui.portsetup=2ndport"
 		;;
 	tl-wdr3500-v1|\
 	tl-wr741nd-v2|\
@@ -100,5 +102,8 @@ case "$BOARD" in
 	ubnt_unifiac-lite|\
 	ubnt_unifiac-mesh)
 		setupOnePort "eth0" "CLIENT"
+		uci set "fff.ui.portsetup=oneport"
 		;;
 esac
+
+uci commit fff
