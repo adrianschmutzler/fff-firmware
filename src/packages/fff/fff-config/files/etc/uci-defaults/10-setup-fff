@@ -1,0 +1,25 @@
+#!/bin/sh
+# Copyright 2017 Adrian Schmutzler
+# License GPLv3
+
+# Set default values in /etc/config/fff
+
+touch /etc/config/fff
+
+if ! uci -q get fff.system > /dev/null ; then
+	uci set fff.system=fff
+	uci set "fff.system.hostname=FFF"
+fi
+
+uci set fff.wifi=fff
+
+uci -q get fff.wifi.disable24ghz > /dev/null || uci set "fff.wifi.disable24ghz=0"
+uci -q get fff.wifi.disable5ghz > /dev/null || uci set "fff.wifi.disable5ghz=0"
+uci -q get fff.wifi.disablewifi > /dev/null || uci set "fff.wifi.disablewifi=0"
+
+uci -q get fff.wifi.disablew2ap > /dev/null || uci set "fff.wifi.disablew2ap=0"
+uci -q get fff.wifi.disablew5ap > /dev/null || uci set "fff.wifi.disablew5ap=0"
+uci -q get fff.wifi.disablew2mesh > /dev/null || uci set "fff.wifi.disablew2mesh=0"
+uci -q get fff.wifi.disablew5mesh > /dev/null || uci set "fff.wifi.disablew5mesh=0"
+
+uci commit fff
