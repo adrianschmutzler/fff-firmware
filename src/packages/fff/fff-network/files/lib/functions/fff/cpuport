@@ -1,0 +1,46 @@
+# Copyright 2019 Adrian Schmutzler
+# License GPLv3
+
+BOARD="$(uci get board.model.name)"
+
+case "$BOARD" in
+	tl-wr1043nd-v1)
+		CPUPORT="5t"
+		;;
+	tl-wr1043nd-v2|\
+	tl-wr1043nd-v3)
+		CPUPORT="6t"
+		;;
+	cpe210-v2|\
+	cpe210-v3|\
+	tl-mr3020-v1|\
+	tl-wa850re-v1|\
+	tl-wa860re-v1|\
+	tl-wa901nd-v2|\
+	ubnt-bullet-m|\
+	ubnt-loco-m|\
+	ubnt-loco-m-xw|\
+	ubnt-nano-m|\
+	ubnt-nano-m-xw|\
+	ubnt-pico-m|\
+	ubnt-power-m-xw|\
+	ubnt-unifi|\
+	ubnt-unifiac-lite|\
+	ubnt-unifiac-mesh|\
+	ubnt_bullet-m|\
+	ubnt_bullet-m-xw|\
+	ubnt_loco-m|\
+	ubnt_loco-m-xw|\
+	ubnt_nanostation-m|\
+	ubnt_nanostation-m-xw|\
+	ubnt_pico-m|\
+	ubnt_power-m-xw|\
+	ubnt_unifi|\
+	ubnt_unifiac-lite|\
+	ubnt_unifiac-mesh)
+		CPUPORT=""
+		;;
+	*)
+		CPUPORT="0t"
+		;;
+esac
