@@ -1,0 +1,104 @@
+#!/bin/sh
+# Copyright 2019 Adrian Schmutzler
+# License GPLv3
+
+BOARD="$(uci get board.model.name)"
+
+. /lib/functions/fff/networksetup
+
+case "$BOARD" in
+	archer-c7-v2)
+		setupSwitch "eth1" "4 5 0t" "2 3 0t" "1 6"
+		setupWan "eth0"
+		;;
+	archer-c7-v4|\
+	archer-c7-v5|\
+	tl-wdr3600-v1|\
+	tl-wdr4300-v1|\
+	tl-wdr4310-v1|\
+	tl-wdr4900-v1)
+		setupSwitch "eth0" "4 5 0t" "2 3 0t" "1 0t"
+		setupWan "eth0.2"
+		;;
+	archer-c25-v1|\
+	archer-c60-v1|\
+	archer-c60-v2)
+		setupSwitch "eth1" "1 2 0t" "3 4 0t"
+		setupWan "eth0"
+		;;
+	cpe210|\
+	cpe510)
+		# Default: LAN0: WAN, LAN1: CLIENT
+		setupSwitch "eth0" "0t 4" "0t" "0t 5"
+		setupWan "eth0.2"
+		;;
+	gl-ar150)
+		# Default: CLIENT
+		setupSwitch "eth1" "0t 1" "0t"
+		setupWan "eth0"
+		;;
+	tl-wdr3500-v1|\
+	tl-wr741nd-v2|\
+	tl-wr841-v7|\
+	tl-wr841-v9|\
+	tl-wr841-v10|\
+	tl-wr841-v11|\
+	tl-wr841-v12)
+		setupSwitch "eth0" "1 2 0t" "3 4 0t"
+		setupWan "eth1"
+		;;
+	tl-wr841-v8|\
+	tl-wr842n-v2)
+		setupSwitch "eth1" "1 4 0t" "2 3 0t"
+		setupWan "eth0"
+		;;
+	tl-wr740n-v4|\
+	tl-wr740nd-v4|\
+	tl-wr741nd-v4)
+		setupSwitch "eth0" "1 4 0t" "2 3 0t"
+		setupWan "eth1"
+		;;
+	tl-wr1043nd-v1)
+		setupSwitch "eth0" "3 4 5t" "1 2 5t" "0 5t"
+		setupWan "eth0.2"
+		;;
+	tl-wr1043nd-v2|\
+	tl-wr1043nd-v3)
+		setupSwitch "eth0" "1 2 6t" "3 4 6t" "5 6t"
+		setupWan "eth0.2"
+		;;
+	tl-wr1043nd-v4|\
+	tl-wr1043n-v5)
+		setupSwitch "eth0" "1 2 0t" "3 4 0t" "5 0t"
+		setupWan "eth0.2"
+		;;
+	cpe210-v2|\
+	cpe210-v3|\
+	tl-mr3020-v1|\
+	tl-wa850re-v1|\
+	tl-wa860re-v1|\
+	tl-wa901nd-v2|\
+	ubnt-bullet-m|\
+	ubnt-loco-m|\
+	ubnt-loco-m-xw|\
+	ubnt-nano-m|\
+	ubnt-nano-m-xw|\
+	ubnt-pico-m|\
+	ubnt-power-m-xw|\
+	ubnt-unifi|\
+	ubnt-unifiac-lite|\
+	ubnt-unifiac-mesh|\
+	ubnt_bullet-m|\
+	ubnt_bullet-m-xw|\
+	ubnt_loco-m|\
+	ubnt_loco-m-xw|\
+	ubnt_nanostation-m|\
+	ubnt_nanostation-m-xw|\
+	ubnt_pico-m|\
+	ubnt_power-m-xw|\
+	ubnt_unifi|\
+	ubnt_unifiac-lite|\
+	ubnt_unifiac-mesh)
+		setupOnePort "eth0" "CLIENT"
+		;;
+esac

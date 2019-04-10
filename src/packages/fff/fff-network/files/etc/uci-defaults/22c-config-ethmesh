@@ -1,0 +1,92 @@
+#!/bin/sh
+# Copyright 2019 Adrian Schmutzler
+# License GPLv3
+
+BOARD="$(uci get board.model.name)"
+
+. /lib/functions/fff/network
+. /lib/functions/fff/networksetup
+
+. /lib/functions.sh
+. /lib/functions/system.sh
+
+# macFlipLocalBit:
+# use mac address from phyX with 'locally administered' bit set to '1'
+# only possible, because wXmesh is created first and therefore gets the 'universally administered address'
+
+case "$BOARD" in
+	archer-c7-v2|\
+	tl-wr841-v8|\
+	tl-wr842n-v2)
+		ETHMESHMAC=$(cat /sys/class/net/eth0/address)
+		;;
+	archer-c7-v4|\
+	archer-c7-v5)
+		ETHMESHMAC=$(macaddr_add "$(cat /sys/class/net/eth0/address)" 1)
+		;;
+	archer-c25-v1|\
+	archer-c60-v1|\
+	archer-c60-v2|\
+	tl-wr740n-v4|\
+	tl-wr740nd-v4|\
+	tl-wr741nd-v2|\
+	tl-wr741nd-v4|\
+	tl-wr841-v7|\
+	tl-wr841-v9|\
+	tl-wr841-v10|\
+	tl-wr841-v11|\
+	tl-wr841-v12)
+		ETHMESHMAC=$(cat /sys/class/net/eth1/address)
+		;;
+	cpe210|\
+	cpe210-v2|\
+	cpe210-v3|\
+	cpe510|\
+	tl-wa850re-v1|\
+	tl-wa860re-v1|\
+	tl-wa901nd-v2|\
+	tl-wr1043nd-v1|\
+	ubnt-bullet-m|\
+	ubnt-loco-m|\
+	ubnt-loco-m-xw|\
+	ubnt-nano-m|\
+	ubnt-nano-m-xw|\
+	ubnt-pico-m|\
+	ubnt-power-m-xw|\
+	ubnt-unifi|\
+	ubnt_bullet-m|\
+	ubnt_bullet-m-xw|\
+	ubnt_loco-m|\
+	ubnt_loco-m-xw|\
+	ubnt_nanostation-m|\
+	ubnt_nanostation-m-xw|\
+	ubnt_pico-m|\
+	ubnt_power-m-xw|\
+	ubnt_unifi)
+		ETHMESHMAC=$(macFlipLocalBit "$(cat /sys/class/ieee80211/phy0/macaddress)")
+		;;
+	gl-ar150|\
+	tl-mr3020-v1)
+		ETHMESHMAC=$(macFlipLocalBit "$(cat /sys/class/net/eth0/address)")
+		;;
+	tl-wdr4900-v1)
+		ETHMESHMAC=$(macFlipLocalBit "$(cat /sys/class/ieee80211/phy1/macaddress)")
+		;;
+	tl-wr1043nd-v4)
+		ETHMESHMAC=$(mtd_get_mac_binary config 0x1017c)
+		;;
+	tl-wr1043n-v5)
+		ETHMESHMAC=$(macaddr_add $(mtd_get_mac_binary product-info 8) 1)
+		;;
+	ubnt-unifiac-lite|\
+	ubnt-unifiac-mesh|\
+	ubnt_unifiac-lite|\
+	ubnt_unifiac-mesh)
+		ETHMESHMAC=$(macFlipLocalBit "$(mtd_get_mac_binary EEPROM 0x0)")
+		;;
+esac
+
+if [ -n "$ETHMESHMAC" ]; then
+	uci set "network.ethmesh.macaddr=$ETHMESHMAC"
+	uci commit network
+fi

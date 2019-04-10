@@ -1,0 +1,84 @@
+#!/bin/sh
+# Copyright 2019 Adrian Schmutzler
+# License GPLv3
+
+BOARD="$(uci get board.model.name)"
+
+. /lib/functions/fff/networksetup
+
+. /lib/functions.sh
+. /lib/functions/system.sh
+
+case "$BOARD" in
+	archer-c7-v2|\
+	tl-wr841-v8|\
+	tl-wr842n-v2|\
+	tl-wr1043nd-v2|\
+	tl-wr1043nd-v3)
+		ROUTERMAC=$(cat /sys/class/net/eth1/address)
+		;;
+	cpe210-v2|\
+	cpe210-v3|\
+	tl-wa850re-v1|\
+	tl-wa860re-v1|\
+	tl-wa901nd-v2|\
+	tl-wdr3500-v1|\
+	tl-wr740n-v4|\
+	tl-wr740nd-v4|\
+	tl-wr741nd-v2|\
+	tl-wr741nd-v4|\
+	tl-wr841-v7|\
+	ubnt-bullet-m|\
+	ubnt-loco-m|\
+	ubnt-loco-m-xw|\
+	ubnt-nano-m|\
+	ubnt-nano-m-xw|\
+	ubnt-pico-m|\
+	ubnt-power-m-xw|\
+	ubnt-unifi|\
+	ubnt_bullet-m|\
+	ubnt_bullet-m-xw|\
+	ubnt_loco-m|\
+	ubnt_loco-m-xw|\
+	ubnt_nanostation-m|\
+	ubnt_nanostation-m-xw|\
+	ubnt_pico-m|\
+	ubnt_power-m-xw|\
+	ubnt_unifi)
+		ROUTERMAC=$(cat /sys/class/ieee80211/phy0/macaddress)
+		;;
+	tl-wdr3600-v1|\
+	tl-wdr4300-v1|\
+	tl-wdr4310-v1)
+		ROUTERMAC=$(cat /sys/class/ieee80211/phy1/macaddress)
+		;;
+	ubnt-unifiac-lite|\
+	ubnt-unifiac-mesh|\
+	ubnt_unifiac-lite|\
+	ubnt_unifiac-mesh)
+		ROUTERMAC=$(mtd_get_mac_binary EEPROM 0x0)
+		;;
+	#archer-c7-v4|\
+	#archer-c7-v5|\
+	#archer-c25-v1|\
+	#archer-c60-v1|\
+	#archer-c60-v2|\
+	#cpe210|\
+	#cpe510|\
+	#gl-ar150|\
+	#tl-mr3020-v1|\
+	#tl-wdr4900-v1|\
+	#tl-wr841-v9|\
+	#tl-wr841-v10|\
+	#tl-wr841-v11|\
+	#tl-wr841-v12|\
+	#tl-wr1043nd-v1|\
+	#tl-wr1043nd-v4|\
+	#tl-wr1043n-v5)
+	*)
+		ROUTERMAC=$(cat /sys/class/net/eth0/address)
+		;;
+esac
+
+uci set "network.mesh.macaddr=$ROUTERMAC"
+uci commit network

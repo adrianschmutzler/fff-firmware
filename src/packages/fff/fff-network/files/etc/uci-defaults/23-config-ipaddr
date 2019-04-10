@@ -1,0 +1,31 @@
+#!/bin/sh
+# Copyright 2019 Adrian Schmutzler
+# License GPLv3
+
+. /lib/functions/fff/network
+
+echo "Setting IPv6 addresses"
+# Some time needed :(
+sleep 5
+
+ROUTERMAC=$(uci get network.mesh.macaddr)
+prefix="fdff:0::/64"
+
+# Set $prefix as prefix
+uci set network.globals=globals
+uci set "network.globals.ula_prefix=$prefix"
+
+# Set $prefix::MAC as IP
+addr="$(ipMacAssemble "$prefix" "$ROUTERMAC")"
+uci add_list "network.mesh.ip6addr=$addr"
+uci set network.mesh.proto=static
+
+# Set $prefix::1 as IP
+addr="$(ipAssemble "$prefix" "1")"
+uci add_list "network.mesh.ip6addr=$addr"
+
+# Set $prefix::link-local as IP
+addr="$(ipEUIAssemble "$prefix" "$ROUTERMAC")"
+uci add_list "network.mesh.ip6addr=$addr"
+
+uci commit network

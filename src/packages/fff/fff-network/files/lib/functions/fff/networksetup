@@ -1,0 +1,163 @@
+# Copyright 2019 Adrian Schmutzler
+# License GPLv3
+
+. /lib/functions/network.sh
+
+setAutoConf() {
+	# Sets ipv6 auto configuration on an interface to on/off
+	# Usage: setAutoConf <interface> <[0|1]>
+	local iface=$1
+	local on=$2
+
+	sysctlfile="/etc/sysctl.d/51-fff-network-$iface.conf"
+	echo "# Generated from configurenetwork" > "$sysctlfile"
+	echo "net.ipv6.conf.$iface.accept_ra = $on" >> "$sysctlfile"
+	echo "net.ipv6.conf.$iface.accept_ra_defrtr = $on" >> "$sysctlfile"
+	echo "net.ipv6.conf.$iface.accept_ra_pinfo = $on" >> "$sysctlfile"
+	echo "net.ipv6.conf.$iface.autoconf = $on" >> "$sysctlfile"
+	echo "net.ipv6.conf.$iface.accept_ra_rtr_pref = $on" >> "$sysctlfile"
+	echo "net.ipv6.conf.$iface.forwarding = 0" >> "$sysctlfile"
+
+	/sbin/sysctl -p "$sysctlfile"
+}
+
+enableAutoConf() {
+	# Enables ipv6 auto configuration on an interface
+	# Usage: enableAutoConf <interface>
+	local iface=$1
+
+	setAutoConf "$iface" "1"
+}
+
+disableAutoConf() {
+	# Disables ipv6 auto configuration on an interface
+	# Usage: disableAutoConf <interface>
+	local iface=$1
+
+	setAutoConf "$iface" "0"
+}
+
+fixMac() {
+	# Update MAC address on live device/interface
+	#
+	# fixMac <newmac> <interface>
+	#
+	# newmac: MAC address to be set
+	# interface: Interface to be updated as in uci (e.g. mesh)
+
+	local newmac=$1
+	local iface=$2
+	local dev
+
+	echo "Fixing MAC on $iface"
+	sleep 10
+
+	network_get_physdev dev "$iface"
+
+	uci set "network.${iface}.macaddr=$newmac"
+	uci commit network
+
+	if [ -n "$dev" ]; then
+		ip link set "$dev" down
+		ip link set "$dev" address "$newmac"
+		ip link set "$dev" up
+	fi
+
+	/etc/init.d/network restart
+}
+
+setupSwitch() {
+	# Set up switch for switch-based devices
+	# This is intended for initial setup, not for updates
+	# (changing ports will be sufficient then)
+	#
+	# Usage: setupSwitch <SWITCHDEV, e.g. eth0> <CLIENT_PORTS> <BATMAN_PORTS> [<WAN_PORTS>]
+
+	local SWITCHDEV=$1
+	local CLIENT_PORTS=$2
+	local BATMAN_PORTS=$3
+	local WAN_PORTS=$4
+	local SWITCHHW
+
+	SWITCHHW="$(swconfig list | awk '{ print $4 }')"
+
+	uci set "network.${SWITCHDEV}=switch"
+	uci set "network.${SWITCHDEV}.name=$SWITCHHW"
+	uci set "network.${SWITCHDEV}.enable=1"
+	uci set "network.${SWITCHDEV}.reset=1"
+	uci set "network.${SWITCHDEV}.enable_vlan=1"
+
+	uci set "network.${SWITCHDEV}_1=switch_vlan"
+	uci set "network.${SWITCHDEV}_1.device=$SWITCHHW"
+	uci set "network.${SWITCHDEV}_1.vlan=1"
+	uci set "network.${SWITCHDEV}_1.ports=$CLIENT_PORTS"
+
+	# This defines the VLAN for WAN ports inside the switch.
+	# This is required even if the WAN eth is separate, but the WAN port is in the switch!
+	if [ -n "$WAN_PORTS" ]; then
+		uci set "network.${SWITCHDEV}_2=switch_vlan"
+		uci set "network.${SWITCHDEV}_2.device=$SWITCHHW"
+		uci set "network.${SWITCHDEV}_2.vlan=2"
+		uci set "network.${SWITCHDEV}_2.ports=$WAN_PORTS"
+	fi
+
+	uci set "network.${SWITCHDEV}_3=switch_vlan"
+	uci set "network.${SWITCHDEV}_3.device=$SWITCHHW"
+	uci set "network.${SWITCHDEV}_3.vlan=3"
+	uci set "network.${SWITCHDEV}_3.ports=$BATMAN_PORTS"
+
+	uci set network.mesh.ifname="$SWITCHDEV.1 bat0"
+	uci set network.ethmesh.ifname="$SWITCHDEV.3"
+
+	uci commit network
+}
+
+setupWan() {
+	# Set up WAN for any device with dedicated port (no one-port where mode is changed)
+	# This is intended for initial setup, not for updates
+	# (updates are only possible by changing ports in a switch)
+	#
+	# Usage: setupWan <WANDEV, e.g. eth0, eth0.2>
+
+	local WANDEV=$1
+
+	# This defines the WAN interface. We use the VLAN ID only if we do NOT have a separate eth.
+	# This is different from the criterion for the WAN port dealt with above!
+	# If the WANDEV is different from the SWITCHDEV, but the WAN port is in the switch,
+	# the WAN eth has to be connected to the switch untagged!
+	enableAutoConf "$WANDEV"
+	uci set network.wan.ifname="$WANDEV"
+
+	uci commit network
+}
+
+setupOnePort() {
+	# Set up port mode for one-port devices
+	# This is intended for initial setup and for updates
+	# (latter will require network restart)
+	#
+	# Usage: setupOnePort <DEV, e.g. eth0> <ETHMODE, e.g. BATMAN, CLIENT, WAN>
+
+	local DEV=$1
+	local ETHMODE=$2
+
+	uci set "network.$DEV=interface"
+	uci set "network.$DEV.ifname=$DEV"
+	if [ "$ETHMODE" = "WAN" ]; then
+		enableAutoConf "$DEV"
+		uci set network.mesh.ifname="bat0"
+		uci set network.wan.ifname="$DEV"
+		uci del network.ethmesh.ifname
+	elif [ "$ETHMODE" = "CLIENT" ] ; then
+		disableAutoConf "$DEV"
+		uci set network.mesh.ifname="bat0 $DEV"
+		uci del network.wan.ifname
+		uci del network.ethmesh.ifname
+	else # default=BATMAN
+		disableAutoConf "$DEV"
+		uci set network.mesh.ifname="bat0"
+		uci del network.wan.ifname
+		uci set network.ethmesh.ifname="$DEV"
+	fi
+	uci commit network
+}
