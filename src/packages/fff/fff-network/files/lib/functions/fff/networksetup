@@ -161,3 +161,40 @@ setupOnePort() {
 	fi
 	uci commit network
 }
+
+setup2ndEth() {
+	# Set up second port for devices with to ports directly connected to ethX (no switch)
+	# This is intended for initial setup and for updates
+	#
+	# Use this in combination with setupOnePort() for the first port.
+	# Calling setupOnePort() will overwrite the settings made here, so always call in succession, e.g.
+	# setupOnePort eth0 "WAN"
+	# setup2ndEth eth1 "BATMAN"
+	#
+	# Usage: setup2ndEth <DEV, e.g. eth1> <ETHMODE: BATMAN or CLIENT>
+
+	local DEV=$1
+	local ETHMODE=$2
+
+	uci set "network.$DEV=interface"
+	uci set "network.$DEV.ifname=$DEV"
+
+	local meshif="$(uci -q get network.mesh.ifname)"
+
+	if [ "$ETHMODE" = "CLIENT" ] ; then
+		# Only write if not only there
+		echo "$meshif" | grep -q "$DEV" || uci set network.mesh.ifname="$meshif $DEV"
+	else
+		# Remove if there
+		uci set network.mesh.ifname="$(echo "$meshif" | sed "s/ *$DEV//")"
+	fi
+
+	if [ "$ETHMODE" = "BATMAN" ] ; then
+		# Always overwrite (if both ports are set to BATMAN, only the second will be)
+		uci set network.ethmesh.ifname="$DEV"
+	else
+		uci -q get network.ethmesh.ifname | grep -q "$DEV" && uci del network.ethmesh.ifname
+	fi
+
+	uci commit network
+}

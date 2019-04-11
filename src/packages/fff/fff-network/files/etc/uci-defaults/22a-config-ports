@@ -74,6 +74,14 @@ case "$BOARD" in
 		setupSwitch "eth0" "1 2 0t" "3 4 0t" "5 0t"
 		setupWan "eth0.2"
 		;;
+	ubnt-nano-m|\
+	ubnt-nano-m-xw|\
+	ubnt_nanostation-m|\
+	ubnt_nanostation-m-xw)
+		setupOnePort "eth0" "WAN"
+		setup2ndEth "eth1" "CLIENT"
+		uci set "fff.ui.portsetup=twoeth"
+		;;
 	cpe210-v2|\
 	cpe210-v3|\
 	tl-mr3020-v1|\
@@ -83,8 +91,6 @@ case "$BOARD" in
 	ubnt-bullet-m|\
 	ubnt-loco-m|\
 	ubnt-loco-m-xw|\
-	ubnt-nano-m|\
-	ubnt-nano-m-xw|\
 	ubnt-pico-m|\
 	ubnt-power-m-xw|\
 	ubnt-unifi|\
@@ -94,8 +100,6 @@ case "$BOARD" in
 	ubnt_bullet-m-xw|\
 	ubnt_loco-m|\
 	ubnt_loco-m-xw|\
-	ubnt_nanostation-m|\
-	ubnt_nanostation-m-xw|\
 	ubnt_pico-m|\
 	ubnt_power-m-xw|\
 	ubnt_unifi|\

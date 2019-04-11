@@ -1,0 +1,34 @@
+#!/bin/sh
+
+if ! [ "$(uci -q get fff.ui.portsetup)" = "twoeth" ] ; then
+	echo "Wrong device. This is for devices with two ethX without switch!"
+	exit 1
+fi
+
+. /lib/functions/fff/networksetup
+
+ETHMODE1=$1
+ETHMODE2=$2
+DEV1=$3
+DEV2=$4
+
+[ -n "$DEV1" ] || DEV1="eth0"
+[ -n "$DEV2" ] || DEV2="eth1"
+
+if ! ([ "$ETHMODE1" = "WAN" ] || [ "$ETHMODE1" = "CLIENT" ] || [ "$ETHMODE1" = "BATMAN" ]); then
+	echo "Wrong port mode for first port. Choose one of: WAN, CLIENT, BATMAN"
+	exit 1
+fi
+if ! ([ "$ETHMODE2" = "CLIENT" ] || [ "$ETHMODE2" = "BATMAN" ]); then
+	echo "Wrong port mode for second port. Choose one of: CLIENT, BATMAN"
+	exit 1
+fi
+if [ "$ETHMODE1" = "BATMAN" ] && [ "$ETHMODE2" = "BATMAN" ]; then
+	echo "Only one port can be set to BATMAN!"
+	exit 1
+fi
+
+setupOnePort "$DEV1" "$ETHMODE1"
+setup2ndEth "$DEV2" "$ETHMODE2"
+/etc/init.d/network restart
+echo "Port updated successfully."
