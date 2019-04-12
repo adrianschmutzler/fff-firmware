@@ -1,7 +1,5 @@
 #!/bin/sh
 
-test -f /tmp/started || exit 0
-
 [ -n "$(iw dev w2ap station dump 2> /dev/null)" ] && exit 0
 
 # No w2ap or no clients
