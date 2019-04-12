@@ -2,8 +2,6 @@
 # Netmon Nodewatcher (C) 2010-2012 Freifunk Oldenburg
 # License; GPL v3
 
-test -f /tmp/started || exit
-
 # Allow only one instance
 lockfile="/var/lock/${0##*/}.lock"
 if ! lock -n "$lockfile"; then
