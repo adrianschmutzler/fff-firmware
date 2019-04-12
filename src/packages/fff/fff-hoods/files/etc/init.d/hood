@@ -3,7 +3,7 @@
 # Copyright 2017 Adrian Schmutzler
 # License GPLv3
 
-START=98
+START=35
 
 start()
 {
