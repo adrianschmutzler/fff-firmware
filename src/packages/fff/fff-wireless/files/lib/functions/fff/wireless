@@ -30,22 +30,19 @@ wifiGetFreq() {
 wifiGetPhy() {
 	# Returns the wifi-device (radioX) for a given frequency (2 or 5)
 
-	if [ $# -ne "1" ]
-	then
-		return 1
-	fi
+	[ $# -ne "1" ] && return 1
 
 	local freq=$1
-	local radio=""
+	local radio
 
-	for phy in $(iw phy | awk '/^Wiphy/{ print $2 }'); do
-		if iw phy "$phy" info | grep -q -m1 "${freq}... MHz"; then
-			radio="radio$(echo "$phy" | tr -d -C "0-9")"
+	for radio in $(wifiListRadio); do
+		if [ "$(wifiGetFreq $radio)" = "$freq" ]; then
+			echo "$radio"
+			return 0
 		fi
 	done
-	
-	echo "$radio"
-	return 0 # also returns success if outermost if is false
+
+	return 0 # also returns success if radio is empty
 }
 
 wifiSetActive() {
@@ -56,30 +53,27 @@ wifiSetActive() {
 	# freq: 2 or 5
 	# setto: 0 (disabled) or 1 (enabled)
 
-	if [ $# -ne "2" ]
-	then
-		return 1
-	fi
+	[ $# -ne "2" ] && return 1
 
 	local freq=$1
 	local setto=$2
-	
+
 	[ "$setto" = "1" ] && disabled="0" || disabled="1"
-	
-	radio="$(wifiGetPhy "$freq")"
-	if [ -n "$radio" ] ; then
-		uci -q set fff.wifi=fff
+
+	for radio in $(wifiListRadio); do
+		[ "$(wifiGetFreq $radio)" = "$freq" ] || continue
+
+		uci set fff.wifi=fff
 		if [ "$freq" = "2" ] ; then
-			uci -q set "fff.wifi.disable24ghz=$disabled"
+			uci set "fff.wifi.disable24ghz=$disabled"
 		else
-			uci -q set "fff.wifi.disable5ghz=$disabled"
+			uci set "fff.wifi.disable5ghz=$disabled"
 		fi
-		uci -q set "wireless.${radio}.disabled=$disabled"
-	else
-		return 1
-	fi
-	uci -q commit fff
-	uci -q commit wireless
+		uci set "wireless.${radio}.disabled=$disabled"
+	done
+
+	uci commit fff
+	uci commit wireless
 
 	return 0
 }
@@ -91,24 +85,21 @@ wifiSetAllActive() {
 	#
 	# setto: 0 (disabled) or 1 (enabled)
 
-	if [ $# -ne "1" ]
-	then
-		return 1
-	fi
+	[ $# -ne "1" ] && return 1
 
 	local setto=$1
-	
+
 	[ "$setto" = "1" ] && disabled="0" || disabled="1"
-	
-	uci -q set fff.wifi=fff
-	uci -q set "fff.wifi.disablewifi=$disabled"
-	for phy in $(iw phy | awk '/^Wiphy/{ print $2 }'); do
-		radio="radio$(echo "$phy" | tr -d -C "0-9")"
-		uci -q set "wireless.${radio}.disabled=$disabled"
+
+	uci set fff.wifi=fff
+	uci set "fff.wifi.disablewifi=$disabled"
+	for radio in $(wifiListRadio); do
+		uci set "wireless.${radio}.disabled=$disabled"
 	done
-	uci -q commit fff
-	uci -q commit wireless
-	
+
+	uci commit fff
+	uci commit wireless
+
 	return 0
 }
 
