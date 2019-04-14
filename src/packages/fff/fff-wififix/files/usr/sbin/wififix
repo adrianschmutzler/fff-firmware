@@ -7,8 +7,6 @@ test -f /tmp/started || exit 0
 # No w2ap or no clients
 if [ -n "$(iwinfo w2mesh info 2> /dev/null)" ] ; then
 	batctl o | grep -q "w2mesh" || iwinfo w2mesh scan > /dev/null
-elif [ -n "$(iwinfo w2ibss info 2> /dev/null)" ] ; then
-	batctl o | grep -q "w2ibss" || iwinfo w2ibss scan > /dev/null
 elif [ -n "$(iwinfo w2ap info 2> /dev/null)" ] ; then
 	iwinfo w2ap scan > /dev/null
 fi
