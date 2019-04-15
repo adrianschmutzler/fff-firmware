@@ -57,6 +57,7 @@ case "$BOARD" in
 	#archer-c60-v2|\
 	#cpe210|\
 	#cpe510|\
+	#fritzbox-4040|\
 	#gl-ar150|\
 	#tl-mr3020-v1|\
 	#tl-wdr4900-v1|\

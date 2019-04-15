@@ -33,6 +33,13 @@ case "$BOARD" in
 		setupWan "eth0.2"
 		uci set "fff.ui.portsetup=cpev1"
 		;;
+	fritzbox-4040)
+		# Set whole switch to BATMAN, since VLANs are not supported
+		# (eth0 is connected untagged to switch)
+		setupOnePort "eth1" "WAN"
+		setup2ndEth "eth0" "BATMAN"
+		uci set "fff.ui.portsetup=twoeth"
+		;;
 	gl-ar150)
 		# Default: CLIENT
 		setupSwitch "eth1" "0t 1" "0t"

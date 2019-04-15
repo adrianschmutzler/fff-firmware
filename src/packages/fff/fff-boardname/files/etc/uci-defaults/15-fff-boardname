@@ -73,6 +73,9 @@ case "$BOARD" in
 	archer-c7)
 		BOARD=archer-c7-v2
 		;;
+	avm,fritzbox-4040)
+		BOARD=fritzbox-4040
+		;;
 	ubnt,bullet-m)
 		BOARD=ubnt-bullet-m
 		MODEL="$(ubnt_xm_board_detect)"
