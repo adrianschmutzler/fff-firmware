@@ -81,30 +81,30 @@ setupSwitch() {
 
 	SWITCHHW="$(swconfig list | awk '{ print $4 }')"
 
-	uci set "network.${SWITCHDEV}=switch"
-	uci set "network.${SWITCHDEV}.name=$SWITCHHW"
-	uci set "network.${SWITCHDEV}.enable=1"
-	uci set "network.${SWITCHDEV}.reset=1"
-	uci set "network.${SWITCHDEV}.enable_vlan=1"
+	uci set "network.switch=switch"
+	uci set "network.switch.name=$SWITCHHW"
+	uci set "network.switch.enable=1"
+	uci set "network.switch.reset=1"
+	uci set "network.switch.enable_vlan=1"
 
-	uci set "network.${SWITCHDEV}_1=switch_vlan"
-	uci set "network.${SWITCHDEV}_1.device=$SWITCHHW"
-	uci set "network.${SWITCHDEV}_1.vlan=1"
-	uci set "network.${SWITCHDEV}_1.ports=$CLIENT_PORTS"
+	uci set "network.vlan1=switch_vlan"
+	uci set "network.vlan1.device=$SWITCHHW"
+	uci set "network.vlan1.vlan=1"
+	uci set "network.vlan1.ports=$CLIENT_PORTS"
 
 	# This defines the VLAN for WAN ports inside the switch.
 	# This is required even if the WAN eth is separate, but the WAN port is in the switch!
 	if [ -n "$WAN_PORTS" ]; then
-		uci set "network.${SWITCHDEV}_2=switch_vlan"
-		uci set "network.${SWITCHDEV}_2.device=$SWITCHHW"
-		uci set "network.${SWITCHDEV}_2.vlan=2"
-		uci set "network.${SWITCHDEV}_2.ports=$WAN_PORTS"
+		uci set "network.vlan2=switch_vlan"
+		uci set "network.vlan2.device=$SWITCHHW"
+		uci set "network.vlan2.vlan=2"
+		uci set "network.vlan2.ports=$WAN_PORTS"
 	fi
 
-	uci set "network.${SWITCHDEV}_3=switch_vlan"
-	uci set "network.${SWITCHDEV}_3.device=$SWITCHHW"
-	uci set "network.${SWITCHDEV}_3.vlan=3"
-	uci set "network.${SWITCHDEV}_3.ports=$BATMAN_PORTS"
+	uci set "network.vlan3=switch_vlan"
+	uci set "network.vlan3.device=$SWITCHHW"
+	uci set "network.vlan3.vlan=3"
+	uci set "network.vlan3.ports=$BATMAN_PORTS"
 
 	uci set network.mesh.ifname="$SWITCHDEV.1 bat0"
 	uci set network.ethmesh.ifname="$SWITCHDEV.3"

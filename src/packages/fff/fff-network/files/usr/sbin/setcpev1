@@ -36,9 +36,9 @@ else
 	exit 1
 fi
 
-uci set "network.eth0_1.ports=$CLIENT_PORTS"
-uci set "network.eth0_2.ports=$WAN_PORTS"
-uci set "network.eth0_3.ports=$BATMAN_PORTS"
+uci set "network.vlan1.ports=$CLIENT_PORTS"
+uci set "network.vlan2.ports=$WAN_PORTS"
+uci set "network.vlan3.ports=$BATMAN_PORTS"
 uci commit network
 
 /etc/init.d/network restart
