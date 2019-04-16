@@ -301,10 +301,10 @@ cp_firmware() {
         cp "$target/bin/targets/${chipset}/${subtarget}/$image" "./bin/$filename_build" && \
         echo "Success: $filename_build"
 
-        for region in "" "-eu" "-us"; do
-            image_factory=${image/sysupgrade/factory$region}
+        for factory in "factory" "factory-eu" "factory-us" "eva"; do
+            image_factory=${image/sysupgrade/$factory}
             if [[ -f "$target/bin/targets/${chipset}/${subtarget}/$image_factory" ]]; then
-              filename_build_factory=${filename_build/sysupgrade/factory$region}
+              filename_build_factory=${filename_build/sysupgrade/$factory}
               cp "$target/bin/targets/${chipset}/${subtarget}/$image_factory" "./bin/$filename_build_factory" && \
               echo "Success: $filename_build_factory"
             fi
