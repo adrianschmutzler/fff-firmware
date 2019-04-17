@@ -4,15 +4,10 @@
 
 BOARD="$(uci get board.model.name)"
 
-. /lib/functions/fff/network
 . /lib/functions/fff/networksetup
 
 . /lib/functions.sh
 . /lib/functions/system.sh
-
-# macFlipLocalBit:
-# use mac address from phyX with 'locally administered' bit set to '1'
-# only possible, because wXmesh is created first and therefore gets the 'universally administered address'
 
 case "$BOARD" in
 	archer-c7-v2|\
@@ -63,14 +58,14 @@ case "$BOARD" in
 	ubnt_pico-m|\
 	ubnt_power-m-xw|\
 	ubnt_unifi)
-		ETHMESHMAC=$(macFlipLocalBit "$(cat /sys/class/ieee80211/phy0/macaddress)")
+		ETHMESHMAC=$(macaddr_setbit_la "$(cat /sys/class/ieee80211/phy0/macaddress)")
 		;;
 	gl-ar150|\
 	tl-mr3020-v1)
-		ETHMESHMAC=$(macFlipLocalBit "$(cat /sys/class/net/eth0/address)")
+		ETHMESHMAC=$(macaddr_setbit_la "$(cat /sys/class/net/eth0/address)")
 		;;
 	tl-wdr4900-v1)
-		ETHMESHMAC=$(macFlipLocalBit "$(cat /sys/class/ieee80211/phy1/macaddress)")
+		ETHMESHMAC=$(macaddr_setbit_la "$(cat /sys/class/ieee80211/phy1/macaddress)")
 		;;
 	tl-wr1043nd-v4)
 		ETHMESHMAC=$(mtd_get_mac_binary config 0x1017c)
@@ -82,7 +77,7 @@ case "$BOARD" in
 	ubnt-unifiac-mesh|\
 	ubnt_unifiac-lite|\
 	ubnt_unifiac-mesh)
-		ETHMESHMAC=$(macFlipLocalBit "$(mtd_get_mac_binary EEPROM 0x0)")
+		ETHMESHMAC=$(macaddr_setbit_la "$(mtd_get_mac_binary EEPROM 0x0)")
 		;;
 esac
 
