@@ -11,37 +11,31 @@ case "$BOARD" in
 		uci commit wireless
 		;;
 	ubnt-loco-m|\
-	ubnt-loco-m-xw|\
-	ubnt_loco-m|\
-	ubnt_loco-m-xw)
+	ubnt-loco-m-xw)
 		uci set wireless.radio0.antenna_gain=9
 		uci commit wireless
 		;;
 	ubnt-nano-m|\
 	ubnt-nano-m-xw|\
-	ubnt_nanostation-m|\
-	ubnt_nanostation-m-xw)
+	ubnt-nanostation-m|\
+	ubnt-nanostation-m-xw)
 		uci set wireless.radio0.antenna_gain=11
 		uci commit wireless
 		;;
-	ubnt-pico-m|\
-	ubnt_pico-m)
+	ubnt-pico-m)
 		uci set wireless.radio0.antenna_gain=12
 		uci commit wireless
 		;;
-	ubnt-power-m-xw|\
-	ubnt_power-m-xw)
+	ubnt-power-m-xw)
 		uci set wireless.radio0.antenna_gain=18
 		uci commit wireless
 		;;
-	ubnt-unifi|\
-	ubnt_unifi)
+	ubnt-unifi)
 		# No support for Unifi AP Pro!
 		uci set wireless.radio0.antenna_gain=3
 		uci commit wireless
 		;;
-	ubnt-unifiac-mesh|\
-	ubnt_unifiac-mesh)
+	ubnt-unifiac-mesh)
 		uci set wireless.radio0.antenna_gain=4
 		uci set wireless.radio1.antenna_gain=3
 		uci commit wireless

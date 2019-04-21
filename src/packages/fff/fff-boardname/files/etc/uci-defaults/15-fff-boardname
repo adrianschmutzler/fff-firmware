@@ -74,12 +74,13 @@ case "$BOARD" in
 		BOARD=archer-c7-v2
 		;;
 	ubnt,bullet-m)
-		BOARD=ubnt_bullet-m
+		BOARD=ubnt-bullet-m
 		MODEL="$(ubnt_xm_board_detect)"
-		echo "$MODEL" | grep -iq "Pico" && BOARD=ubnt_pico-m
-		echo "$MODEL" | grep -iq "Loco" && BOARD=ubnt_loco-m
+		echo "$MODEL" | grep -iq "Pico" && BOARD=ubnt-pico-m
+		echo "$MODEL" | grep -iq "Loco" && BOARD=ubnt-loco-m
 		;;
 esac
 
-uci set board.model.name="$(echo "$BOARD" | sed 's/^tplink,//' | sed 's/^glinet,//' | sed 's/,/_/')" # remove tplink/glinet prefix and replace "vendor,device" with "vendor_device"
+# remove tplink/glinet prefix, change "ubnt," to "ubnt-" and replace "vendor,device" with "vendor_device"
+uci set board.model.name="$(echo "$BOARD" | sed 's/^tplink,//' | sed 's/^glinet,//' | sed 's/^ubnt,/ubnt-/' | sed 's/,/_/')"
 uci commit board

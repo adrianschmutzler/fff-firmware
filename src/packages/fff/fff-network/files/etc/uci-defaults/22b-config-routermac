@@ -29,22 +29,16 @@ case "$BOARD" in
 	tl-wr741nd-v4|\
 	tl-wr841-v7|\
 	ubnt-bullet-m|\
+	ubnt-bullet-m-xw|\
 	ubnt-loco-m|\
 	ubnt-loco-m-xw|\
 	ubnt-nano-m|\
 	ubnt-nano-m-xw|\
+	ubnt-nanostation-m|\
+	ubnt-nanostation-m-xw|\
 	ubnt-pico-m|\
 	ubnt-power-m-xw|\
-	ubnt-unifi|\
-	ubnt_bullet-m|\
-	ubnt_bullet-m-xw|\
-	ubnt_loco-m|\
-	ubnt_loco-m-xw|\
-	ubnt_nanostation-m|\
-	ubnt_nanostation-m-xw|\
-	ubnt_pico-m|\
-	ubnt_power-m-xw|\
-	ubnt_unifi)
+	ubnt-unifi)
 		ROUTERMAC=$(cat /sys/class/ieee80211/phy0/macaddress)
 		;;
 	tl-wdr3600-v1|\
@@ -53,9 +47,7 @@ case "$BOARD" in
 		ROUTERMAC=$(cat /sys/class/ieee80211/phy1/macaddress)
 		;;
 	ubnt-unifiac-lite|\
-	ubnt-unifiac-mesh|\
-	ubnt_unifiac-lite|\
-	ubnt_unifiac-mesh)
+	ubnt-unifiac-mesh)
 		ROUTERMAC=$(mtd_get_mac_binary EEPROM 0x0)
 		;;
 	#archer-c7-v4|\

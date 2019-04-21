@@ -42,22 +42,16 @@ case "$BOARD" in
 	tl-wa901nd-v2|\
 	tl-wr1043nd-v1|\
 	ubnt-bullet-m|\
+	ubnt-bullet-m-xw|\
 	ubnt-loco-m|\
 	ubnt-loco-m-xw|\
 	ubnt-nano-m|\
 	ubnt-nano-m-xw|\
+	ubnt-nanostation-m|\
+	ubnt-nanostation-m-xw|\
 	ubnt-pico-m|\
 	ubnt-power-m-xw|\
-	ubnt-unifi|\
-	ubnt_bullet-m|\
-	ubnt_bullet-m-xw|\
-	ubnt_loco-m|\
-	ubnt_loco-m-xw|\
-	ubnt_nanostation-m|\
-	ubnt_nanostation-m-xw|\
-	ubnt_pico-m|\
-	ubnt_power-m-xw|\
-	ubnt_unifi)
+	ubnt-unifi)
 		ETHMESHMAC=$(macaddr_setbit_la "$(cat /sys/class/ieee80211/phy0/macaddress)")
 		;;
 	gl-ar150|\
@@ -74,9 +68,7 @@ case "$BOARD" in
 		ETHMESHMAC=$(macaddr_add $(mtd_get_mac_binary product-info 8) 1)
 		;;
 	ubnt-unifiac-lite|\
-	ubnt-unifiac-mesh|\
-	ubnt_unifiac-lite|\
-	ubnt_unifiac-mesh)
+	ubnt-unifiac-mesh)
 		ETHMESHMAC=$(macaddr_setbit_la "$(mtd_get_mac_binary EEPROM 0x0)")
 		;;
 esac
