@@ -5,8 +5,6 @@
 . /lib/functions/fff/network
 
 echo "Setting IPv6 addresses"
-# Some time needed :(
-sleep 5
 
 ROUTERMAC=$(uci get network.mesh.macaddr)
 prefix="fdff:0::/64"
