@@ -108,6 +108,10 @@ case "$BOARD" in
 		setupOnePort "eth0" "CLIENT"
 		uci set "fff.ui.portsetup=oneport"
 		;;
+	*)
+		# Fallback for new or incorrectly named devices
+		setupOnePort "eth0" "CLIENT"
+		;;
 esac
 
 uci commit fff
