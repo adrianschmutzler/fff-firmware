@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-boardname
 PKG_VERSION:=adsc-5
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -34,7 +34,8 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(CP) ./files/* $(1)/
-	test -d ./$(BOARD)-$(SUBTARGET) && $(CP) ./$(BOARD)-$(SUBTARGET)/* $(1)/etc/ || $(CP) ./default/* $(1)/etc/
+	printf "\toption target '$(BOARD)'\n" >> $(1)/etc/config/board
+	printf "\toption subtarget '$(SUBTARGET)'\n" >> $(1)/etc/config/board
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))

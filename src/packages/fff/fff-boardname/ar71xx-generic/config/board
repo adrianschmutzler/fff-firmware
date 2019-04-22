@@ -1,3 +1,0 @@
-config model 'model'
-        option target 'ar71xx'
-        option subtarget 'generic'
