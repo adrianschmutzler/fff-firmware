@@ -1,0 +1,56 @@
+#!/bin/sh
+# License GPLv3
+
+setupPorts() {
+	# Add a single port to the *_PORTS config
+	# Usage: setupPorts <port id> <port mode>
+
+	local port=$1
+	local mode=$2
+
+	#default: BATMAN
+	if [ "$mode" = "WAN" ] ; then
+		WAN_PORTS="$WAN_PORTS $port"
+	elif [ "$mode" = "CLIENT" ] ; then
+		CLIENT_PORTS="$CLIENT_PORTS $port"
+	else
+		BATMAN_PORTS="$BATMAN_PORTS $port"
+	fi
+}
+
+if [ -s /etc/network.config ]; then
+	. /etc/network.config
+
+	if [ -n "$ETHMODE" ] && ! [ "$(uci get board.model.name)" = "gl-ar150" ] ; then
+		# real one-port
+		echo "# Migrated network config" >> "$firstbootscript"
+		echo ". /lib/functions/fff/networksetup" >> "$firstbootscript"
+		echo "setupOnePort 'eth0' '$ETHMODE'" >> "$firstbootscript"
+	else
+		# anything else will be switch-based
+		CLIENT_UCI="$(uci -q get network.vlan1.ports)"
+		BATMAN_UCI="$(uci -q get network.vlan3.ports)"
+
+		# GL-AR150
+		if [ -n "$ETHMODE" ]; then
+			setupPorts "1" "$ETHMODE"
+			WAN_PORTS=""
+		fi
+
+		# CPE210/510 v1
+		[ -n "$LAN0MODE" ] && setupPorts "5" "$LAN0MODE"
+		[ -n "$LAN1MODE" ] && setupPorts "4" "$LAN1MODE"
+
+		# Only create entry if setting actually differs
+		# But: if entries are created, create entries for all VLANs
+		if [ ! "$CLIENT_UCI" = "$CLIENT_PORTS" ] || [ ! "$BATMAN_UCI" = "$BATMAN_PORTS" ]; then
+			echo "# Migrated network config" >> "$firstbootscript"
+			echo "uci set network.vlan1.ports='$CLIENT_PORTS'" >> "$firstbootscript"
+			echo "uci set network.vlan3.ports='$BATMAN_PORTS'" >> "$firstbootscript"
+			[ -n "$WAN_PORTS" ] && echo "uci set network.vlan2.ports='$WAN_PORTS'" >> "$firstbootscript"
+			echo "uci commit network" >> "$firstbootscript"
+		fi
+	fi
+
+	rm /etc/network.config
+fi
