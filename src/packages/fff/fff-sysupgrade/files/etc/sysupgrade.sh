@@ -16,7 +16,7 @@ BOARD=$(uci -q get board.model.name)
 TARGET=$(uci -q get board.model.target)
 SUBTARGET=$(uci -q get board.model.subtarget | sed 's/generic/g/' | sed 's/tiny/t/')
 
-SOC="${TARGET}-${SUBTARGET}"
+[ -n "$SUBTARGET" ] && SOC="${TARGET}-${SUBTARGET}" || SOC="${TARGET}"
 
 echo ""
 echo "Hardware: $BOARD"
