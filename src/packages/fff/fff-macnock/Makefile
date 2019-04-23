@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-macnock
-PKG_VERSION:=adsc-0.1-1
+PKG_VERSION:=0.1-1
 PKG_RELEASE:=1
 PKG_REV:=ffd1a64515709d75afaab0f990308fd164dc4cc6
 

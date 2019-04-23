@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-wireless
-PKG_VERSION:=adsc-6
+PKG_VERSION:=6
 PKG_RELEASE:=8
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)

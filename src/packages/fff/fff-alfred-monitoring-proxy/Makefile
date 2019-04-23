@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-alfred-monitoring-proxy
-PKG_VERSION:=adsc-0.0.1-2
+PKG_VERSION:=0.0.1-2
 PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff-alfred-monitoring-proxy
