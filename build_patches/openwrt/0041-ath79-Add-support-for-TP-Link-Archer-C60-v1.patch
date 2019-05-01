@@ -1,0 +1,258 @@
+From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+Date: Sun, 5 May 2019 18:36:43 +0200
+Subject: ath79: Add support for TP-Link Archer C60 v1
+
+TP-Link Archer C60v1 is a dual-band AC1350 router,
+based on Qualcomm/Atheros QCA9561+QCA9886.
+
+Specification:
+
+- 775/650/258 MHz (CPU/DDR/AHB)
+- 64 MB of RAM (DDR2)
+- 8 MB of FLASH (SPI NOR)
+- 3T3R 2.4 GHz
+- 2T2R 5 GHz
+- 5x 10/100 Mbps Ethernet
+- 7x LED, 2x button
+- UART header on PCB
+
+Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+
+diff --git a/target/linux/ath79/base-files/etc/board.d/01_leds b/target/linux/ath79/base-files/etc/board.d/01_leds
+index 41a4abae18c9ea94c945eba6ff312c3deada2237..8a95de30b6647b6226039e1214c2d7c9c1353ace 100755
+--- a/target/linux/ath79/base-files/etc/board.d/01_leds
++++ b/target/linux/ath79/base-files/etc/board.d/01_leds
+@@ -137,7 +137,8 @@ tplink,tl-wr842n-v3)
+ 	ucidef_set_led_switch "lan4" "LAN4" "tp-link:green:lan4" "switch0" "0x02"
+ 	;;
+ tplink,archer-c58-v1|\
+-tplink,archer-c59-v1)
++tplink,archer-c59-v1|\
++tplink,archer-c60-v1)
+ 	ucidef_set_led_switch "lan" "LAN" "tp-link:green:lan" "switch0" "0x1E"
+ 	ucidef_set_led_netdev "wan" "WAN" "tp-link:green:wan" "eth1"
+ 	;;
+diff --git a/target/linux/ath79/base-files/etc/board.d/02_network b/target/linux/ath79/base-files/etc/board.d/02_network
+index caac39ca0785d1e013170a8680c94c43f38549f2..10b1984f7b63a0a17a5cacbd974641f1ea7507a0 100755
+--- a/target/linux/ath79/base-files/etc/board.d/02_network
++++ b/target/linux/ath79/base-files/etc/board.d/02_network
+@@ -204,6 +204,11 @@ ath79_setup_interfaces()
+ 		ucidef_add_switch "switch0" \
+ 			"0@eth1" "2:lan" "3:lan" "4:lan" "5:lan" "6@eth0" "1:wan"
+ 		;;
++	tplink,archer-c60-v1)
++		ucidef_set_interface_wan "eth1"
++		ucidef_add_switch "switch0" \
++			"0@eth0" "1:lan" "2:lan" "3:lan" "4:lan"
++		;;
+ 	tplink,archer-d50-v1)
+ 		ucidef_add_switch "switch0" \
+ 			"0@eth0" "2:lan:3" "3:lan:2" "4:lan:1" "1:wan"
+diff --git a/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata b/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+index 60b9f0b3a478e4ca5ecd198478d780ab078a9915..d0c93abdf497424f744029a30a1185cfff0b9a6d 100644
+--- a/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
++++ b/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+@@ -202,6 +202,7 @@ case "$FIRMWARE" in
+ 		;;
+ 	tplink,archer-c58-v1|\
+ 	tplink,archer-c59-v1|\
++	tplink,archer-c60-v1|\
+ 	tplink,archer-c6-v2)
+ 		ath10kcal_extract "art" 20480 12064
+ 		ath10kcal_patch_mac_crc $(macaddr_add $(mtd_get_mac_binary mac 8) -1)
+diff --git a/target/linux/ath79/dts/qca9561_tplink_archer-c60-v1.dts b/target/linux/ath79/dts/qca9561_tplink_archer-c60-v1.dts
+new file mode 100644
+index 0000000000000000000000000000000000000000..85e456bb449b15edf82488f448ae283bd170279f
+--- /dev/null
++++ b/target/linux/ath79/dts/qca9561_tplink_archer-c60-v1.dts
+@@ -0,0 +1,56 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++/dts-v1/;
++
++#include "qca9561_tplink_archer-c6x.dtsi"
++
++/ {
++	compatible = "tplink,archer-c60-v1", "qca,qca9561";
++	model = "TP-Link Archer C60 v1";
++};
++
++&spi {
++	status = "okay";
++	num-cs = <1>;
++
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <25000000>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "u-boot";
++				reg = <0x000000 0x010000>;
++				read-only;
++			};
++
++			mac: partition@10000 {
++				label = "mac";
++				reg = <0x010000 0x010000>;
++				read-only;
++			};
++
++			partition@20000 {
++				compatible = "denx,uimage";
++				label = "firmware";
++				reg = <0x020000 0x7c0000>;
++			};
++
++			partition@7e0000 {
++				label = "tplink";
++				reg = <0x7e0000 0x010000>;
++				read-only;
++			};
++
++			art: partition@7f0000 {
++				label = "art";
++				reg = <0x7f0000 0x010000>;
++				read-only;
++			};
++		};
++	};
++};
+diff --git a/target/linux/ath79/dts/qca9561_tplink_archer-c6x.dtsi b/target/linux/ath79/dts/qca9561_tplink_archer-c6x.dtsi
+new file mode 100644
+index 0000000000000000000000000000000000000000..1ee212b5494314d38495de0cb0b006f891e34b9f
+--- /dev/null
++++ b/target/linux/ath79/dts/qca9561_tplink_archer-c6x.dtsi
+@@ -0,0 +1,106 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++/dts-v1/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++
++#include "qca956x.dtsi"
++
++/ {
++	chosen {
++		bootargs = "console=ttyS0,115200n8";
++	};
++
++	aliases {
++		led-boot = &power;
++		led-failsafe = &power;
++		led-running = &power;
++		led-upgrade = &power;
++	};
++
++	keys {
++		compatible = "gpio-keys";
++
++		wifi_button {
++			label = "WiFi button";
++			linux,code = <KEY_RFKILL>;
++			gpios = <&gpio 1 GPIO_ACTIVE_LOW>;
++		};
++
++		reset_button {
++			label = "Reset button";
++			linux,code = <KEY_RESTART>;
++			gpios = <&gpio 21 GPIO_ACTIVE_LOW>;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		power: power {
++			label = "tp-link:green:power";
++			gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
++			default-state = "on";
++		};
++
++		wlan2g {
++			label = "tp-link:green:wlan2g";
++			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy1tpt";
++		};
++
++		wlan5g {
++			label = "tp-link:green:wlan5g";
++			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy0tpt";
++		};
++
++		wan_green {
++			label = "tp-link:green:wan";
++			gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
++		};
++
++		wan_amber {
++			label = "tp-link:amber:wan";
++			gpios = <&gpio 22 GPIO_ACTIVE_LOW>;
++		};
++
++		lan {
++			label = "tp-link:green:lan";
++			gpios = <&gpio 2 GPIO_ACTIVE_LOW>;
++		};
++
++		wps {
++			label = "tp-link:green:wps";
++			gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
++		};
++	};
++};
++
++&uart {
++	status = "okay";
++};
++
++&pcie {
++	status = "okay";
++};
++
++&eth0 {
++	phy-mode = "mii";
++	phy-handle = <&swphy4>;
++
++	status = "okay";
++	mtd-mac-address = <&mac 0x8>;
++};
++
++&eth1 {
++	status = "okay";
++	mtd-mac-address = <&mac 0x8>;
++	mtd-mac-address-increment = <1>;
++};
++
++&wmac {
++	status = "okay";
++	mtd-cal-data = <&art 0x1000>;
++	mtd-mac-address = <&mac 0x8>;
++};
+diff --git a/target/linux/ath79/image/generic-tp-link.mk b/target/linux/ath79/image/generic-tp-link.mk
+index d56e54ba1f81b45d127c38ff5101e18231c3f1d3..53fb03e51ac4bab6295cc071fe66af29e94e247e 100644
+--- a/target/linux/ath79/image/generic-tp-link.mk
++++ b/target/linux/ath79/image/generic-tp-link.mk
+@@ -55,6 +55,17 @@ define Device/tplink_archer-c59-v1
+ endef
+ TARGET_DEVICES += tplink_archer-c59-v1
+ 
++define Device/tplink_archer-c60-v1
++  $(Device/tplink-safeloader-uimage)
++  ATH_SOC := qca9561
++  IMAGE_SIZE := 7936k
++  DEVICE_TITLE := TP-Link Archer C60 v1
++  TPLINK_BOARD_ID := ARCHER-C60-V1
++  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca9888-ct
++  SUPPORTED_DEVICES += archer-c60-v1
++endef
++TARGET_DEVICES += tplink_archer-c60-v1
++
+ define Device/tplink_archer-c6-v2
+   $(Device/tplink-safeloader-uimage)
+   ATH_SOC := qca9563
