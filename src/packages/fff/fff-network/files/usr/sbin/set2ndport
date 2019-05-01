@@ -25,6 +25,4 @@ uci set "network.vlan1.ports=$CLIENT_PORTS"
 uci set "network.vlan3.ports=$BATMAN_PORTS"
 uci commit network
 
-/etc/init.d/network restart
-
-echo "Port updated successfully."
+echo "Port updated successfully. Restart network or device!"

@@ -30,5 +30,5 @@ fi
 
 setupOnePort "$DEV1" "$ETHMODE1"
 setup2ndEth "$DEV2" "$ETHMODE2"
-/etc/init.d/network restart
-echo "Port updated successfully."
+
+echo "Ports updated successfully. Restart network or device!"

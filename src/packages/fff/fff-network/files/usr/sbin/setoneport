@@ -16,8 +16,7 @@ DEV=$2
 
 if [ "$ETHMODE" = "WAN" ] || [ "$ETHMODE" = "CLIENT" ] || [ "$ETHMODE" = "BATMAN" ]; then
 	setupOnePort "$DEV" "$ETHMODE"
-	/etc/init.d/network restart
-	echo "Port updated successfully."
+	echo "Port updated successfully. Restart network or device!"
 else
 	echo "Wrong port mode. Choose one of: WAN, CLIENT, BATMAN"
 	exit 1
