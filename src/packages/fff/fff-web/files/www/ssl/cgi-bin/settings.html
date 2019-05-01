@@ -41,7 +41,7 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 		uci -q set "simple-tc.example.ifname=wan"
 		uci -q set "simple-tc.example.limit_ingress=${POST_limit_ingress}"
 		uci -q set "simple-tc.example.limit_egress=${POST_limit_egress}"
-		
+
 		# Restliche Einstellungen
 		uci -q set "fff.notifyupdate=webui"
 		if [ "$POST_upgrade_notification" = "on" ] ; then
@@ -56,7 +56,7 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 		else
 			uci -q set "fff.notifyupdate.resetonupgrade=0"
 		fi
-		
+
 		if uci -q get system.poe_passthrough > /dev/null ; then
 			uci -q set "fff.poe_passthrough=fff"
 			if [ "$POST_poe_passthrough" = "on" ] ; then
@@ -67,7 +67,7 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 				uci -q set "system.poe_passthrough.value=0"
 			fi
 		fi
-		
+
 		if [ "$POST_enable24ghz" = "on" ] ; then
 			wifiSetActive "2" "1"
 		else
@@ -80,7 +80,7 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 		fi
 
 		uci -q commit
-		
+
 		wifi > /dev/null
 
 		MSG='<span class="green">Daten gespeichert! - Bitte Router neustarten.</span>'
