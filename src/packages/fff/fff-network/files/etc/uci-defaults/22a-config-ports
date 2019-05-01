@@ -28,8 +28,8 @@ case "$BOARD" in
 		;;
 	cpe210|\
 	cpe510)
-		# Default: LAN0: WAN, LAN1: CLIENT
-		setupSwitch "eth0" "0t 4" "0t" "0t 5"
+		# Default: LAN0: WAN, LAN1: BATMAN
+		setupSwitch "eth0" "0t" "0t 4" "0t 5"
 		setupWan "eth0.2"
 		uci set "fff.ui.portsetup=cpev1"
 		;;
@@ -41,8 +41,8 @@ case "$BOARD" in
 		uci set "fff.ui.portsetup=twoeth"
 		;;
 	gl-ar150)
-		# Default: CLIENT
-		setupSwitch "eth1" "0t 1" "0t"
+		# Default for LAN-Port: BATMAN
+		setupSwitch "eth1" "0t" "0t 1"
 		setupWan "eth0"
 		uci set "fff.ui.portsetup=2ndport"
 		;;
@@ -85,8 +85,9 @@ case "$BOARD" in
 	ubnt-nano-m-xw|\
 	ubnt-nanostation-m|\
 	ubnt-nanostation-m-xw)
+		# Default: LAN0: WAN, LAN1: BATMAN
 		setupOnePort "eth0" "WAN"
-		setup2ndEth "eth1" "CLIENT"
+		setup2ndEth "eth1" "BATMAN"
 		uci set "fff.ui.portsetup=twoeth"
 		;;
 	cpe210-v2|\
