@@ -17,6 +17,7 @@ TARGET=$(uci -q get board.model.target)
 SUBTARGET=$(uci -q get board.model.subtarget | sed 's/generic/g/' | sed 's/tiny/t/')
 
 [ -n "$SUBTARGET" ] && SOC="${TARGET}-${SUBTARGET}" || SOC="${TARGET}"
+[ "$TARGET" = "ipq40xx" ] && SOC="$TARGET" # no subtarget in file name for certain targets
 
 echo ""
 echo "Hardware: $BOARD"
