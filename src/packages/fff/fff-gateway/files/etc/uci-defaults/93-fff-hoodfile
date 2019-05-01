@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Migrate old hood file
+[ -s /www/hood/keyxchangev2data ] && mv /www/hood/keyxchangev2data /etc/hoodfile
+
+# Link to new location
+ln -s /etc/hoodfile /www/hood/keyxchangev2data
+
+exit 0

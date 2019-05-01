@@ -1,0 +1,112 @@
+. /usr/share/libubox/jshn.sh
+. /lib/functions/fff/network
+. /lib/functions/fff/wireless
+
+configure() {
+	hoodfile="/etc/hoodfile"
+	if [ -s "$hoodfile" ]; then
+		json_load "$(cat "$hoodfile")"
+
+		# ULA
+		json_select network
+		json_get_var prefix ula_prefix
+		json_select ".."
+
+		# Set IP addresses
+		if [ -n "$prefix" ] ; then
+			prefix="$(echo "$prefix" | sed -e 's,\\,,')"
+			mac="$(cat "/sys/class/net/br-mesh/address")"
+			addr="$(ipMacAssemble "$prefix" "$mac")"
+			addr="$(ipTidyColon "$addr")"
+			addr_eui="$(ipEUIAssemble "$prefix" "$mac")"
+			addr_eui="$(ipTidyColon "$addr_eui")"
+
+			# Set $prefix::MAC as IP
+			if ! uci get network.mesh.ip6addr | grep -q "$addr" ; then
+				uci add_list network.mesh.ip6addr="$addr"
+				echo "Set ULA address to br-mesh: $addr"
+			else
+				echo "Address already set."
+			fi
+			# Set $prefix::link-local as IP
+			if ! uci get network.mesh.ip6addr | grep -q "$addr_eui" ; then
+				uci add_list network.mesh.ip6addr="$addr_eui"
+				echo "Set ULA EUI-64 address to br-mesh: $addr_eui"
+			else
+				echo "Address already set."
+			fi
+		fi
+
+		# WIFI
+		json_select hood
+		json_get_var hood name
+		json_get_var mesh_id mesh_id
+		json_get_var mesh_bssid mesh_bssid
+		json_get_var mesh_essid mesh_essid
+		json_get_var essid essid
+		json_get_var chan2ghz channel2
+		json_get_var mesh_type2 mesh_type2
+		json_get_var chan5ghz channel5
+		json_get_var mesh_type5 mesh_type5
+		json_select ".."
+
+		echo "Setting hood name: $hood"
+		uci set "system.@system[0].hood=$hood"
+
+		for radio in $(wifiListRadio); do
+			freq="$(wifiGetFreq $radio)"
+
+			if [ "$freq" = "5" ]; then
+				uci set wireless.${radio}.channel="$chan5ghz"
+				mesh_type="$mesh_type5"
+			elif [ "$freq" = "2" ]; then
+				uci set wireless.${radio}.channel="$chan2ghz"
+				mesh_type="$mesh_type2"
+			fi
+
+			# Configure wXap
+			uci set wireless.w${freq}ap.ssid="$essid"
+			uci set wireless.w${freq}ap.disabled='0'
+
+			# Configure 802.11s mesh if type = "802.11s"
+			if [ "$mesh_type" = "802.11s" ]; then
+				uci set wireless.w${freq}mesh.mode='mesh'
+				uci -q del wireless.w${freq}mesh.bssid
+				uci -q del wireless.w${freq}mesh.ssid
+				uci -q del wireless.w${freq}mesh.mcast_rate
+				uci set wireless.w${freq}mesh.mesh_id="$mesh_id"
+				uci set wireless.w${freq}mesh.mesh_fwding='0'
+				uci set wireless.w${freq}mesh.disabled='0'
+			# Configure IBSS mesh if type = "ibss"
+			elif [ "$mesh_type" = "ibss" ]; then
+				uci set wireless.w${freq}mesh.mode='adhoc'
+				uci -q del wireless.w${freq}mesh.mesh_id
+				uci -q del wireless.w${freq}mesh.mesh_fwding
+				uci set wireless.w${freq}mesh.bssid="$mesh_bssid"
+				uci set wireless.w${freq}mesh.ssid="$mesh_essid"
+				uci set wireless.w${freq}mesh.mcast_rate='6000'
+				uci set wireless.w${freq}mesh.disabled='0'
+			# Disable mesh by setting no mesh_type
+			else
+				uci set wireless.w${freq}mesh.disabled='1'
+			fi
+
+			# Configure wXconfigap
+			uci set wireless.w${freq}configap.disabled='0'
+		done
+	else
+		echo "WARNING: No hoodfile!"
+	fi
+}
+
+apply() {
+	uci commit system
+	uci commit network
+	uci commit wireless
+}
+
+revert() {
+	uci revert system
+	uci revert network
+	uci revert wireless
+}
