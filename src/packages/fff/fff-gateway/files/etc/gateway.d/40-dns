@@ -1,0 +1,20 @@
+configure() {
+	# dns
+	if dnsservers=$(uci -q get gateway.@dns[0].server); then
+		for dns in $dnsservers; do
+			uci add_list dhcp.@dnsmasq[0].server=$dns
+			uci add_list dhcp.@dnsmasq[0].server="/in-addr.arpa/$dns"
+			uci add_list dhcp.@dnsmasq[0].server="/ip6.arpa/$dns"
+		done
+	else
+		echo "WARNING: No DNS servers set!"
+	fi
+}
+
+apply() {
+	uci commit dhcp
+}
+
+revert() {
+	uci revert dhcp
+}
