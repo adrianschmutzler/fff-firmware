@@ -1,0 +1,135 @@
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Fri, 10 May 2019 23:28:47 +0800
+Subject: ath79: dts: drop "simple-mfd" for gmacs in SoC dtsi
+
+With a proper probe deferring for ag71xx we don't need to explicitly
+probe mdio1 before gmac0.
+Drop all "simple-mfd" in SoC dtsi so that gmac orders can be the same
+as ar71xx.
+This makes eth0/eth1 order the same as those in ar71xx, which means
+we don't need a migration script for this anymore and we can merge
+incorrectly split gmac/mdio driver back together.
+
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+
+diff --git a/target/linux/ath79/dts/ar7241.dtsi b/target/linux/ath79/dts/ar7241.dtsi
+index 155826610f..8f0eb3b270 100644
+--- a/target/linux/ath79/dts/ar7241.dtsi
++++ b/target/linux/ath79/dts/ar7241.dtsi
+@@ -78,7 +78,7 @@
+ };
+ 
+ &eth1 {
+-	compatible = "qca,ar7241-eth", "syscon", "simple-mfd";
++	compatible = "qca,ar7241-eth", "syscon";
+ 
+ 	pll-data = <0x00110000 0x00001099 0x00991099>;
+ 
+diff --git a/target/linux/ath79/dts/ar7242.dtsi b/target/linux/ath79/dts/ar7242.dtsi
+index 44eb0edfdc..be28ae7838 100644
+--- a/target/linux/ath79/dts/ar7242.dtsi
++++ b/target/linux/ath79/dts/ar7242.dtsi
+@@ -45,7 +45,7 @@
+ };
+ 
+ &eth0 {
+-	compatible = "qca,ar7242-eth", "syscon", "simple-mfd";
++	compatible = "qca,ar7242-eth", "syscon";
+ 
+ 	pll-data = <0x16000000 0x00000101 0x00001616>;
+ 	pll-reg = <0x4 0x2c 17>;
+@@ -72,7 +72,7 @@
+ };
+ 
+ &eth1 {
+-	compatible = "qca,ar7242-eth", "syscon", "simple-mfd";
++	compatible = "qca,ar7242-eth", "syscon";
+ 
+ 	resets = <&rst 13>;
+ 	reset-names = "mac";
+diff --git a/target/linux/ath79/dts/ar9330.dtsi b/target/linux/ath79/dts/ar9330.dtsi
+index 6a122ba840..603b16581c 100644
+--- a/target/linux/ath79/dts/ar9330.dtsi
++++ b/target/linux/ath79/dts/ar9330.dtsi
+@@ -192,7 +192,7 @@
+ };
+ 
+ &eth1 {
+-	compatible = "qca,ar9330-eth", "syscon", "simple-mfd";
++	compatible = "qca,ar9330-eth", "syscon";
+ 
+ 	pll-data = <0x00110000 0x00001099 0x00991099>;
+ 	phy-mode = "gmii";
+diff --git a/target/linux/ath79/dts/ar934x.dtsi b/target/linux/ath79/dts/ar934x.dtsi
+index 691cbe13e9..831854b89b 100644
+--- a/target/linux/ath79/dts/ar934x.dtsi
++++ b/target/linux/ath79/dts/ar934x.dtsi
+@@ -240,7 +240,7 @@
+ };
+ 
+ &eth1 {
+-	compatible = "qca,ar9340-eth", "syscon", "simple-mfd";
++	compatible = "qca,ar9340-eth", "syscon";
+ 
+ 	resets = <&rst 13>;
+ 	reset-names = "mac";
+diff --git a/target/linux/ath79/dts/ath79.dtsi b/target/linux/ath79/dts/ath79.dtsi
+index a57c58659f..c351272025 100644
+--- a/target/linux/ath79/dts/ath79.dtsi
++++ b/target/linux/ath79/dts/ath79.dtsi
+@@ -43,7 +43,7 @@
+ 		eth0: eth@19000000 {
+ 			status = "disabled";
+ 
+-			compatible = "qca,ath79-eth", "syscon", "simple-mfd";
++			compatible = "qca,ath79-eth", "syscon";
+ 			reg = <0x19000000 0x200>;
+ 
+ 			interrupts = <4>;
+@@ -66,7 +66,7 @@
+ 		eth1: eth@1a000000 {
+ 			status = "disabled";
+ 
+-			compatible = "qca,ath79-eth", "syscon", "simple-mfd";
++			compatible = "qca,ath79-eth", "syscon";
+ 			reg = <0x1a000000 0x200>;
+ 
+ 			interrupts = <5>;
+diff --git a/target/linux/ath79/dts/qca953x.dtsi b/target/linux/ath79/dts/qca953x.dtsi
+index 44f05a5f47..45e5b851fa 100644
+--- a/target/linux/ath79/dts/qca953x.dtsi
++++ b/target/linux/ath79/dts/qca953x.dtsi
+@@ -274,7 +274,7 @@
+ &eth1 {
+ 	status = "okay";
+ 
+-	compatible = "qca,qca9530-eth", "syscon", "simple-mfd";
++	compatible = "qca,qca9530-eth", "syscon";
+ 	resets = <&rst 13>;
+ 	reset-names = "mac";
+ 
+diff --git a/target/linux/ath79/dts/qca956x.dtsi b/target/linux/ath79/dts/qca956x.dtsi
+index a9437fce0e..01098fdc8a 100644
+--- a/target/linux/ath79/dts/qca956x.dtsi
++++ b/target/linux/ath79/dts/qca956x.dtsi
+@@ -257,7 +257,7 @@
+ };
+ 
+ &eth0 {
+-	compatible = "qca,qca9560-eth", "syscon", "simple-mfd";
++	compatible = "qca,qca9560-eth", "syscon";
+ 
+ 	pll-data = <0x03000000 0x00000101 0x00001919>;
+ 	pll-reg = <0 0x48 0>;
+@@ -300,7 +300,7 @@
+ };
+ 
+ &eth1 {
+-	compatible = "qca,qca9560-eth", "syscon", "simple-mfd";
++	compatible = "qca,qca9560-eth", "syscon";
+ 
+ 	phy-mode = "gmii";
+ 
+-- 
+2.11.0
+

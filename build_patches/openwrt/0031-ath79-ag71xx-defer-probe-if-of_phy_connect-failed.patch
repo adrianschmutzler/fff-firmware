@@ -1,0 +1,29 @@
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Fri, 10 May 2019 22:17:28 +0800
+Subject: ath79: ag71xx: defer probe if of_phy_connect failed
+
+gmac0 may need a phy on builtin switch, which can be unavailable
+if gmac0 is probed before builtin switch.
+Return -EPROBE_DEFER in this case so that gmac0 can be probed
+later.
+
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+
+diff --git a/target/linux/ath79/files/drivers/net/ethernet/atheros/ag71xx/ag71xx_phy.c b/target/linux/ath79/files/drivers/net/ethernet/atheros/ag71xx/ag71xx_phy.c
+index f9df38d530..ac1af26860 100644
+--- a/target/linux/ath79/files/drivers/net/ethernet/atheros/ag71xx/ag71xx_phy.c
++++ b/target/linux/ath79/files/drivers/net/ethernet/atheros/ag71xx/ag71xx_phy.c
+@@ -75,8 +75,8 @@ int ag71xx_phy_connect(struct ag71xx *ag)
+ 
+ 	if (!ag->phy_dev) {
+ 		dev_err(&ag->pdev->dev,
+-			"Could not connect to PHY device\n");
+-		return -ENODEV;
++			"Could not connect to PHY device. Deferring probe.\n");
++		return -EPROBE_DEFER;
+ 	}
+ 
+ 	dev_info(&ag->pdev->dev, "connected to PHY at %s [uid=%08x, driver=%s]\n",
+-- 
+2.11.0
+

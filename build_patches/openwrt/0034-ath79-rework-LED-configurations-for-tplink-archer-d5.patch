@@ -1,0 +1,34 @@
+From: Chuanhong Guo <gch981213@gmail.com>
+Date: Mon, 20 May 2019 21:26:03 +0800
+Subject: ath79: rework LED configurations for tplink,archer-d50-v1
+
+The original one has the following problem:
+1. Port mask of lan led includes wan port.
+2. By using netdev trigger with vlan port, the link led
+   is always on.
+
+This commits fixes the above problems by correcting port
+mask for lan led and use swconfig trigger for wan leds.
+
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+
+diff --git a/target/linux/ath79/base-files/etc/board.d/01_leds b/target/linux/ath79/base-files/etc/board.d/01_leds
+index 561ad7cdca..22a395c59f 100755
+--- a/target/linux/ath79/base-files/etc/board.d/01_leds
++++ b/target/linux/ath79/base-files/etc/board.d/01_leds
+@@ -137,9 +137,9 @@ tplink,cpe210-v3)
+ 	ucidef_set_led_rssi "rssihigh" "RSSIHIGH" "tp-link:green:link4" "wlan0" "80" "100"
+ 	;;
+ tplink,archer-d50-v1)
+-	ucidef_set_led_switch "lan" "LAN" "tp-link:white:lan" "switch0" "0x1E"
+-	ucidef_set_led_netdev "wan_data" "WAN Data" "tp-link:white:internet" "eth1.2" "tx rx"
+-	ucidef_set_led_netdev "wan_link" "WAN Link" "tp-link:white:wan" "eth1.2" "link"
++	ucidef_set_led_switch "lan" "LAN" "tp-link:white:lan" "switch0" "0x1c"
++	ucidef_set_led_switch "wan_data" "WAN Data" "tp-link:white:internet" "switch0" "0x02" "" "tx rx"
++	ucidef_set_led_switch "wan_link" "WAN Link" "tp-link:white:wan" "switch0" "0x02" "" "link"
+ 	;;
+ tplink,re450-v2)
+ 	ucidef_set_led_netdev "lan_data" "LAN Data" "tp-link:green:lan_data" "eth0" "tx rx"
+-- 
+2.11.0
+

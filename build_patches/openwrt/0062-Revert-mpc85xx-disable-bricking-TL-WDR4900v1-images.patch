@@ -1,0 +1,24 @@
+From: Pawel Dembicki <paweldembicki@gmail.com>
+Date: Thu, 23 May 2019 20:41:50 +0200
+Subject: Revert "mpc85xx: disable bricking TL-WDR4900v1 images"
+
+This reverts commit 324e94f31bfdcf9c2245303434b087b306de0262.
+
+Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+
+diff --git a/target/linux/mpc85xx/image/Makefile b/target/linux/mpc85xx/image/Makefile
+index 4bd4efc747..ddaa05861a 100644
+--- a/target/linux/mpc85xx/image/Makefile
++++ b/target/linux/mpc85xx/image/Makefile
+@@ -64,7 +64,7 @@ define Device/tl-wdr4900-v1
+   IMAGE/sysupgrade.bin := append-rootfs | mktplinkfw sysupgrade | append-metadata
+   IMAGE/factory.bin := append-rootfs | mktplinkfw factory
+ endef
+-#TARGET_DEVICES += tl-wdr4900-v1
++TARGET_DEVICES += tl-wdr4900-v1
+ 
+ define Device/red-15w-rev1
+   DEVICE_TITLE := Sophos RED 15w Rev.1
+-- 
+2.11.0
+

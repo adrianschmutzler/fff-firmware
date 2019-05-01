@@ -1,0 +1,353 @@
+From: Christian Lamparter <chunkeey@gmail.com>
+Date: Tue, 29 Jan 2019 23:52:27 +0100
+Subject: mpc85xx: convert TL-WDR4900 v1 to simpleImage
+
+Converts the TP-Link WDR4900 v1 to use the simpleImage in the
+hopes of prolonging the life of the device. While at it,
+the patch makes the fdt.bin an ARTIFACT and sets the KERNEL_SIZE
+to 2684 KiB as a precaution since the stock u-boot is using a
+fixed kernel size.
+
+Note: Give the image some time, it will take much longer to
+extract and boot.
+
+[tested for 4.14/4.19]
+
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+Co-authored-by: Pawel Dembicki <paweldembicki@gmail.com>
+
+diff --git a/target/linux/generic/hack-4.14/302-powerpc-Enable-kernel-XZ-compression-option-on-BOOK3.patch b/target/linux/generic/hack-4.14/302-powerpc-Enable-kernel-XZ-compression-option-on-BOOK3.patch
+new file mode 100644
+index 0000000000..3897ba9983
+--- /dev/null
++++ b/target/linux/generic/hack-4.14/302-powerpc-Enable-kernel-XZ-compression-option-on-BOOK3.patch
+@@ -0,0 +1,37 @@
++From 26064848efbca49c643d1237dc1f8215515d52ee Mon Sep 17 00:00:00 2001
++From: Aaro Koskinen <aaro.koskinen@iki.fi>
++Date: Tue, 19 Jun 2018 23:52:30 +0300
++Subject: [PATCH] powerpc: Enable kernel XZ compression option on BOOK3S_32
++
++Enable kernel XZ compression option on BOOK3S_32. Tested on G4
++PowerBook.
++
++Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
++[mpe: Use one select under the PPC symbol guarded by if PPC_BOOK3S]
++Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
++[added PPC_85xx too]
++---
++
++--- a/arch/powerpc/Kconfig
+++++ b/arch/powerpc/Kconfig
++@@ -199,6 +199,7 @@ config PPC
++ 	select HAVE_IOREMAP_PROT
++ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
++ 	select HAVE_KERNEL_GZIP
+++	select HAVE_KERNEL_XZ			if PPC_BOOK3S || PPC_85xx
++ 	select HAVE_KPROBES
++ 	select HAVE_KPROBES_ON_FTRACE
++ 	select HAVE_KRETPROBES
++--- a/arch/powerpc/platforms/Kconfig.cputype
+++++ b/arch/powerpc/platforms/Kconfig.cputype
++@@ -75,7 +75,6 @@ config PPC_BOOK3S_64
++ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
++ 	select ARCH_SUPPORTS_NUMA_BALANCING
++ 	select IRQ_WORK
++-	select HAVE_KERNEL_XZ
++ 
++ config PPC_BOOK3E_64
++ 	bool "Embedded processors"
++-- 
++2.20.1
++
+diff --git a/target/linux/generic/hack-4.19/302-powerpc-Enable-kernel-XZ-compression-option-on-BOOK3.patch b/target/linux/generic/hack-4.19/302-powerpc-Enable-kernel-XZ-compression-option-on-BOOK3.patch
+new file mode 100644
+index 0000000000..5da10c69c5
+--- /dev/null
++++ b/target/linux/generic/hack-4.19/302-powerpc-Enable-kernel-XZ-compression-option-on-BOOK3.patch
+@@ -0,0 +1,32 @@
++From 9791a72cf4a02a388dfad84d6f3ce3f6987e4e44 Mon Sep 17 00:00:00 2001
++From: Aaro Koskinen <aaro.koskinen@iki.fi>
++Date: Tue, 19 Jun 2018 23:52:30 +0300
++Subject: [PATCH] powerpc: Enable kernel XZ compression option on BOOK3S_32
++
++Enable kernel XZ compression option on BOOK3S_32. Tested on G4
++PowerBook.
++
++Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
++[mpe: Use one select under the PPC symbol guarded by if PPC_BOOK3S]
++Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
++[added PPC_85xx too]
++---
++ arch/powerpc/Kconfig | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
++index a80669209155..f1e9f31ee3b0 100644
++--- a/arch/powerpc/Kconfig
+++++ b/arch/powerpc/Kconfig
++@@ -197,7 +197,7 @@ config PPC
++ 	select HAVE_IOREMAP_PROT
++ 	select HAVE_IRQ_EXIT_ON_IRQ_STACK
++ 	select HAVE_KERNEL_GZIP
++-	select HAVE_KERNEL_XZ			if PPC_BOOK3S
+++	select HAVE_KERNEL_XZ			if PPC_BOOK3S || PPC_85xx
++ 	select HAVE_KPROBES
++ 	select HAVE_KPROBES_ON_FTRACE
++ 	select HAVE_KRETPROBES
++-- 
++2.20.1
++
+diff --git a/target/linux/mpc85xx/files/arch/powerpc/boot/cuboot-tl-wdr4900-v1.c b/target/linux/mpc85xx/files/arch/powerpc/boot/tl-wdr4900-v1.c
+similarity index 100%
+rename from target/linux/mpc85xx/files/arch/powerpc/boot/cuboot-tl-wdr4900-v1.c
+rename to target/linux/mpc85xx/files/arch/powerpc/boot/tl-wdr4900-v1.c
+diff --git a/target/linux/mpc85xx/generic/target.mk b/target/linux/mpc85xx/generic/target.mk
+index 82e2b63026..f826fe4d15 100644
+--- a/target/linux/mpc85xx/generic/target.mk
++++ b/target/linux/mpc85xx/generic/target.mk
+@@ -1,6 +1,6 @@
+ BOARDNAME:=Generic
+ FEATURES+=nand
+-KERNELNAME:=cuImage.tl-wdr4900-v1
++KERNELNAME:=simpleImage.tl-wdr4900-v1
+ 
+ define Target/Description
+ 	Build firmware images for generic MPC85xx based boards.
+diff --git a/target/linux/mpc85xx/image/Makefile b/target/linux/mpc85xx/image/Makefile
+index f95e38d5c6..4bd4efc747 100644
+--- a/target/linux/mpc85xx/image/Makefile
++++ b/target/linux/mpc85xx/image/Makefile
+@@ -52,11 +52,15 @@ define Device/tl-wdr4900-v1
+   TPLINK_HWREV := 1
+   TPLINK_FLASHLAYOUT := 16Mppc
+   KERNEL_SIZE := 2684k
+-  KERNEL_NAME := cuImage.tl-wdr4900-v1
++  KERNEL_NAME := simpleImage.tl-wdr4900-v1
+   KERNEL_INITRAMFS :=
++  KERNEL := kernel-bin | uImage none
++  KERNEL_ENTRY := 0x1000000
++  KERNEL_LOADADDR := 0x1000000
+   SUPPORTED_DEVICES:=tl-wdr4900-v1 tplink,tl-wdr4900-v1
++  ARTIFACTS := fdt.bin
++  ARTIFACT/fdt.bin := append-dtb
+   IMAGES := fdt.bin factory.bin sysupgrade.bin
+-  IMAGE/fdt.bin := append-dtb
+   IMAGE/sysupgrade.bin := append-rootfs | mktplinkfw sysupgrade | append-metadata
+   IMAGE/factory.bin := append-rootfs | mktplinkfw factory
+ endef
+diff --git a/target/linux/mpc85xx/patches-4.14/100-powerpc-85xx-tl-wdr4900-v1-support.patch b/target/linux/mpc85xx/patches-4.14/100-powerpc-85xx-tl-wdr4900-v1-support.patch
+index 0fbb16f3bd..4a17274b88 100644
+--- a/target/linux/mpc85xx/patches-4.14/100-powerpc-85xx-tl-wdr4900-v1-support.patch
++++ b/target/linux/mpc85xx/patches-4.14/100-powerpc-85xx-tl-wdr4900-v1-support.patch
+@@ -1,4 +1,4 @@
+-From 406d86e5990ac171f18ef6e2973672d8fbfe1556 Mon Sep 17 00:00:00 2001
++From 4cfe519f7287ffe81d8e61368d51873fd40657b7 Mon Sep 17 00:00:00 2001
+ From: Gabor Juhos <juhosg@openwrt.org>
+ Date: Wed, 20 Feb 2013 08:40:33 +0100
+ Subject: [PATCH] powerpc: 85xx: add support for the TP-Link TL-WDR4900 v1
+@@ -9,44 +9,53 @@ concurrent dual-band wireless router. The devices uses
+ the Freescale P1014 SoC.
+ 
+ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
++Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+ ---
+- arch/powerpc/boot/Makefile                  |   3 +
+- arch/powerpc/boot/wrapper                   |   4 +
+- arch/powerpc/platforms/85xx/Kconfig         |  11 ++
+- arch/powerpc/platforms/85xx/Makefile        |   1 +
++ arch/powerpc/boot/Makefile           |  3 ++-
++ arch/powerpc/boot/wrapper            |  5 +++++
++ arch/powerpc/platforms/85xx/Kconfig  | 11 +++++++++++
++ arch/powerpc/platforms/85xx/Makefile |  1 +
++ 4 files changed, 19 insertions(+), 1 deletion(-)
+ 
++diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
++index e2a5a932c24a..1673f5977d75 100644
+ --- a/arch/powerpc/boot/Makefile
+ +++ b/arch/powerpc/boot/Makefile
+-@@ -156,6 +156,7 @@ src-plat-$(CONFIG_PPC_PSERIES) += pserie
++@@ -156,6 +156,7 @@ src-plat-$(CONFIG_PPC_PSERIES) += pseries-head.S
+  src-plat-$(CONFIG_PPC_POWERNV) += pseries-head.S
+  src-plat-$(CONFIG_PPC_IBM_CELL_BLADE) += pseries-head.S
+  src-plat-$(CONFIG_MVME7100) += motload-head.S mvme7100.c
+-+src-plat-$(CONFIG_TL_WDR4900_V1) += cuboot-tl-wdr4900-v1.c
+++src-plat-$(CONFIG_TL_WDR4900_V1) += tl-wdr4900-v1.c fixed-head.S
+  
+  src-wlib := $(sort $(src-wlib-y))
+  src-plat := $(sort $(src-plat-y))
+-@@ -335,7 +336,7 @@ image-$(CONFIG_TQM8555)			+= cuImage.tqm
++@@ -335,7 +336,7 @@ image-$(CONFIG_TQM8555)			+= cuImage.tqm8555
+  image-$(CONFIG_TQM8560)			+= cuImage.tqm8560
+  image-$(CONFIG_SBC8548)			+= cuImage.sbc8548
+  image-$(CONFIG_KSI8560)			+= cuImage.ksi8560
+ -
+-+image-$(CONFIG_TL_WDR4900_V1)		+= cuImage.tl-wdr4900-v1
+++image-$(CONFIG_TL_WDR4900_V1)		+= simpleImage.tl-wdr4900-v1
+  # Board ports in arch/powerpc/platform/86xx/Kconfig
+  image-$(CONFIG_MVME7100)                += dtbImage.mvme7100
+  
++diff --git a/arch/powerpc/boot/wrapper b/arch/powerpc/boot/wrapper
++index 76fe3ccfd381..31219464e21c 100755
+ --- a/arch/powerpc/boot/wrapper
+ +++ b/arch/powerpc/boot/wrapper
+-@@ -277,6 +277,10 @@ cuboot*)
+-     *-mpc85*|*-tqm85*|*-sbc85*)
+-         platformo=$object/cuboot-85xx.o
+-         ;;
+-+    *-tl-wdr4900-v1)
+-+        platformo=$object/cuboot-tl-wdr4900-v1.o
++@@ -302,6 +302,11 @@ adder875-redboot)
++     platformo="$object/fixed-head.o $object/redboot-8xx.o"
++     binary=y
++     ;;
+++simpleboot-tl-wdr4900-v1)
+++    platformo="$object/fixed-head.o $object/tl-wdr4900-v1.o"
+ +    link_address='0x1000000'
+-+        ;;
+-     *-amigaone)
+-         link_address='0x800000'
+-         ;;
+++    binary=y
+++    ;;
++ simpleboot-virtex405-*)
++     platformo="$object/virtex405-head.o $object/simpleboot.o $object/virtex.o"
++     binary=y
++diff --git a/arch/powerpc/platforms/85xx/Kconfig b/arch/powerpc/platforms/85xx/Kconfig
++index 68920d42b4bc..477782740f0e 100644
+ --- a/arch/powerpc/platforms/85xx/Kconfig
+ +++ b/arch/powerpc/platforms/85xx/Kconfig
+ @@ -170,6 +170,17 @@ config STX_GP3
+@@ -67,9 +76,11 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+  config TQM8540
+  	bool "TQ Components TQM8540"
+  	help
++diff --git a/arch/powerpc/platforms/85xx/Makefile b/arch/powerpc/platforms/85xx/Makefile
++index d1dd0dca5ebf..d0dab29a33eb 100644
+ --- a/arch/powerpc/platforms/85xx/Makefile
+ +++ b/arch/powerpc/platforms/85xx/Makefile
+-@@ -26,6 +26,7 @@ obj-$(CONFIG_CORENET_GENERIC)   += coren
++@@ -26,6 +26,7 @@ obj-$(CONFIG_CORENET_GENERIC)   += corenet_generic.o
+  obj-$(CONFIG_FB_FSL_DIU)	+= t1042rdb_diu.o
+  obj-$(CONFIG_STX_GP3)	  += stx_gp3.o
+  obj-$(CONFIG_TQM85xx)	  += tqm85xx.o
+@@ -77,3 +88,6 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+  obj-$(CONFIG_SBC8548)     += sbc8548.o
+  obj-$(CONFIG_PPA8548)     += ppa8548.o
+  obj-$(CONFIG_SOCRATES)    += socrates.o socrates_fpga_pic.o
++-- 
++2.20.1
++
+diff --git a/target/linux/mpc85xx/patches-4.19/100-powerpc-85xx-tl-wdr4900-v1-support.patch b/target/linux/mpc85xx/patches-4.19/100-powerpc-85xx-tl-wdr4900-v1-support.patch
+index 6d76ebc32c..00f31bd1fb 100644
+--- a/target/linux/mpc85xx/patches-4.19/100-powerpc-85xx-tl-wdr4900-v1-support.patch
++++ b/target/linux/mpc85xx/patches-4.19/100-powerpc-85xx-tl-wdr4900-v1-support.patch
+@@ -1,4 +1,4 @@
+-From 406d86e5990ac171f18ef6e2973672d8fbfe1556 Mon Sep 17 00:00:00 2001
++From 1a3147b6a50ba1c0a8fe2870a4b589ef8e4c8e7c Mon Sep 17 00:00:00 2001
+ From: Gabor Juhos <juhosg@openwrt.org>
+ Date: Wed, 20 Feb 2013 08:40:33 +0100
+ Subject: [PATCH] powerpc: 85xx: add support for the TP-Link TL-WDR4900 v1
+@@ -9,44 +9,53 @@ concurrent dual-band wireless router. The devices uses
+ the Freescale P1014 SoC.
+ 
+ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
++Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+ ---
+- arch/powerpc/boot/Makefile                  |   3 +
+- arch/powerpc/boot/wrapper                   |   4 +
+- arch/powerpc/platforms/85xx/Kconfig         |  11 ++
+- arch/powerpc/platforms/85xx/Makefile        |   1 +
++ arch/powerpc/boot/Makefile           |  3 ++-
++ arch/powerpc/boot/wrapper            |  5 +++++
++ arch/powerpc/platforms/85xx/Kconfig  | 11 +++++++++++
++ arch/powerpc/platforms/85xx/Makefile |  1 +
++ 4 files changed, 19 insertions(+), 1 deletion(-)
+ 
++diff --git a/arch/powerpc/boot/Makefile b/arch/powerpc/boot/Makefile
++index 25e3184f11f7..27cadd2c9690 100644
+ --- a/arch/powerpc/boot/Makefile
+ +++ b/arch/powerpc/boot/Makefile
+-@@ -164,6 +164,7 @@ src-plat-$(CONFIG_PPC_PSERIES) += pserie
++@@ -164,6 +164,7 @@ src-plat-$(CONFIG_PPC_PSERIES) += pseries-head.S
+  src-plat-$(CONFIG_PPC_POWERNV) += pseries-head.S
+  src-plat-$(CONFIG_PPC_IBM_CELL_BLADE) += pseries-head.S
+  src-plat-$(CONFIG_MVME7100) += motload-head.S mvme7100.c
+-+src-plat-$(CONFIG_TL_WDR4900_V1) += cuboot-tl-wdr4900-v1.c
+++src-plat-$(CONFIG_TL_WDR4900_V1) += tl-wdr4900-v1.c fixed-head.S
+  
+  src-wlib := $(sort $(src-wlib-y))
+  src-plat := $(sort $(src-plat-y))
+-@@ -343,7 +344,7 @@ image-$(CONFIG_TQM8555)			+= cuImage.tqm
++@@ -343,7 +344,7 @@ image-$(CONFIG_TQM8555)			+= cuImage.tqm8555
+  image-$(CONFIG_TQM8560)			+= cuImage.tqm8560
+  image-$(CONFIG_SBC8548)			+= cuImage.sbc8548
+  image-$(CONFIG_KSI8560)			+= cuImage.ksi8560
+ -
+-+image-$(CONFIG_TL_WDR4900_V1)		+= cuImage.tl-wdr4900-v1
+++image-$(CONFIG_TL_WDR4900_V1)		+= simpleImage.tl-wdr4900-v1
+  # Board ports in arch/powerpc/platform/86xx/Kconfig
+  image-$(CONFIG_MVME7100)                += dtbImage.mvme7100
+  
++diff --git a/arch/powerpc/boot/wrapper b/arch/powerpc/boot/wrapper
++index f9141eaec6ff..d04754827dfc 100755
+ --- a/arch/powerpc/boot/wrapper
+ +++ b/arch/powerpc/boot/wrapper
+-@@ -277,6 +277,10 @@ cuboot*)
+-     *-mpc85*|*-tqm85*|*-sbc85*)
+-         platformo=$object/cuboot-85xx.o
+-         ;;
+-+    *-tl-wdr4900-v1)
+-+        platformo=$object/cuboot-tl-wdr4900-v1.o
++@@ -302,6 +302,11 @@ adder875-redboot)
++     platformo="$object/fixed-head.o $object/redboot-8xx.o"
++     binary=y
++     ;;
+++simpleboot-tl-wdr4900-v1)
+++    platformo="$object/fixed-head.o $object/tl-wdr4900-v1.o"
+ +    link_address='0x1000000'
+-+        ;;
+-     *-amigaone)
+-         link_address='0x800000'
+-         ;;
+++    binary=y
+++    ;;
++ simpleboot-virtex405-*)
++     platformo="$object/virtex405-head.o $object/simpleboot.o $object/virtex.o"
++     binary=y
++diff --git a/arch/powerpc/platforms/85xx/Kconfig b/arch/powerpc/platforms/85xx/Kconfig
++index 68920d42b4bc..477782740f0e 100644
+ --- a/arch/powerpc/platforms/85xx/Kconfig
+ +++ b/arch/powerpc/platforms/85xx/Kconfig
+ @@ -170,6 +170,18 @@ config STX_GP3
+@@ -58,7 +67,7 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+ +    select DEFAULT_UIMAGE
+ +    select ARCH_REQUIRE_GPIOLIB
+ +    select GPIO_MPC8XXX
+-+       select SWIOTLB
+++    select SWIOTLB
+ +    help
+ +      This option enables support for the TP-Link TL-WDR4900 v1 board.
+ +
+@@ -68,9 +77,11 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+  config TQM8540
+  	bool "TQ Components TQM8540"
+  	help
++diff --git a/arch/powerpc/platforms/85xx/Makefile b/arch/powerpc/platforms/85xx/Makefile
++index d1dd0dca5ebf..d0dab29a33eb 100644
+ --- a/arch/powerpc/platforms/85xx/Makefile
+ +++ b/arch/powerpc/platforms/85xx/Makefile
+-@@ -26,6 +26,7 @@ obj-$(CONFIG_CORENET_GENERIC)   += coren
++@@ -26,6 +26,7 @@ obj-$(CONFIG_CORENET_GENERIC)   += corenet_generic.o
+  obj-$(CONFIG_FB_FSL_DIU)	+= t1042rdb_diu.o
+  obj-$(CONFIG_STX_GP3)	  += stx_gp3.o
+  obj-$(CONFIG_TQM85xx)	  += tqm85xx.o
+@@ -78,3 +89,6 @@ Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+  obj-$(CONFIG_SBC8548)     += sbc8548.o
+  obj-$(CONFIG_PPA8548)     += ppa8548.o
+  obj-$(CONFIG_SOCRATES)    += socrates.o socrates_fpga_pic.o
++-- 
++2.20.1
++
+-- 
+2.11.0
+

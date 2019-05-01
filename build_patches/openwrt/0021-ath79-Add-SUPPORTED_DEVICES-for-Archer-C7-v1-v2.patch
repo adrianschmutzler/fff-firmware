@@ -1,0 +1,33 @@
+From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+Date: Wed, 17 Apr 2019 15:40:42 +0200
+Subject: ath79: Add SUPPORTED_DEVICES for Archer C7 v1/v2
+
+The identifier for both devices is "archer-c7" on ar71xx, set here:
+https://github.com/openwrt/openwrt/blob/master/target/linux/ar71xx/base-files/lib/ar71xx.sh#L348
+https://github.com/openwrt/openwrt/blob/master/target/linux/ar71xx/base-files/lib/ar71xx.sh#L511
+
+Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+
+diff --git a/target/linux/ath79/image/generic-tp-link.mk b/target/linux/ath79/image/generic-tp-link.mk
+index 4a5bb93864..107aec8471 100644
+--- a/target/linux/ath79/image/generic-tp-link.mk
++++ b/target/linux/ath79/image/generic-tp-link.mk
+@@ -70,6 +70,7 @@ define Device/tplink_archer-c7-v1
+   DEVICE_TITLE := TP-Link Archer C7 v1
+   DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ledtrig-usbport kmod-ath10k-ct ath10k-firmware-qca988x-ct
+   TPLINK_HWID := 0x75000001
++  SUPPORTED_DEVICES += archer-c7
+ endef
+ TARGET_DEVICES += tplink_archer-c7-v1
+ 
+@@ -79,6 +80,7 @@ define Device/tplink_archer-c7-v2
+   DEVICE_TITLE := TP-Link Archer C7 v2
+   DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ledtrig-usbport kmod-ath10k-ct ath10k-firmware-qca988x-ct
+   TPLINK_HWID := 0xc7000002
++  SUPPORTED_DEVICES += archer-c7
+   IMAGES += factory-us.bin factory-eu.bin
+   IMAGE/factory-us.bin := append-rootfs | mktplinkfw factory -C US
+   IMAGE/factory-eu.bin := append-rootfs | mktplinkfw factory -C EU
+-- 
+2.11.0
+
