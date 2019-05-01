@@ -1,11 +1,6 @@
-From 106c710f2338b9faa55b45bf18ba3f10183b7e20 Mon Sep 17 00:00:00 2001
 From: Tim Niemeyer <tim@tn-x.org>
 Date: Sat, 8 Jul 2017 10:47:56 +0200
-Subject: [PATCH 3/4] ntpd host as string
-
----
- package/utils/busybox/files/sysntpd | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Subject: ntpd host as string
 
 diff --git a/package/utils/busybox/files/sysntpd b/package/utils/busybox/files/sysntpd
 index e693e4031c..12383a4937 100755
