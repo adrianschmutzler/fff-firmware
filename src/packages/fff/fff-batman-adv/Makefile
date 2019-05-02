@@ -14,8 +14,8 @@ define Package/$(PKG_NAME)
 	TITLE:=Freifunk-Franken batman-adv
 	URL:=http://www.freifunk-franken.de
 	DEPENDS:=+kmod-batman-adv \
-			 +@KMOD_BATMAN_ADV_BATMAN_V \
-			 +@KMOD_BATMAN_ADV_NC \
+			 +@BATMAN_ADV_BATMAN_V \
+			 +@BATMAN_ADV_NC \
 			 +batctl
 endef
 
