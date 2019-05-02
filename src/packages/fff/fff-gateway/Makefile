@@ -13,7 +13,7 @@ define Package/fff-gateway
 	CATEGORY:=Freifunk
 	TITLE:= Freifunk-Franken gateway configuration
 	URL:=https://www.freifunk-franken.de
-	DEPENDS:=+fff-network +fff-macnock
+	DEPENDS:=+fff-network +fff-macnock +fff-fixmtu
 endef
 
 define Package/fff-gateway/description
