@@ -37,13 +37,14 @@ configure() {
 			fi
 		fi
 
-		# WIFI
+		# read hood vars
 		json_select hood
 		json_get_var hood name
 		json_get_var mesh_id mesh_id
 		json_get_var mesh_bssid mesh_bssid
 		json_get_var mesh_essid mesh_essid
 		json_get_var essid essid
+		json_get_var ntpip ntp_ip
 		json_get_var chan2ghz channel2
 		json_get_var mesh_type2 mesh_type2
 		json_get_var chan5ghz channel5
@@ -53,6 +54,13 @@ configure() {
 		echo "Setting hood name: $hood"
 		uci set "system.@system[0].hood=$hood"
 
+		# time server
+		uci delete system.ntp
+		uci set system.ntp='timeserver'
+		uci add_list system.ntp.server="$ntpip"
+		uci set system.ntp.enable_server='0'
+
+		# wireless
 		for radio in $(wifiListRadio); do
 			freq="$(wifiGetFreq $radio)"
 
