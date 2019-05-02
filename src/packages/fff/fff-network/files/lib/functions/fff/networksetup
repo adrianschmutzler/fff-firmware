@@ -198,3 +198,11 @@ setup2ndEth() {
 
 	uci commit network
 }
+
+switchPrefix() {
+	# Returns ethX. of switch, e.g. "eth0."
+	#
+	# This requires at least one switch_vlan being present and network to be initialized
+
+	ls /sys/class/net/ | grep -m1 -o "^eth\d\."
+}
