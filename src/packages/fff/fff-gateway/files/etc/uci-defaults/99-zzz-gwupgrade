@@ -1,4 +1,0 @@
-#!/bin/sh
-
-echo "/etc/config/gateway" >> /etc/sysupgrade.conf
-echo "/www/hood/keyxchangev2data" >> /etc/sysupgrade.conf
