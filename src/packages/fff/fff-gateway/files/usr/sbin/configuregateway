@@ -51,6 +51,9 @@ configure() {
 reload_services() {
 	execute_subshell reload
 	reload_config
+	/etc/init.d/network restart
+	/etc/init.d/babeld restart
+	/etc/init.d/fixmtu start
 }
 
 apply_changes() {
