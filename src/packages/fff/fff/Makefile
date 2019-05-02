@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff
 PKG_VERSION:=0.0.2-5
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff
 
@@ -20,7 +20,6 @@ define Package/fff/base
 			 +fff-config \
 			 +fff-nodewatcher \
 			 +fff-web \
-			 +fff-batman-adv \
 			 +fff-support \
 			 +fff-network \
 			 +fff-sysupgrade \
@@ -39,6 +38,7 @@ define Package/fff-node
 	DEPENDS+=+fff-fastd \
 			 +fff-firewall \
 			 +fff-uradvd \
+			 +fff-batman-adv \
 			 +fff-hoods
 	VARIANT:=homenode
 endef

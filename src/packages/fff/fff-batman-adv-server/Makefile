@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-batman-adv-server
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -12,12 +12,15 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Freifunk
 	TITLE:=Freifunk-Franken batman-adv-server
 	URL:=http://www.freifunk-franken.de
-	DEPENDS:=+fff-batman-adv
+	DEPENDS:=+kmod-batman-adv \
+			 +@KMOD_BATMAN_ADV_BATMAN_V \
+			 +@KMOD_BATMAN_ADV_NC \
+			 +batctl
 endef
 
 define Package/$(PKG_NAME)/description
 	This is the batman-adv-server for the Freifunk Franken Firmware
-	It is used to re-configure batman-adv package as used in a server.
+	It is used to configure batman-adv package as used in a server.
 endef
 
 define Build/Prepare
