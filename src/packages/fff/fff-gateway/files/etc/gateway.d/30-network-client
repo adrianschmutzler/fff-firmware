@@ -16,7 +16,7 @@ configure() {
 	# IPv6 address
 	#remove old ip6addr
 	for ip in $(uci get network.mesh.ip6addr); do
-		if echo "$ip" | grep -q -v -e "^fdff:" -e "fe80::1/64"; then
+		if echo "$ip" | grep -q -v -e "^fdff:"; then
 			uci del_list network.mesh.ip6addr="$ip"
 		fi
 	done
@@ -30,6 +30,9 @@ configure() {
 	fi
 	#put interface routes from set addresses into fff table
 	uci set network.mesh.ip6table='fff'
+
+	# Set fe80::1 to br-mesh
+	uci add_list network.mesh.ip6addr='fe80::1/64'
 
 	# dhcp
 	uci -q del dhcp.mesh.start
