@@ -1,11 +1,13 @@
+. /lib/functions/fff/networksetup
+
 configure() {
 	# batman
 	if vlan=$(uci -q get gateway.@batman[0].vlan); then
-		newmesh="$(uci get network.ethmesh.ifname | sed "s/\(eth\d\.\)\d*/\1$vlan/g")"
-		uci set network.ethmesh.ifname="$newmesh"
+		uci set network.ethmesh.ifname="$(switchPrefix)$vlan"
 	elif iface=$(uci -q get gateway.@batman[0].iface); then
 		uci set network.ethmesh.ifname="$iface"
 	else
+		uci del network.ethmesh.ifname
 		echo "WARNING: No interface for batman specified."
 	fi
 }

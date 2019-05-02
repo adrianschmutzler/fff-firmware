@@ -1,3 +1,5 @@
+. /lib/functions/fff/networksetup
+
 configure() {
 	# IPv4 address
 	#remove old ipaddr
@@ -51,14 +53,14 @@ configure() {
 	fi
 
 	# set interface
-	#Just replace existing eth0.x or ethX assigned to mesh.ifname
+	uci -q get network.mesh.ifname | grep -q "bat0" && meshbase="bat0 "
+
 	if vlan=$(uci -q get gateway.@client[0].vlan); then
-		newmesh="$(uci get network.mesh.ifname | sed "s/\(eth\d\.\)\d*/\1$vlan/g")"
-		uci set network.mesh.ifname="$newmesh"
+		uci set network.mesh.ifname="$meshbase$(switchPrefix)$vlan"
 	elif iface=$(uci -q get gateway.@client[0].iface); then
-		newmesh="$(uci get network.mesh.ifname | sed "s/ *eth[^ ]* *//g")"
-		uci set network.mesh.ifname="$newmesh $iface"
+		uci set network.mesh.ifname="$meshbase$iface"
 	else
+		uci set network.mesh.ifname=$meshbase # No quotes to cut tailing space
 		echo "WARNING: No interface for client specified!"
 	fi
 }
