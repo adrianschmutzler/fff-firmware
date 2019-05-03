@@ -1,13 +1,6 @@
 #!/bin/sh
-# Copyright 2019 Adrian Schmutzler
-# License GPLv3
 
-LOCALUPGRADESCRIPT="/etc/firstbootfff"
-
-#add LOCALUPGRADESCRIPT to sysupgrade
-grep -q ^"${LOCALUPGRADESCRIPT}"$ /etc/sysupgrade.conf || echo "$LOCALUPGRADESCRIPT" >> /etc/sysupgrade.conf
-
-# process user commands
-[ -s "$LOCALCONFIGSCRIPT" ] && {
+# process first-boot user commands
+[ -s "/etc/firstbootfff" ] && {
 	sh /etc/firstbootfff
 }
