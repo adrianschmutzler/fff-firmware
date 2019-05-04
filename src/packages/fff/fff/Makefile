@@ -55,10 +55,6 @@ define Package/fff-layer3
 			 +ebtables-utils \
 			 +kmod-ebtables-ipv4 \
 			 +kmod-ebtables-ipv6 \
-			 +fastd \
-			 +@FASTD_ENABLE_CIPHER_NULL \
-			 +@FASTD_ENABLE_METHOD_NULL \
-			 +@FASTD_WITH_STATUS_SOCKET \
 			 +gre \
 			 +@PACKAGE_grev4 \
 			 +@PACKAGE_grev6 \
@@ -66,7 +62,6 @@ define Package/fff-layer3
 			 +iptables-mod-filter \
 			 +iptables-mod-ipopt \
 			 +iptables-mod-conntrack-extra \
-			 +kmod-ipt-nat \
 			 +tcpdump \
 			 +kmod-wireguard \
 			 +wireguard-tools \
