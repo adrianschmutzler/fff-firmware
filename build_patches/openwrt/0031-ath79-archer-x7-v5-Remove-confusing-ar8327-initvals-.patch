@@ -1,0 +1,28 @@
+From: =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sun, 14 Apr 2019 21:24:39 +0200
+Subject: ath79: archer-x7-v5: Remove confusing ar8327 initvals for
+ LEDs
+
+This devices have LEDs connected to the SoC's GPIOs, so it makes no
+sense to fiddle with ar8327 LED regs.
+
+Signed-off-by: Petr Å tetiar <ynezz@true.cz>
+
+diff --git a/target/linux/ath79/dts/qca9563_tplink_archer-x7-v5.dtsi b/target/linux/ath79/dts/qca9563_tplink_archer-x7-v5.dtsi
+index ba75cfc4d8..5fcbf7390a 100644
+--- a/target/linux/ath79/dts/qca9563_tplink_archer-x7-v5.dtsi
++++ b/target/linux/ath79/dts/qca9563_tplink_archer-x7-v5.dtsi
+@@ -160,10 +160,6 @@
+ 		qca,ar8327-initvals = <
+ 			0x04 0x00080080 /* PORT0 PAD MODE CTRL */
+ 			0x10 0x81000080 /* POWER_ON_STRIP */
+-			0x50 0xcc35cc35 /* LED_CTRL0 */
+-			0x54 0xcb37cb37 /* LED_CTRL1 */
+-			0x58 0x00000000 /* LED_CTRL2 */
+-			0x5c 0x00f3cf00 /* LED_CTRL3 */
+ 			0x7c 0x0000007e /* PORT0_STATUS */
+ 			>;
+ 	};
+-- 
+2.11.0
+

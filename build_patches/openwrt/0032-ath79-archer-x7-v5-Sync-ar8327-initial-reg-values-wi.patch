@@ -1,0 +1,31 @@
+From: =?UTF-8?q?Petr=20=C5=A0tetiar?= <ynezz@true.cz>
+Date: Sun, 14 Apr 2019 22:59:00 +0200
+Subject: ath79: archer-x7-v5: Sync ar8327 initial reg values with
+ ar71xx
+
+I've simply dumped content of this regs in ar71xx and wrote them to DTS.
+
+Signed-off-by: Petr Å tetiar <ynezz@true.cz>
+
+diff --git a/target/linux/ath79/dts/qca9563_tplink_archer-x7-v5.dtsi b/target/linux/ath79/dts/qca9563_tplink_archer-x7-v5.dtsi
+index 5fcbf7390a..d74f4a5d2d 100644
+--- a/target/linux/ath79/dts/qca9563_tplink_archer-x7-v5.dtsi
++++ b/target/linux/ath79/dts/qca9563_tplink_archer-x7-v5.dtsi
+@@ -158,9 +158,12 @@
+ 		phy-mode = "sgmii";
+ 
+ 		qca,ar8327-initvals = <
+-			0x04 0x00080080 /* PORT0 PAD MODE CTRL */
+-			0x10 0x81000080 /* POWER_ON_STRIP */
++			0x04 0x80080080 /* PORT0 PAD MODE CTRL */
++			0x08 0x00000000 /* PORT5 PAD MODE CTRL */
++			0x0c 0x00000000 /* PORT6 PAD MODE CTRL */
++			0x10 0x00000080 /* POWER_ON_STRIP */
+ 			0x7c 0x0000007e /* PORT0_STATUS */
++			0x94 0x00001080 /* PORT6_STATUS */
+ 			>;
+ 	};
+ };
+-- 
+2.11.0
+
