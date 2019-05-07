@@ -122,10 +122,12 @@ patch_target() {
 }
 
 get_make_variant() {
-    local variant=$(cat selected_variant)
+    local variant
 
     if [ -n "$1" ]; then
         variant=$1
+    else
+        variant=$(cat selected_variant)
     fi
 
     echo "$variant" | sed 's/[0-9]*$//'
