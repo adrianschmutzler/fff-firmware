@@ -21,6 +21,8 @@ setupPorts() {
 if [ -s /etc/network.config ]; then
 	. /etc/network.config
 
+	firstbootscript=/etc/firstbootfff
+
 	if [ -n "$ETHMODE" ] && ! [ "$(uci get board.model.name)" = "gl-ar150" ] ; then
 		# real one-port
 		echo "# Migrated network config" >> "$firstbootscript"
