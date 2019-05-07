@@ -1,0 +1,47 @@
+From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+Date: Tue, 7 May 2019 13:53:21 +0200
+Subject: ath79: Move TL-WR1043ND v1 definition to companions
+
+Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+
+diff --git a/target/linux/ath79/image/generic-tp-link.mk b/target/linux/ath79/image/generic-tp-link.mk
+index 0d00518df9..3c5023121d 100644
+--- a/target/linux/ath79/image/generic-tp-link.mk
++++ b/target/linux/ath79/image/generic-tp-link.mk
+@@ -211,16 +211,6 @@ define Device/tplink_tl-wdr4900-v2
+ endef
+ TARGET_DEVICES += tplink_tl-wdr4900-v2
+ 
+-define Device/tplink_tl-wr1043nd-v1
+-  $(Device/tplink-8m)
+-  ATH_SOC := ar9132
+-  DEVICE_TITLE := TP-Link TL-WR1043N/ND v1
+-  DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ledtrig-usbport
+-  TPLINK_HWID := 0x10430001
+-  SUPPORTED_DEVICES += tl-wr1043nd
+-endef
+-TARGET_DEVICES += tplink_tl-wr1043nd-v1
+-
+ define Device/tplink_tl-wr810n-v1
+   $(Device/tplink-8mlzma)
+   ATH_SOC := qca9531
+@@ -277,6 +267,16 @@ define Device/tplink_tl-wr842n-v3
+ endef
+ TARGET_DEVICES += tplink_tl-wr842n-v3
+ 
++define Device/tplink_tl-wr1043nd-v1
++  $(Device/tplink-8m)
++  ATH_SOC := ar9132
++  DEVICE_TITLE := TP-Link TL-WR1043N/ND v1
++  DEVICE_PACKAGES := kmod-usb-core kmod-usb2 kmod-usb-ledtrig-usbport
++  TPLINK_HWID := 0x10430001
++  SUPPORTED_DEVICES += tl-wr1043nd
++endef
++TARGET_DEVICES += tplink_tl-wr1043nd-v1
++
+ define Device/tplink_tl-wr1043nd-v2
+   $(Device/tplink-8mlzma)
+   ATH_SOC := qca9558
+-- 
+2.11.0
+
