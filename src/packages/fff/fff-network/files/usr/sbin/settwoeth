@@ -28,7 +28,7 @@ if [ "$ETHMODE1" = "BATMAN" ] && [ "$ETHMODE2" = "BATMAN" ]; then
 	exit 1
 fi
 
-setupOnePort "$DEV1" "$ETHMODE1"
-setup2ndEth "$DEV2" "$ETHMODE2"
+setupOnePort "$ETHMODE1" "$DEV1"
+setup2ndEth "$ETHMODE2" "$DEV2"
 
 echo "Ports updated successfully. Restart network or device!"

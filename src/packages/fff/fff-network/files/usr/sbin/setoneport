@@ -15,7 +15,7 @@ DEV=$2
 [ -n "$DEV" ] || DEV="eth0"
 
 if [ "$ETHMODE" = "WAN" ] || [ "$ETHMODE" = "CLIENT" ] || [ "$ETHMODE" = "BATMAN" ]; then
-	setupOnePort "$DEV" "$ETHMODE"
+	setupOnePort "$ETHMODE" "$DEV"
 	echo "Port updated successfully. Restart network or device!"
 else
 	echo "Wrong port mode. Choose one of: WAN, CLIENT, BATMAN"

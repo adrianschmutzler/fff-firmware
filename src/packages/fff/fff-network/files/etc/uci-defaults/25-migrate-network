@@ -27,7 +27,7 @@ if [ -s /etc/network.config ]; then
 		# real one-port
 		echo "# Migrated network config" >> "$firstbootscript"
 		echo ". /lib/functions/fff/networksetup" >> "$firstbootscript"
-		echo "setupOnePort 'eth0' '$ETHMODE'" >> "$firstbootscript"
+		echo "setupOnePort '$ETHMODE' 'eth0'" >> "$firstbootscript"
 	else
 		# anything else will be switch-based
 		CLIENT_UCI="$(uci -q get network.vlan1.ports)"

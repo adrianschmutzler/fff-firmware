@@ -136,10 +136,10 @@ setupOnePort() {
 	# This is intended for initial setup and for updates
 	# (latter will require network restart)
 	#
-	# Usage: setupOnePort <DEV, e.g. eth0> <ETHMODE, e.g. BATMAN, CLIENT, WAN>
+	# Usage: setupOnePort <ETHMODE, e.g. BATMAN, CLIENT, WAN> <DEV, e.g. eth0>
 
-	local DEV=$1
-	local ETHMODE=$2
+	local ETHMODE=$1
+	local DEV=$2
 
 	uci set "network.$DEV=interface"
 	uci set "network.$DEV.ifname=$DEV"
@@ -168,13 +168,13 @@ setup2ndEth() {
 	#
 	# Use this in combination with setupOnePort() for the first port.
 	# Calling setupOnePort() will overwrite the settings made here, so always call in succession, e.g.
-	# setupOnePort eth0 "WAN"
-	# setup2ndEth eth1 "BATMAN"
+	# setupOnePort "WAN" eth0
+	# setup2ndEth "BATMAN" eth1
 	#
-	# Usage: setup2ndEth <DEV, e.g. eth1> <ETHMODE: BATMAN or CLIENT>
+	# Usage: setup2ndEth <ETHMODE: BATMAN or CLIENT> <DEV, e.g. eth1>
 
-	local DEV=$1
-	local ETHMODE=$2
+	local ETHMODE=$1
+	local DEV=$2
 
 	uci set "network.$DEV=interface"
 	uci set "network.$DEV.ifname=$DEV"

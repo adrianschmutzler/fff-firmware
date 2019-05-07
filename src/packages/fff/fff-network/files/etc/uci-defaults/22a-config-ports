@@ -36,8 +36,8 @@ case "$BOARD" in
 	fritzbox-4040)
 		# Set whole switch to BATMAN, since VLANs are not supported
 		# (eth0 is connected untagged to switch)
-		setupOnePort "eth1" "WAN"
-		setup2ndEth "eth0" "BATMAN"
+		setupOnePort "WAN" "eth1"
+		setup2ndEth "BATMAN" "eth0"
 		uci set "fff.ui.portsetup=twoeth"
 		;;
 	gl-ar150)
@@ -86,8 +86,8 @@ case "$BOARD" in
 	ubnt-nanostation-m|\
 	ubnt-nanostation-m-xw)
 		# Default: LAN0: WAN, LAN1: BATMAN
-		setupOnePort "eth0" "WAN"
-		setup2ndEth "eth1" "BATMAN"
+		setupOnePort "WAN" "eth0"
+		setup2ndEth "BATMAN" "eth1"
 		uci set "fff.ui.portsetup=twoeth"
 		;;
 	cpe210-v2|\
@@ -105,12 +105,12 @@ case "$BOARD" in
 	ubnt-unifi|\
 	ubnt-unifiac-lite|\
 	ubnt-unifiac-mesh)
-		setupOnePort "eth0" "CLIENT"
+		setupOnePort "CLIENT" "eth0"
 		uci set "fff.ui.portsetup=oneport"
 		;;
 	*)
 		# Fallback for new or incorrectly named devices
-		setupOnePort "eth0" "CLIENT"
+		setupOnePort "CLIENT" "eth0"
 		;;
 esac
 
