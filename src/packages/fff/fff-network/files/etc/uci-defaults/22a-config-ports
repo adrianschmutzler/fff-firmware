@@ -13,6 +13,9 @@ case "$BOARD" in
 		;;
 	archer-c7-v4|\
 	archer-c7-v5|\
+	tl-wdr3600|\
+	tl-wdr4300|\
+	tl-wdr4310|\
 	tl-wdr3600-v1|\
 	tl-wdr4300-v1|\
 	tl-wdr4310-v1|\
@@ -46,6 +49,7 @@ case "$BOARD" in
 		setupWan "eth0"
 		uci set "fff.ui.portsetup=2ndport"
 		;;
+	tl-wdr3500|\
 	tl-wdr3500-v1|\
 	tl-wr741nd-v2|\
 	tl-wr841-v7|\
