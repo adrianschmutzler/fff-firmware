@@ -64,6 +64,7 @@ add_peer() {
 	local name="$1"
 	local fix_mtu
 	local penalty
+	local rxcost
 
 	# prohibit cfg* as name
 	if echo $name | grep -q cfg ; then
@@ -86,9 +87,14 @@ add_peer() {
 	uci set babeld.$name=interface
 	uci set babeld.$name.ifname=$name
 
-	# babel penalty
+	# babel penalty (RX and TX)
 	if penalty=$(uci -q get gateway.$name.babel_penalty); then
 		set_babelpenalty "$name" "$penalty"
+	fi
+
+	# set rxcost
+	if rxcost=$(uci -q get gateway.$name.rxcost); then
+		uci set babeld.$name.rxcost=$rxcost
 	fi
 }
 
