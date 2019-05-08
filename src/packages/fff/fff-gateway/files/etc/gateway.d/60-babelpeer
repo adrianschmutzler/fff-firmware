@@ -72,6 +72,12 @@ add_peer() {
 		exit 1
 	fi
 
+	# ensure name length
+	if [ ${#name} -gt 15 ]; then
+		echo "ERROR: name $name is too long!"
+		exit 1
+	fi
+
 	# add interface
 	uci set network.$name=interface
 
