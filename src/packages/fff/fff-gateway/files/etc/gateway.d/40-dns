@@ -1,6 +1,7 @@
 configure() {
-	# dns
 	if dnsservers=$(uci -q get gateway.@dns[0].server); then
+		uci -q delete dhcp.@dnsmasq[0].server
+
 		for dns in $dnsservers; do
 			uci add_list dhcp.@dnsmasq[0].server=$dns
 			uci add_list dhcp.@dnsmasq[0].server="/in-addr.arpa/$dns"
