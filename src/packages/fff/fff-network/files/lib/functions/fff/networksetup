@@ -71,64 +71,24 @@ setupSwitch() {
 	# This is intended for initial setup, not for updates
 	# (changing ports will be sufficient then)
 	#
-	# Usage: setupSwitch <SWITCHDEV, e.g. eth0> <CLIENT_PORTS> <BATMAN_PORTS> [<WAN_PORTS>]
+	# Usage: setupSwitch <CLIENT_PORTS> <BATMAN_PORTS> [<WAN_PORTS>]
 
-	local SWITCHDEV=$1
-	local CLIENT_PORTS=$2
-	local BATMAN_PORTS=$3
-	local WAN_PORTS=$4
-	local SWITCHHW
+	local CLIENT_PORTS=$1
+	local BATMAN_PORTS=$2
+	local WAN_PORTS=$3
 
-	SWITCHHW="$(swconfig list | awk '{ print $4 }')"
-
-	uci set "network.switch=switch"
-	uci set "network.switch.name=$SWITCHHW"
-	uci set "network.switch.enable=1"
-	uci set "network.switch.reset=1"
-	uci set "network.switch.enable_vlan=1"
-
-	uci set "network.vlan1=switch_vlan"
-	uci set "network.vlan1.device=$SWITCHHW"
-	uci set "network.vlan1.vlan=1"
 	uci set "network.vlan1.ports=$CLIENT_PORTS"
 
 	# This defines the VLAN for WAN ports inside the switch.
 	# This is required even if the WAN eth is separate, but the WAN port is in the switch!
 	if [ -n "$WAN_PORTS" ]; then
-		uci set "network.vlan2=switch_vlan"
-		uci set "network.vlan2.device=$SWITCHHW"
-		uci set "network.vlan2.vlan=2"
 		uci set "network.vlan2.ports=$WAN_PORTS"
 	fi
 
-	uci set "network.vlan3=switch_vlan"
-	uci set "network.vlan3.device=$SWITCHHW"
-	uci set "network.vlan3.vlan=3"
 	uci set "network.vlan3.ports=$BATMAN_PORTS"
 
-	uci set network.mesh.ifname="$SWITCHDEV.1 bat0"
-	uci set network.ethmesh.ifname="$SWITCHDEV.3"
-
-	uci commit network
-}
-
-setupWan() {
-	# Set up WAN for any device with dedicated port (no one-port where mode is changed)
-	# This is intended for initial setup, not for updates
-	# (updates are only possible by changing ports in a switch)
-	#
-	# Usage: setupWan <WANDEV, e.g. eth0, eth0.2>
-
-	local WANDEV=$1
-
-	# This defines the WAN interface. We use the VLAN ID only if we do NOT have a separate eth.
-	# This is different from the criterion for the WAN port dealt with above!
-	# If the WANDEV is different from the SWITCHDEV, but the WAN port is in the switch,
-	# the WAN eth has to be connected to the switch untagged!
-	enableAutoConf "$WANDEV"
-	uci set network.wan.ifname="$WANDEV"
-
-	uci commit network
+	local MESHIF="$(uci get network.lan.ifname | grep -o -m1 "eth\d")"
+	uci set network.ethmesh.ifname="$MESHIF.3"
 }
 
 setupOnePort() {
@@ -141,13 +101,13 @@ setupOnePort() {
 	local ETHMODE=$1
 	local DEV=$2
 
-	uci set "network.$DEV=interface"
-	uci set "network.$DEV.ifname=$DEV"
 	if [ "$ETHMODE" = "WAN" ]; then
-		enableAutoConf "$DEV"
 		uci set network.mesh.ifname="bat0"
+		uci set network.wan=interface
 		uci set network.wan.ifname="$DEV"
+		uci set network.wan.proto=dhcp
 		uci del network.ethmesh.ifname
+		enableAutoConf "$DEV"
 	elif [ "$ETHMODE" = "CLIENT" ] ; then
 		disableAutoConf "$DEV"
 		uci set network.mesh.ifname="bat0 $DEV"
@@ -175,9 +135,6 @@ setup2ndEth() {
 
 	local ETHMODE=$1
 	local DEV=$2
-
-	uci set "network.$DEV=interface"
-	uci set "network.$DEV.ifname=$DEV"
 
 	local meshif="$(uci -q get network.mesh.ifname)"
 

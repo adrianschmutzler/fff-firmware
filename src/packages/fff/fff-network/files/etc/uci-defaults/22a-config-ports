@@ -2,14 +2,50 @@
 # Copyright 2019 Adrian Schmutzler
 # License GPLv3
 
+. /lib/functions.sh
+. /lib/functions/fff/networksetup
+
+rename_vlan() {
+	local name="$1"
+	local vlan="$(uci get network.$name.vlan)"
+	uci rename network.$name="vlan$vlan"
+}
+
 BOARD="$(uci get board.model.name)"
 
-. /lib/functions/fff/networksetup
+# set up ethmesh
+uci set network.ethmesh=interface
+uci set network.ethmesh.mtu=1528
+uci set network.ethmesh.proto=batadv
+uci set network.ethmesh.mesh=bat0
+
+# set up mesh
+uci set network.mesh=interface
+uci set network.mesh.type=bridge
+uci set network.mesh.auto=1
+
+# set up mesh member interfaces
+MESHIF="$(uci -q get network.lan.ifname)"
+if [ -n "$MESHIF" ]; then
+	uci set network.mesh.ifname="bat0 $MESHIF"
+else
+	uci set network.mesh.ifname="bat0"
+fi
+
+# set up vlans
+config_load network
+config_foreach rename_vlan switch_vlan
+
+SWITCHHW="$(uci -q get network.@switch[0].name)"
+if [ -n "$SWITCHHW" ]; then
+	uci set "network.vlan3=switch_vlan"
+	uci set "network.vlan3.device=$SWITCHHW"
+	uci set "network.vlan3.vlan=3"
+fi
 
 case "$BOARD" in
 	archer-c7-v2)
-		setupSwitch "eth1" "4 5 0t" "2 3 0t" "1 6"
-		setupWan "eth0"
+		setupSwitch "4 5 0t" "2 3 0t" "1 6"
 		;;
 	archer-c7-v4|\
 	archer-c7-v5|\
@@ -20,33 +56,27 @@ case "$BOARD" in
 	tl-wdr4300-v1|\
 	tl-wdr4310-v1|\
 	tl-wdr4900-v1)
-		setupSwitch "eth0" "4 5 0t" "2 3 0t" "1 0t"
-		setupWan "eth0.2"
+		setupSwitch "4 5 0t" "2 3 0t" "1 0t"
 		;;
 	archer-c25-v1|\
 	archer-c60-v1|\
 	archer-c60-v2)
-		setupSwitch "eth1" "1 2 0t" "3 4 0t"
-		setupWan "eth0"
+		setupSwitch "1 2 0t" "3 4 0t"
 		;;
 	cpe210|\
 	cpe510)
-		# Default: LAN0: WAN, LAN1: BATMAN
-		setupSwitch "eth0" "0t" "0t 4" "0t 5"
-		setupWan "eth0.2"
+		# Default: LAN0: WAN, LAN1: CLIENT
+		setupSwitch "0t 4" "0t" "0t 5"
 		uci set "fff.ui.portsetup=cpev1"
 		;;
 	fritzbox-4040)
-		# Set whole switch to BATMAN, since VLANs are not supported
+		# Set whole switch to CLIENT, since VLANs are not supported
 		# (eth0 is connected untagged to switch)
-		setupOnePort "WAN" "eth1"
-		setup2ndEth "BATMAN" "eth0"
 		uci set "fff.ui.portsetup=twoeth"
 		;;
 	gl-ar150)
-		# Default for LAN-Port: BATMAN
-		setupSwitch "eth1" "0t" "0t 1"
-		setupWan "eth0"
+		# Default for LAN-Port: CLIENT
+		setupSwitch "0t 1" "0t"
 		uci set "fff.ui.portsetup=2ndport"
 		;;
 	tl-wdr3500|\
@@ -57,41 +87,33 @@ case "$BOARD" in
 	tl-wr841-v10|\
 	tl-wr841-v11|\
 	tl-wr841-v12)
-		setupSwitch "eth0" "1 2 0t" "3 4 0t"
-		setupWan "eth1"
+		setupSwitch "1 2 0t" "3 4 0t"
 		;;
 	tl-wr841-v8|\
 	tl-wr842n-v2)
-		setupSwitch "eth1" "1 4 0t" "2 3 0t"
-		setupWan "eth0"
+		setupSwitch "1 4 0t" "2 3 0t"
 		;;
 	tl-wr740n-v4|\
 	tl-wr740nd-v4|\
 	tl-wr741nd-v4)
-		setupSwitch "eth0" "1 4 0t" "2 3 0t"
-		setupWan "eth1"
+		setupSwitch "1 4 0t" "2 3 0t"
 		;;
 	tl-wr1043nd-v1)
-		setupSwitch "eth0" "3 4 5t" "1 2 5t" "0 5t"
-		setupWan "eth0.2"
+		setupSwitch "3 4 5t" "1 2 5t" "0 5t"
 		;;
 	tl-wr1043nd-v2|\
 	tl-wr1043nd-v3)
-		setupSwitch "eth0" "1 2 6t" "3 4 6t" "5 6t"
-		setupWan "eth0.2"
+		setupSwitch "1 2 6t" "3 4 6t" "5 6t"
 		;;
 	tl-wr1043nd-v4|\
 	tl-wr1043n-v5)
-		setupSwitch "eth0" "1 2 0t" "3 4 0t" "5 0t"
-		setupWan "eth0.2"
+		setupSwitch "1 2 0t" "3 4 0t" "5 0t"
 		;;
 	ubnt-nano-m|\
 	ubnt-nano-m-xw|\
 	ubnt-nanostation-m|\
 	ubnt-nanostation-m-xw)
-		# Default: LAN0: WAN, LAN1: BATMAN
-		setupOnePort "WAN" "eth0"
-		setup2ndEth "BATMAN" "eth1"
+		# Default: LAN0: WAN, LAN1: CLIENT
 		uci set "fff.ui.portsetup=twoeth"
 		;;
 	cpe210-v2|\
@@ -109,13 +131,18 @@ case "$BOARD" in
 	ubnt-unifi|\
 	ubnt-unifiac-lite|\
 	ubnt-unifiac-mesh)
-		setupOnePort "CLIENT" "eth0"
 		uci set "fff.ui.portsetup=oneport"
-		;;
-	*)
-		# Fallback for new or incorrectly named devices
-		setupOnePort "CLIENT" "eth0"
 		;;
 esac
 
+# delete unused OpenWrt nodes
+uci del network.lan # only delete AFTER switch setup
+# uci del network.wan_dev # not deleting this might preserve MAC address
+uci -q del network.wan6
+
+# setup sysctl conf for WAN
+WANDEV=$(uci -q get network.wan.ifname)
+[ -n "$WANDEV" ] && enableAutoConf "$WANDEV"
+
+uci commit network
 uci commit fff
