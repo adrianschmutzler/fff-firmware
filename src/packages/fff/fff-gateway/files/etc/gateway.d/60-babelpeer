@@ -69,7 +69,7 @@ add_peer() {
 	# prohibit cfg* as name
 	if echo $name | grep -q cfg ; then
 		echo "ERROR: Name $name is invalid for peer!"
-		return 1
+		exit 1
 	fi
 
 	# add interface
