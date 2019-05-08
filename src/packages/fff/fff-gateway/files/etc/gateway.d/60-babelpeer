@@ -141,7 +141,7 @@ add_babelpeer() {
 		uci set network.$name.ip6addr="$peer_ip6"
 	fi
 
-	# set up babel interface
+	# get type
 	if type=$(uci -q get gateway.$name.type); then
 		uci set babeld.$name.type="$type"
 	else
