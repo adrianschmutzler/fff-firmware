@@ -55,7 +55,7 @@ if [ -s "$hoodfilewww" ] && isGatewayAvailable ; then
 		[ "$(uci get "wireless.w${freq}configap.disabled")" = "0" ] && continue
 		# Break: No mesh interface
 		[ "$(uci get "wireless.w${freq}mesh.disabled")" = "0" ] || continue
-		
+
 		# Enable configap
 		uci set wireless.w${freq}configap.disabled='0'
 		uci commit wireless
@@ -63,6 +63,7 @@ if [ -s "$hoodfilewww" ] && isGatewayAvailable ; then
 	done
 
 	if [ "$needwifi" = "1" ]; then
+		echo "Enabling configap ..."
 		reload_config
 		sleep 10
 	fi
@@ -73,7 +74,7 @@ if [ -s "$hoodfilelocal" ]; then
 	rm -f "$hoodfilewww"
 
 	cp "$hoodfilelocal" "$hoodfiletmp"
-	echo "Use local hood file"
+	echo "Using local hood file"
 else
 	# if we have Internet, we download the Hoodfile from the keyxchangev2
 	if hasInternet ; then
@@ -98,7 +99,8 @@ else
 			uci -q del "system.@system[0].hoodid"
 			uci commit system
 			reload_config
-		
+
+			echo "Waiting 30 seconds ..."
 			sleep 30 # Wait for the config AP, which may be created at the same time as this script has started
 
 			getEthernetHoodfile "$hoodfiletmp" || getWirelessHoodfile "$hoodfiletmp"
@@ -108,10 +110,9 @@ else
 				wget -T15 "http://[fe80::1%w2sta]:2342/sectorfile" -O "$sectorfiletmp" || wget -T15 "http://[fe80::1%w5sta]:2342/sectorfile" -O "$sectorfiletmp"
 			fi
 		else
-			echo "We have a Gateway in Range, we load the keyxchangev2data from network or gateway"
-
 			# We wait some time, so nodes without network connection can delete their $hoodfilecopy
 			# -> as a consequence, all hood files in the wired network are from devices with gateway connection
+			echo "Waiting 20 seconds ..."
 			sleep 20;
 
 			getGatewayHoodfile "$hoodfiletmp" && cp "$hoodfiletmp" "$hoodfilewww"
