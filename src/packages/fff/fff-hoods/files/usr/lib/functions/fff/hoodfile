@@ -27,7 +27,6 @@ getWirelessHoodfile() {
 	uci commit wireless
 	reload_config
 
-	wifi
 	# wait a moment to start the interface
 	sleep 10;
 
