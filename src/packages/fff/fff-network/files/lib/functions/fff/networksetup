@@ -106,17 +106,17 @@ setupOnePort() {
 		uci set network.wan=interface
 		uci set network.wan.ifname="$DEV"
 		uci set network.wan.proto=dhcp
-		uci del network.ethmesh.ifname
+		uci -q del network.ethmesh.ifname
 		enableAutoConf "$DEV"
 	elif [ "$ETHMODE" = "CLIENT" ] ; then
 		disableAutoConf "$DEV"
 		uci set network.mesh.ifname="bat0 $DEV"
-		uci del network.wan.ifname
-		uci del network.ethmesh.ifname
+		uci -q del network.wan.ifname
+		uci -q del network.ethmesh.ifname
 	else # default=BATMAN
 		disableAutoConf "$DEV"
 		uci set network.mesh.ifname="bat0"
-		uci del network.wan.ifname
+		uci -q del network.wan.ifname
 		uci set network.ethmesh.ifname="$DEV"
 	fi
 	uci commit network
