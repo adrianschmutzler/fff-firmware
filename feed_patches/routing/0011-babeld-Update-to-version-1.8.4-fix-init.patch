@@ -1,0 +1,49 @@
+From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+Date: Mon, 13 May 2019 14:13:48 +0200
+Subject: babeld: Update to version 1.8.4 + fix init
+
+This is a squashed patch based on three patches from master:
+- 43449bc treewide: Basic cleanup and alignment to package guidelines (#383)
+- bab933d babeld: Update to version 1.8.3 + fix init
+- 6151c44 babeld: Update to version 1.8.4
+
+Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+
+diff --git a/babeld/Makefile b/babeld/Makefile
+index 5cf136d..870f175 100644
+--- a/babeld/Makefile
++++ b/babeld/Makefile
+@@ -8,13 +8,12 @@
+ include $(TOPDIR)/rules.mk
+ 
+ PKG_NAME:=babeld
+-PKG_VERSION:=1.8.2
++PKG_VERSION:=1.8.4
+ PKG_RELEASE:=1
+ 
+ PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+ PKG_SOURCE_URL:=https://www.irif.fr/~jch/software/files/
+-PKG_MD5SUM:=eec395ade02524b3f351507a21742939
+-PKG_HASH:=07edecb132386d5561a767482bc5200e04239b18e48c2f0f47ae1c78d60fe5dc
++PKG_HASH:=98070dc418c190f047b8d69eb47987df30ded8f0fca353c49427d3137ad08b87
+ PKG_LICENSE:=MIT
+ 
+ include $(INCLUDE_DIR)/package.mk
+diff --git a/babeld/files/babeld.init b/babeld/files/babeld.init
+index 378a8ab..7b25ef4 100755
+--- a/babeld/files/babeld.init
++++ b/babeld/files/babeld.init
+@@ -197,6 +197,10 @@ start_service() {
+ 	procd_close_instance
+ }
+ 
++stop_service() {
++	killall -9 babeld
++}
++
+ service_triggers() {
+ 	procd_add_reload_trigger babeld
+ }
+-- 
+2.11.0
+
