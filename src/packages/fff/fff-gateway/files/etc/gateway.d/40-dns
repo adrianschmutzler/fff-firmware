@@ -1,8 +1,10 @@
 configure() {
+	echo "Setting up DNS"
 	if dnsservers=$(uci -q get gateway.@dns[0].server); then
 		uci -q delete dhcp.@dnsmasq[0].server
 
 		for dns in $dnsservers; do
+			echo "-> Adding $dns and reverse lookup"
 			uci add_list dhcp.@dnsmasq[0].server=$dns
 			uci add_list dhcp.@dnsmasq[0].server="/in-addr.arpa/$dns"
 			uci add_list dhcp.@dnsmasq[0].server="/ip6.arpa/$dns"

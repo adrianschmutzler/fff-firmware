@@ -3,11 +3,13 @@
 configure() {
 	# IPv4 address
 	#remove old ipaddr
+	echo "Setting up IPv4 addresses"
 	uci -q del network.mesh.ipaddr
 	#set new ipaddr
 	if ipaddr=$(uci -q get gateway.@client[0].ipaddr); then
 		for ip in $ipaddr; do
 			uci add_list network.mesh.ipaddr=$ip
+			echo "-> Adding $ip"
 		done
 	else
 		echo "WARNING: No client IPv4 address set!"
@@ -17,6 +19,7 @@ configure() {
 
 	# IPv6 address
 	#remove old ip6addr
+	echo "Setting up IPv6 addresses"
 	for ip in $(uci get network.mesh.ip6addr); do
 		if echo "$ip" | grep -q -v -e "^fdff:"; then
 			uci del_list network.mesh.ip6addr="$ip"
@@ -26,6 +29,7 @@ configure() {
 	if ip6addr=$(uci -q get gateway.@client[0].ip6addr); then
 		for ip in $ip6addr; do
 			uci add_list network.mesh.ip6addr=$ip
+			echo "-> Adding $ip"
 		done
 	else
 		echo "WARNING: No client IPv6 address set!"
@@ -35,8 +39,10 @@ configure() {
 
 	# Set fe80::1 to br-mesh
 	uci add_list network.mesh.ip6addr='fe80::1/64'
+	echo "-> Adding fe80::1/64"
 
 	# dhcp
+	echo "Setting up DHCP"
 	uci -q del dhcp.mesh.start
 	uci -q del dhcp.mesh.limit
 	if dhcp_start=$(uci -q get gateway.@client[0].dhcp_start); then

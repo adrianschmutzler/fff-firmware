@@ -112,6 +112,7 @@ add_babelpeer() {
 	local peer_ip6
 	local type
 
+	echo "-> Adding Babel peer $name"
 	add_peer "$name" || return
 
 	# set up interface
@@ -156,6 +157,7 @@ add_wireguardpeer() {
 	local peer_ip
 	local peer_ip6
 
+	echo "-> Adding Wireguard peer $name"
 	add_peer "$name" || return
 
 	# set up interface
@@ -208,14 +210,17 @@ add_wireguardpeer() {
 
 configure() {
 	# Remove peers missing in gateway config
+	echo "Removing unused Babel/Wireguard peers"
 	config_load babeld
 	config_foreach remove_babelpeer interface
 
 	# Add new peers
+	echo "Adding Babel peers"
 	config_load gateway
 	config_foreach add_babelpeer babelpeer
 
 	# Add new wireguard peers
+	echo "Adding Wireguard peers"
 	config_load gateway
 	config_foreach add_wireguardpeer wireguardpeer
 }

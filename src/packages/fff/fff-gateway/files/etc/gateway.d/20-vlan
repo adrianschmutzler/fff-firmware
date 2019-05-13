@@ -26,9 +26,11 @@ remove_vlan() {
 }
 
 configure() {
+	echo "Removing unused VLAN entries"
 	config_load network
 	config_foreach remove_vlan switch_vlan
 
+	echo "Setting up VLAN entries"
 	config_load gateway
 	config_foreach add_vlan vlan
 }

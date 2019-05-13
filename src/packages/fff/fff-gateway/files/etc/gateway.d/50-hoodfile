@@ -5,6 +5,7 @@
 configure() {
 	hoodfile="/etc/hoodfile"
 	if [ -s "$hoodfile" ]; then
+		echo "Setting up hood from $hoodfile"
 		json_load "$(cat "$hoodfile")"
 
 		# ULA
@@ -24,16 +25,16 @@ configure() {
 			# Set $prefix::MAC as IP
 			if ! uci get network.mesh.ip6addr | grep -q "$addr" ; then
 				uci add_list network.mesh.ip6addr="$addr"
-				echo "Set ULA address to br-mesh: $addr"
+				echo "-> Set ULA address to br-mesh: $addr"
 			else
-				echo "Address already set."
+				echo "-> ULA address already set."
 			fi
 			# Set $prefix::link-local as IP
 			if ! uci get network.mesh.ip6addr | grep -q "$addr_eui" ; then
 				uci add_list network.mesh.ip6addr="$addr_eui"
-				echo "Set ULA EUI-64 address to br-mesh: $addr_eui"
+				echo "-> Set ULA EUI-64 address to br-mesh: $addr_eui"
 			else
-				echo "Address already set."
+				echo "-> ULA EUI-64 address already set."
 			fi
 		fi
 
@@ -51,10 +52,11 @@ configure() {
 		json_get_var mesh_type5 mesh_type5
 		json_select ".."
 
-		echo "Setting hood name: $hood"
+		echo "-> Setting hood name: $hood"
 		uci set "system.@system[0].hood=$hood"
 
 		# time server
+		echo "-> Setting time server: $ntpip"
 		uci delete system.ntp
 		uci set system.ntp='timeserver'
 		uci add_list system.ntp.server="$ntpip"
@@ -67,9 +69,11 @@ configure() {
 			if [ "$freq" = "5" ]; then
 				uci set wireless.${radio}.channel="$chan5ghz"
 				mesh_type="$mesh_type5"
+				echo "-> Setting up 5 GHz WiFi"
 			elif [ "$freq" = "2" ]; then
 				uci set wireless.${radio}.channel="$chan2ghz"
 				mesh_type="$mesh_type2"
+				echo "-> Setting up 2.4 GHz WiFi"
 			fi
 
 			# Configure wXap
