@@ -96,10 +96,12 @@ setupOnePort() {
 	# This is intended for initial setup and for updates
 	# (latter will require network restart)
 	#
-	# Usage: setupOnePort <ETHMODE, e.g. BATMAN, CLIENT, WAN> <DEV, e.g. eth0>
+	# Usage: setupOnePort <ETHMODE, e.g. BATMAN, CLIENT, WAN> [<DEV, default: eth0>]
 
 	local ETHMODE=$1
 	local DEV=$2
+
+	[ -n "$DEV" ] || DEV=eth0
 
 	if [ "$ETHMODE" = "WAN" ]; then
 		uci set network.mesh.ifname="bat0"
