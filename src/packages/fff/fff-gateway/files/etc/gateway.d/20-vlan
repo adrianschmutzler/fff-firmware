@@ -1,38 +1,47 @@
 # Load libraries
 . /lib/functions.sh
-. /lib/functions/fff/cpuport
 
 add_vlan() {
-	local vlan="$1"
-	local name="vlan$vlan"
-	local device="$(uci get network.@switch[0].name)"
-	local ports="$(uci get gateway.$vlan.ports)"
+	local name="$1"
+	local vlan="$(uci -q get gateway.$name.vlan)"
 
-	uci set network.$name='switch_vlan'
-	uci set network.$name.device="$device"
-	uci set network.$name.vlan="$vlan"
-	uci set network.$name.ports="$CPUPORT $ports"
+	if [ -z "$vlan" ]; then
+		echo "-> Missing VLAN ID for add_vlan $name"
+		return 1
+	fi
+
+	# add switch_vlan
+	echo "-> Setting up VLAN $vlan"
+	uci set network.vlan$vlan='switch_vlan'
+	uci set network.vlan$vlan.vlan="$vlan"
+	uci set network.vlan$vlan.device="$(uci get network.@switch[0].name)"
+	uci set network.vlan$vlan.ports="$(uci get gateway.$name.ports)"
 }
 
 remove_vlan() {
 	local name="$1"
-	local vlan=$(echo $name | sed 's/vlan//')
+	local vlan="$(uci -q get gateway.$name.vlan)"
 
-	# only remove vlans not present in gateway config
-	if ! uci -q get gateway.$vlan > /dev/null; then
-		# remove switch_vlan
-		uci del network.$name
+	if [ -z "$vlan" ]; then
+		echo "-> Missing VLAN ID for del_vlan $name"
+		return 1
+	fi
+
+	# remove switch_vlan
+	echo "-> Deleting VLAN $vlan"
+	if ! uci -q del network.vlan$vlan ; then
+		echo "-> Error deleting VLAN $vlan"
 	fi
 }
 
 configure() {
-	echo "Removing unused VLAN entries"
-	config_load network
-	config_foreach remove_vlan switch_vlan
-
-	echo "Setting up VLAN entries"
+	echo "Removing VLAN entries"
 	config_load gateway
-	config_foreach add_vlan vlan
+	config_foreach remove_vlan del_vlan
+
+	echo "Adding VLAN entries"
+	config_load gateway
+	config_foreach add_vlan add_vlan
 }
 
 apply() {
