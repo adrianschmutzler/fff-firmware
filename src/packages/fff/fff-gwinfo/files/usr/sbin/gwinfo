@@ -4,18 +4,20 @@
 # Copyright Adrian Schmutzler, 2018.
 # License GPLv3
 #
-# Gateway-Firmware Version 1.4.6
+# Gateway-Firmware Version 1.4.7
 #
 
 # Config
-api_urls="https://monitoring.freifunk-franken.de/api/gwinfo" # space-separated list of addresses (api_urls="url1 url2")
+api_urls=$(uci -q get gateway.gwinfo.urls) || \
+  api_urls="https://monitoring.freifunk-franken.de/api/gwinfo"
+
 batctlpath=/usr/sbin/batctl
 hostname="$(uci -q get system.@system[0].hostname)"
-statslink="$(uci -q get gateway.@gateway[0].statslink)"
+statslink="$(uci -q get gateway.gwinfo.statslink)"
 
 # Code
 tmp=$(/bin/mktemp)
-echo "{\"version\":\"1.4.6\",\"hostname\":\"$hostname\",\"stats_page\":\"$statslink\",\"netifs\":[" > $tmp
+echo "{\"version\":\"1.4.7\",\"hostname\":\"$hostname\",\"stats_page\":\"$statslink\",\"netifs\":[" > $tmp
 
 comma=""
 for netif in $(ls /sys/class/net); do
@@ -43,7 +45,7 @@ done
 echo "],\"admins\":[" >> $tmp
 
 comma=""
-for admin in $(uci -q get gateway.@gateway[0].admin); do
+for admin in $(uci -q get gateway.gwinfo.admin); do
 	echo "$comma\"$admin\"" >> $tmp && comma=","
 done
 
