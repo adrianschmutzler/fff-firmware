@@ -1,6 +1,7 @@
 #!/bin/ash
 
-api_urls='https://monitoring.freifunk-franken.de/api/alfred2'
+api_urls=$(uci -q get gateway.alfred.urls) || \
+  api_urls="https://monitoring.freifunk-franken.de/api/alfred2"
 
 fetchid="64"
 
