@@ -1,0 +1,57 @@
+. /lib/functions.sh
+
+set_redistfilter() {
+	# Usage: set_redistfilter <name> <net>
+
+	local name="$1"
+	local net="$2"
+
+	if [ -z "$name" ]; then
+		echo "-> Missing name for babel filter"
+		return 1
+	fi
+
+	if [ -z "$net" ]; then
+		echo "-> Missing IP net for babel filter $name"
+		return 1
+	fi
+
+	uci set babeld.${name}_local=filter
+	uci set babeld.${name}_local.type=redistribute
+	uci set babeld.${name}_local.local=true
+	uci set babeld.${name}_local.ip="$net"
+
+	uci set babeld.${name}=filter
+	uci set babeld.${name}.type=redistribute
+	uci set babeld.${name}.ip="$net"
+}
+
+set_babelfilter() {
+	local name="$1"
+	local net="$(uci get gateway.$name.net)"
+	local type="$(uci get gateway.$name.type)"
+
+	if [ "$type" = "redistribute" ] || [ "$type" = "redist" ]; then
+		echo "-> Applying babel redistribute filters for $net"
+		set_redistfilter "$name" "$net" || return 1
+	else
+		echo "WARNING: Unrecognized babel filter $name"
+		return 1
+	fi
+}
+
+configure() {
+	# No deletion of old filters
+
+	echo "Adding custom babel filters"
+	config_load gateway
+	config_foreach set_babelfilter babelfilter
+}
+
+apply() {
+	uci commit babeld
+}
+
+revert() {
+	uci revert babeld
+}
