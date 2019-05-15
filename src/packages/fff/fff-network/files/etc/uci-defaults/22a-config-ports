@@ -49,7 +49,7 @@ fi
 
 case "$BOARD" in
 	archer-c7-v2)
-		setupSwitch "4 5 0t" "2 3 0t" "1 6"
+		setupSwitch "4 5 0t" "2 3 0t" "1 6t"
 		;;
 	archer-c7-v4|\
 	archer-c7-v5|\
