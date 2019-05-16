@@ -66,6 +66,28 @@ fixMac() {
 	/etc/init.d/network restart
 }
 
+addVLAN() {
+	# Add complete config for a singe VLAN
+	# If VLAN ID exists, it will be overwritten (not added a second time)
+	#
+	# Does not include uci commit!
+	#
+	# Usage: addVLAN <VLAN ID> [<PORTS>]
+
+	local vlan=$1
+	local ports=$2
+
+	if [ -z "$vlan" ]; then
+		echo "ERROR: Missing VLAN ID for addVLAN()"
+		return 1
+	fi
+
+	uci set network.vlan$vlan='switch_vlan'
+	uci set network.vlan$vlan.vlan="$vlan"
+	uci set network.vlan$vlan.device="$(uci get network.@switch[0].name)"
+	uci set network.vlan$vlan.ports="$ports"
+}
+
 setupSwitch() {
 	# Set up switch for switch-based devices
 	# This is intended for initial setup, not for updates
