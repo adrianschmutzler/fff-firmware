@@ -1,6 +1,7 @@
 # Copyright 2019 Adrian Schmutzler
 # License GPLv3
 
+. /lib/functions.sh
 . /lib/functions/network.sh
 
 setAutoConf() {
@@ -111,6 +112,61 @@ setupSwitch() {
 
 	local MESHIF="$(uci get network.lan.ifname | grep -o -m1 "eth\d")"
 	uci set network.ethmesh.ifname="$MESHIF.3"
+}
+
+getEthMode() {
+	# Returns mode (CLIENT, BATMAN, WAN) of a specified ethX
+	# Note: This will also match VLANs, e.g. eth1 will match eth1.2
+	# Note: This will only return one option if multiple are set
+	#
+	# Usage: getEthMode <DEV, e.g. eth0>
+
+	local DEV=$1
+
+	if uci -q get network.wan.ifname | grep -q "\b${DEV}\b"; then
+		echo "WAN"
+	elif uci -q get network.ethmesh.ifname | grep -q "\b${DEV}\b"; then
+		echo "BATMAN"
+	elif uci -q get network.mesh.ifname | grep -q "\b${DEV}\b"; then
+		echo "CLIENT"
+	else
+		# Misconfigured or eth does not exist
+		return 1
+	fi
+}
+
+getPortMode() {
+	# Returns mode (CLIENT, BATMAN, WAN) of a specified switch-based port
+	# Note: This will only work for untagged ports
+	#
+	# Usage: getPortMode <PORT, e.g. 2>
+
+	local PORT=$1
+	local VLAN
+
+	identify_vlan() {
+		local name=$1
+		local vlan=$(uci get network.$name.vlan)
+
+		uci get network.$name.ports | grep -q "\b${PORT}\b" && VLAN=$vlan
+	}
+
+	config_load network
+	config_foreach identify_vlan switch_vlan
+
+	if [ "$VLAN" = "2" ]; then
+		echo "WAN"
+	elif [ "$VLAN" = "3" ]; then
+		echo "BATMAN"
+	elif [ "$VLAN" = "1" ]; then
+		echo "CLIENT"
+	elif [ -n "$VLAN" ]; then
+		# Non-standard VLAN ID
+		return 1
+	else
+		# Port tagged or unused
+		return 1
+	fi
 }
 
 setupOnePort() {
