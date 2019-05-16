@@ -18,6 +18,11 @@ case "$BOARD" in
 	tl-wr841-v12)
 		PORTORDER="4 3 2 1"
 		;;
+	c2600|\
+	tl-wr1043nd-v4|\
+	tl-wr1043n-v5)
+		PORTORDER="5 4 3 2 1"
+		;;
 	cpe210|\
 	cpe510)
 		PORTORDER="5 4"
@@ -27,9 +32,5 @@ case "$BOARD" in
 		;;
 	tl-wr841-v8)
 		PORTORDER="2 3 4 1"
-		;;
-	tl-wr1043nd-v4|\
-	tl-wr1043n-v5)
-		PORTORDER="5 4 3 2 1"
 		;;
 esac
