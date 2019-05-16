@@ -1,0 +1,6 @@
+machine=ipq806x
+chipset=ipq806x
+subtarget=generic
+target=$builddir/$machine
+images=("openwrt-${chipset}-tplink_c2600-squashfs-sysupgrade.bin"
+        )

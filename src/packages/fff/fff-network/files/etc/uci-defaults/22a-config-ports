@@ -75,6 +75,9 @@ case "$BOARD" in
 	tl-wr841-v12)
 		setupSwitch "1 2 0t" "3 4 0t"
 		;;
+	c2600)
+		setupSwitch "1 2 6t" "3 4 6t" "5 0t"
+		;;
 	cpe210|\
 	cpe510)
 		# Default: LAN0: WAN, LAN1: CLIENT

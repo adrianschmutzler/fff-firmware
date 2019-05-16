@@ -11,7 +11,8 @@ BOARD="$(uci get board.model.name)"
 
 # Set MAC address for br-mesh
 case "$BOARD" in
-	archer-c7-v2)
+	archer-c7-v2|\
+	c2600)
 		ROUTERMAC=$(cat /sys/class/net/eth1/address)
 		;;
 	archer-c7-v4|\
@@ -44,6 +45,7 @@ uci set "network.mesh.macaddr=$ROUTERMAC"
 case "$BOARD" in
 	archer-c7-v4|\
 	archer-c7-v5|\
+	c2600|\
 	tl-wdr4900-v1|\
 	tl-wr841-v9|\
 	tl-wr841-v10|\
