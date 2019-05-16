@@ -92,67 +92,50 @@ setupSwitch() {
 }
 
 setupOnePort() {
-	# Set up port mode for one-port devices
-	# This is intended for initial setup and for updates
-	# (latter will require network restart)
+	# Set up port mode for non-switch port
+	#
+	# For two-port devices without switch just call this twice:
+	# setupOnePort "WAN" eth0
+	# setupOnePort "BATMAN" eth1
+	#
+	# Indivual change of a single port is also supported now!
 	#
 	# Usage: setupOnePort <ETHMODE, e.g. BATMAN, CLIENT, WAN> [<DEV, default: eth0>]
 
 	local ETHMODE=$1
 	local DEV=$2
+	local MESH
 
 	[ -n "$DEV" ] || DEV=eth0
 
 	if [ "$ETHMODE" = "WAN" ]; then
-		uci set network.mesh.ifname="bat0"
 		uci set network.wan=interface
 		uci set network.wan.ifname="$DEV"
 		uci set network.wan.proto=dhcp
-		uci -q del network.ethmesh.ifname
 		enableAutoConf "$DEV"
-	elif [ "$ETHMODE" = "CLIENT" ] ; then
+	elif uci -q get network.wan.ifname | grep "^ *$DEV *$"; then
+		# only disable WAN for $DEV if it was set before
+		# -> will ignore other eth if called for second port
+		uci del network.wan.ifname
 		disableAutoConf "$DEV"
-		uci set network.mesh.ifname="bat0 $DEV"
-		uci -q del network.wan.ifname
-		uci -q del network.ethmesh.ifname
-	else # default=BATMAN
-		disableAutoConf "$DEV"
-		uci set network.mesh.ifname="bat0"
-		uci -q del network.wan.ifname
-		uci set network.ethmesh.ifname="$DEV"
-	fi
-	uci commit network
-}
-
-setup2ndEth() {
-	# Set up second port for devices with to ports directly connected to ethX (no switch)
-	# This is intended for initial setup and for updates
-	#
-	# Use this in combination with setupOnePort() for the first port.
-	# Calling setupOnePort() will overwrite the settings made here, so always call in succession, e.g.
-	# setupOnePort "WAN" eth0
-	# setup2ndEth "BATMAN" eth1
-	#
-	# Usage: setup2ndEth <ETHMODE: BATMAN or CLIENT> <DEV, e.g. eth1>
-
-	local ETHMODE=$1
-	local DEV=$2
-
-	local meshif="$(uci -q get network.mesh.ifname)"
-
-	if [ "$ETHMODE" = "CLIENT" ] ; then
-		# Only write if not only there
-		echo "$meshif" | grep -q "$DEV" || uci set network.mesh.ifname="$meshif $DEV"
-	else
-		# Remove if there
-		uci set network.mesh.ifname="$(echo "$meshif" | sed "s/ *$DEV//")"
 	fi
 
-	if [ "$ETHMODE" = "BATMAN" ] ; then
-		# Always overwrite (if both ports are set to BATMAN, only the second will be)
-		uci set network.ethmesh.ifname="$DEV"
+	MESH="$(uci -q get network.mesh.ifname | sed "s/\b$DEV //" | sed "s/ *$DEV$//g")"
+	if [ "$ETHMODE" = "CLIENT" ]; then
+		if [ -n "$MESH" ]; then
+			uci set network.mesh.ifname="$MESH $DEV"
+		else
+			uci set network.mesh.ifname="$DEV"
+		fi
 	else
-		uci -q get network.ethmesh.ifname | grep -q "$DEV" && uci del network.ethmesh.ifname
+		uci set network.mesh.ifname="$MESH"
+	fi
+
+	if [ "$ETHMODE" = "BATMAN" ]; then
+		# Always overwrite (if both ports are set to BATMAN, only the last will be)
+		uci set network.ethmesh.ifname="$DEV"
+	elif uci -q get network.ethmesh.ifname | grep "^ *$DEV *$"; then
+		uci del network.ethmesh.ifname
 	fi
 
 	uci commit network
