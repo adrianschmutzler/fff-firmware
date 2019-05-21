@@ -101,8 +101,7 @@ get_source() {
             # Patches for feeds are stored in known directories like feed_patches/$NAME/
             for PATCH in $(ls ../../feed_patches/${NAME}/*.patch 2>/dev/null); do
                 if [ -s "$PATCH" ] ; then
-                    echo "Applying $PATCH"
-                    git -C "$NAME" am --whitespace=nowarn "../$PATCH"
+                    apply_feedpatch "$NAME" "../$PATCH"
                 else
                     echo "Empty patch $PATCH ignored."
                 fi
@@ -116,9 +115,32 @@ get_source() {
 
 patch_target() {
     for patch in $(ls "$PWD"/build_patches/openwrt/*.patch 2>/dev/null); do
-        echo "Applying $patch:"
-        patch --no-backup-if-mismatch -p1 -d "$target" -i "$patch"
+        apply_buildpatch "$target" "$patch"
     done
+}
+
+apply_buildpatch() {
+    local target="$1"
+    local patch="$2"
+
+    echo "Applying $patch:"
+    patch --no-backup-if-mismatch -p1 -d "$target" -i "$patch"
+}
+
+undo_buildpatch() {
+    local target="$1"
+    local patch="$2"
+
+    echo "Applying $patch:"
+    patch --no-backup-if-mismatch -R -p1 -d "$target" -i "$patch"
+}
+
+apply_feedpatch() {
+    local target="$1"
+    local patch="$2"
+
+    echo "Applying $patch"
+    git -C "$target" am --whitespace=nowarn "$patch"
 }
 
 get_make_variant() {
@@ -466,6 +488,15 @@ case "$1" in
             prepare
         fi
         ;;
+    "patchbuild")
+        apply_buildpatch "$2" "$3"
+        ;;
+    "unpatchbuild")
+        undo_buildpatch "$2" "$3"
+        ;;
+    "patchfeed")
+        apply_feedpatch "$2" "$3"
+        ;;
     "build")
         if [ "$2" = "help" ] || [ "$2" = "x" ]; then
             echo "This option compiles the firmware"
@@ -528,6 +559,9 @@ case "$1" in
         echo "command:"
         echo "  selectbsp <bsp-file>"
         echo "  selectvariant <name of variant>"
+        echo "  patchbuild <target> <patch>"
+        echo "  unpatchbuild <target> <patch>"
+        echo "  patchfeed <target> <patch>"
         echo "  prepare"
         echo "  config openwrt"
         echo "  build [fast|debug]"
