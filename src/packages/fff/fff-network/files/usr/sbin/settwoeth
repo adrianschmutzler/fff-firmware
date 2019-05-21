@@ -23,10 +23,6 @@ if ! ([ "$ETHMODE2" = "CLIENT" ] || [ "$ETHMODE2" = "BATMAN" ]); then
 	echo "Wrong port mode for second port. Choose one of: CLIENT, BATMAN"
 	exit 1
 fi
-if [ "$ETHMODE1" = "BATMAN" ] && [ "$ETHMODE2" = "BATMAN" ]; then
-	echo "Only one port can be set to BATMAN!"
-	exit 1
-fi
 
 setupOnePort "$ETHMODE1" "$DEV1"
 setupOnePort "$ETHMODE2" "$DEV2"

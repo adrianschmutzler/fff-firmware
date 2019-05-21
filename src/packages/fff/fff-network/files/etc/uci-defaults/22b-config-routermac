@@ -75,7 +75,12 @@ esac
 
 if [ -n "$ETHMESHMAC" ]; then
 	echo "Setting ethmesh MAC address to $ETHMESHMAC"
-	uci set "network.ethmesh.macaddr=$ETHMESHMAC"
+
+	ETHMESHDEV="$(uci -q get network.ethmesh.ifname)"
+	[ -n "$ETHMESHDEV" ] || ETHMESHDEV=eth0
+	uci set network.ethmesh_dev=device
+	uci set network.ethmesh_dev.name="$ETHMESHDEV"
+	uci set network.ethmesh_dev.macaddr="$ETHMESHMAC"
 fi
 
 uci commit network

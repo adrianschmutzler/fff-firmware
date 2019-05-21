@@ -211,11 +211,15 @@ setupOnePort() {
 		uci set network.mesh.ifname="$MESH"
 	fi
 
+	ETHMESH="$(uci -q get network.ethmesh.ifname | sed "s/\b$DEV //" | sed "s/ *$DEV$//g")"
 	if [ "$ETHMODE" = "BATMAN" ]; then
-		# Always overwrite (if both ports are set to BATMAN, only the last will be)
-		uci set network.ethmesh.ifname="$DEV"
-	elif uci -q get network.ethmesh.ifname | grep -q "^ *$DEV *$"; then
-		uci del network.ethmesh.ifname
+		if [ -n "$ETHMESH" ]; then
+			uci set network.ethmesh.ifname="$ETHMESH $DEV"
+		else
+			uci set network.ethmesh.ifname="$DEV"
+		fi
+	else
+		uci set network.ethmesh.ifname="$ETHMESH"
 	fi
 
 	uci commit network

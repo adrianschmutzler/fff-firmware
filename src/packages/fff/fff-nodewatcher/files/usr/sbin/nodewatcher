@@ -11,7 +11,7 @@ fi
 trap "lock -u \"$lockfile\"" INT TERM EXIT
 
 
-SCRIPT_VERSION="52.3"
+SCRIPT_VERSION="52.4"
 
 # Load libraries
 . /lib/functions.sh # Required for simple-tc
@@ -250,7 +250,7 @@ crawl() {
         # Show local gateway as its own gateway for Monitoring
         if [ -s /etc/config/gateway ]; then
             ETHMESHDEV="$(uci -q get network.ethmesh.ifname)"
-            [ -n "$ETHMESHDEV" ] && gwmac="$(cat "/sys/class/net/$ETHMESHDEV/address" 2>/dev/null)"
+            [ -n "$ETHMESHDEV" ] && gwmac="$(cat "/sys/class/net/br-ethmesh/address" 2>/dev/null)"
             batman_adv_gateway_list="<gateway_0><selected>true</selected><gateway>$gwmac</gateway><link_quality>-1</link_quality><nexthop>$gwmac</nexthop><outgoing_interface>internal</outgoing_interface><gw_class>-</gw_class></gateway_0>"
         fi
         batman_adv_gateway_list="$batman_adv_gateway_list$(/usr/sbin/batctl gwl -H | awk \

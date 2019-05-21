@@ -46,15 +46,15 @@ getEthernetHoodfile() {
 
 	echo "Trying to get hoodfile from ethernet neighbor..."
 
-	if ! ethmesh_dev=$(uci -q get network.ethmesh.ifname); then
+	if ! uci -q get network.ethmesh.ifname > /dev/null; then
 		# no ethmesh interface
 		return 1
 	fi
 
-	neighbor_addrs=$(ping6 -c2 ff02::1%"${ethmesh_dev}" | grep seq | grep DUP | cut -d " " -f4 | sed s/:$//g | sort -u)
+	neighbor_addrs=$(ping6 -c2 ff02::1%br-ethmesh | grep seq | grep DUP | cut -d " " -f4 | sed s/:$//g | sort -u)
 
 	for addr in $neighbor_addrs; do
-		wget -T2 -qO "$file" "http://[${addr}%${ethmesh_dev}]:2342/keyxchangev2data" && return 0
+		wget -T2 -qO "$file" "http://[${addr}%br-ethmesh]:2342/keyxchangev2data" && return 0
 	done
 
 	# got no hoodfile

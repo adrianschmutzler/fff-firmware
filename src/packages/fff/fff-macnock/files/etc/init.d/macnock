@@ -46,7 +46,7 @@ start_service() {
     }
 
 
-    local IFACE="$(uci -q get network.ethmesh.ifname)"
+    local IFACE="br-ethmesh"
     local HOOD="$(uci -q get system.@system[0].hood)"
     if [ -z "$HOOD" ]; then
         HOOD="$(uci -q get network.mesh.macaddr)"
