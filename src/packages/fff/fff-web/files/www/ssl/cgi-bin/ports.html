@@ -4,39 +4,31 @@
 board_name=$(uci -q get board.model.name)
 LOCALUPGRADESCRIPT="/etc/firstbootfff"
 
-# write
-if [ "$REQUEST_METHOD" = "POST" ] ; then
-	if [ "$POST_change_mode" != "" ] ; then
-		if [ "$(uci -q get fff.ui.portsetup)" = "oneport" ]; then
-			setoneport "${POST_mode}"
-			sed -i '/^setoneport.*/d' $LOCALUPGRADESCRIPT
-			echo "setoneport \"${POST_mode}\" # set via WebUI" >> $LOCALUPGRADESCRIPT
-		elif [ "$(uci -q get fff.ui.portsetup)" = "2ndport" ]; then
-			set2ndport "${POST_mode}"
-			sed -i '/^set2ndport.*/d' $LOCALUPGRADESCRIPT
-			echo "set2ndport \"${POST_mode}\" # set via WebUI" >> $LOCALUPGRADESCRIPT
-		fi
-		do_reboot=1
-		MSG='<span class="green">Port Modus ge&auml;ndert! Router startet neu...</span>'
-	fi
-	if [ "$POST_change_twoport" != "" ] ; then
-		setcpev1 "${POST_mode0}" "${POST_mode1}"
-		sed -i '/^setcpev1.*/d' $LOCALUPGRADESCRIPT
-		echo "setcpev1 \"${POST_mode0}\" \"${POST_mode1}\" # set via WebUI" >> $LOCALUPGRADESCRIPT
-		do_reboot=1
-		MSG='<span class="green">Port Modus ge&auml;ndert! Router startet neu...</span>'
-	fi
-fi
+. /lib/functions/fff/networksetup
 
 #helpers
 all_vlans() {
 	swconfig dev switch0 show | grep VLAN | sed 's/VLAN \(.*\):/\1/'
 }
+vlan_to_label() {
+	local vlan=$1
+	local txt
+
+	[ "$vlan" = "1" ] && txt="CLIENT"
+	[ "$vlan" = "2" ] && txt="WAN"
+	[ "$vlan" = "3" ] && txt="BATMAN"
+
+	if [ -n "$txt" ]; then
+		echo -n "VLAN $vlan <span style=\"font-weight:normal;font-style:italic\">(default: $txt)</span>"
+	else
+		echo -n "VLAN $vlan"
+	fi
+}
 format_state() {
 	batmanports="$(swconfig dev switch0 vlan 3 get ports)"
 	clientports="$(swconfig dev switch0 vlan 1 get ports)"
 	wanports="$(swconfig dev switch0 vlan 2 get ports)"
-	
+
 	if [ $2 -gt 1 ] ; then
 		echo -n "<span class=\"assign\" style=\"color:black\">Multi-Link"
 	elif echo "$clientports" | grep -q "$1" ; then
@@ -83,6 +75,29 @@ format_port() {
 	echo "<span class=\"stat\">$speed<br />$duplex</span><br /><br />"
 	echo "$vlist"
 }
+
+# write
+if [ "$REQUEST_METHOD" = "POST" ] ; then
+	if [ "$POST_change_mode" != "" ] ; then
+		setoneport "${POST_mode}" > /dev/null
+		sed -i '/.*WebUI-Port-Setup.*/d' $LOCALUPGRADESCRIPT
+		echo "setoneport \"${POST_mode}\" > /dev/null # WebUI-Port-Setup" >> $LOCALUPGRADESCRIPT
+		do_restart=1
+		MSG='<span class="green">Port Modus ge&auml;ndert! Netzwerk wird konfiguriert...</span>'
+	fi
+	if [ "$POST_change_switch" != "" ] ; then
+		sed -i '/.*WebUI-Port-Setup.*/d' $LOCALUPGRADESCRIPT
+		for vlan in $(all_vlans) ; do
+			eval "ports=\"\${POST_vlan$vlan}\""
+			uci set network.vlan$vlan.ports="$ports"
+			echo "uci set network.vlan$vlan.ports=\"$ports\" # WebUI-Port-Setup" >> $LOCALUPGRADESCRIPT
+		done
+		uci commit network
+		echo "uci commit network # WebUI-Port-Setup" >> $LOCALUPGRADESCRIPT
+		do_restart=1
+		MSG='<span class="green">Switch-Ports ge&auml;ndert! Netzwerk wird konfiguriert...</span>'
+	fi
+fi
 
 
 %>
@@ -148,8 +163,33 @@ format_port() {
 		</table>
 	</fieldset>
 	</td></tr>
+	<tr><td>
+	<fieldset>
+		<legend>Switch-Ports konfigurieren</legend>
+		<table>
+<% for vlan in $(all_vlans) ; do %>
+			<tr>
+				<th style="width:20em;text-align:left"><% vlan_to_label $vlan %></th><td><input type="text" name="vlan<%= $vlan %>" value="<% swconfig dev switch0 vlan $vlan get ports | sed 's/ $//g' %>" /></td>
+			</tr>
+<% done %>
+			<tr><td colspan="2"><input type="submit" name="change_switch" /></td></tr>
+			<tr><td colspan="2"></td></tr>
+			<tr><td colspan="2">
+				WAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zum Internet her.<br />
+				CLIENT: Normale Clients stellen &uuml;ber Ethernet Anschluss des Knotens Verbindung zum Freifunk Netz her.<br />
+				BATMAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zu anderen MESH Knoten her.<br /><br />
+
+				Für jedes VLAN kann eine Leerzeichen-getrennte Liste von Ports angegeben werden. Zusätzlich ist mindestens ein Port für die CPU anzugeben (i.d.R. 0t).<br />
+				Die Port IDs entsprechen den internen Nummern und müssen nicht mit der tatsächlichen Reihenfolge der Port übereinstimmen.
+			</td></tr>
+		</table>
+	</fieldset>
+	</td></tr>
 <% fi %>
-<% if [ "$(uci -q get fff.ui.portsetup)" = "oneport" ] || [ "$(uci -q get fff.ui.portsetup)" = "2ndport" ] ; then %>
+<%
+if [ "$(uci -q get fff.ui.portsetup)" = "oneport" ]; then
+	ETHMODE="$(getEthMode eth0)"
+%>
 	<tr><td>
 	<fieldset>
 		<legend>Ethernet Anschluss</legend>
@@ -158,11 +198,9 @@ format_port() {
 				<th style="width: 1em;">Anschluss&nbsp;Modus:</th>
 				<td>
 					<select name="mode">
-						<option value="BATMAN">BATMAN</option>
-						<option value="CLIENT">CLIENT</option>
-						<% if [ "$(uci -q get fff.ui.portsetup)" = "oneport" ] ; then %>
-						<option value="WAN">WAN</option>
-						<% fi %>
+						<option value="BATMAN" <% [ "$ETHMODE" = "BATMAN" ] && echo -n 'selected="selected" ' %>>BATMAN</option>
+						<option value="CLIENT" <% [ "$ETHMODE" = "CLIENT" ] && echo -n 'selected="selected" ' %>>CLIENT</option>
+						<option value="WAN" <% [ "$ETHMODE" = "WAN" ] && echo -n 'selected="selected" ' %>>WAN</option>
 					</select>
 				</td>
 			</tr>
@@ -173,50 +211,8 @@ format_port() {
 				CLIENT: Normale Clients stellen &uuml;ber Ethernet Anschluss des Knotens Verbindung zum Freifunk Netz her.<br />
 				BATMAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zu anderen MESH Knoten her.<br /><br />
 
-				Wenn diese Einstellung ver&auml;ndert wird, wird eine evtl. vorhandene manuelle Netzwerkkonfiguration in der
-				<tt>/etc/config/network</tt> &uuml;berschrieben.<br />
-				Anschlie&szlig;end wird der Router neugestartet.
-			</td></tr>
-		</table>
-	</fieldset>
-	</td></tr>
-<% fi %>
-<% if [ "$(uci -q get fff.ui.portsetup)" = "cpev1" ] ; then %>
-	<tr><td>
-	<fieldset>
-		<legend>Ethernet Anschl&uuml;sse</legend>
-		<table>
-			<tr>
-				<th style="width: 15em;text-align:left">Modus&nbsp;Anschluss&nbsp;0:</th>
-				<th style="width: 15em;text-align:left">Modus&nbsp;Anschluss&nbsp;1:</th>
-				<th></th>
-			</tr>
-			<tr>
-				<td>
-					<select name="mode0">
-						<option value="BATMAN">BATMAN</option>
-						<option value="CLIENT">CLIENT</option>
-						<option value="WAN">WAN</option>
-					</select>
-				</td>
-				<td>
-					<select name="mode1">
-						<option value="BATMAN">BATMAN</option>
-						<option value="CLIENT">CLIENT</option>
-						<option value="WAN">WAN</option>
-					</select>
-				</td>
-				<td><input type="submit" name="change_twoport" /></td>
-			</tr>
-			<tr><td colspan="3"></td></tr>
-			<tr><td colspan="3">
-				WAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zum Internet her.<br />
-				CLIENT: Normale Clients stellen &uuml;ber Ethernet Anschluss des Knotens Verbindung zum Freifunk Netz her.<br />
-				BATMAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zu anderen MESH Knoten her.<br /><br />
-
-				Wenn diese Einstellung ver&auml;ndert wird, wird eine evtl. vorhandene manuelle Netzwerkkonfiguration in der
-				<tt>/etc/config/network</tt> &uuml;berschrieben.<br />
-				Anschlie&szlig;end wird der Router neugestartet.
+				Wenn diese Einstellung ver&auml;ndert wird, wird ggf. eine evtl. vorhandene manuelle Netzwerkkonfiguration in der
+				<tt>/etc/config/network</tt> &uuml;berschrieben.
 			</td></tr>
 		</table>
 	</fieldset>
@@ -227,7 +223,7 @@ format_port() {
 <%in /www/ssl/cgi-bin/footer %>
 <%
 # write
-if [ "$do_reboot" = "1" ] ; then
-	reboot
+if [ "$do_restart" = "1" ] ; then
+	/etc/init.d/network restart
 fi
 %>
