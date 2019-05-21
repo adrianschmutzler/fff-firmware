@@ -1,0 +1,30 @@
+. /lib/functions/fff/networksetup
+
+configure() {
+	echo "Setting up WAN interface"
+
+	# Set up interface
+	if vlan=$(uci -q get gateway.@wan[0].vlan); then
+		uci set network.wan.ifname="$(switchPrefix)$vlan"
+	elif iface=$(uci -q get gateway.@wan[0].iface); then
+		uci set network.wan.ifname="$iface"
+	else
+		echo "No interface for WAN specified. Existing one is kept!"
+	fi
+}
+
+apply() {
+	uci commit network
+
+	# Enable new device in sysctl
+	# (if interface changes, old auto configuration will remain until next boot)
+	WANDEV="$(uci -q get network.wan.ifname)"
+	if [ -n "$WANDEV" ]; then
+		echo "WAN: Enable IPv6 auto configuration on $WANDEV"
+		enableAutoConf "$WANDEV"
+	fi
+}
+
+revert() {
+	uci revert network
+}
