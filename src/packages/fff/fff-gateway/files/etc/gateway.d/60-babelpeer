@@ -62,7 +62,6 @@ add_iifrules() {
 
 add_peer() {
 	local name="$1"
-	local fix_mtu
 	local penalty
 	local rxcost
 
@@ -81,10 +80,13 @@ add_peer() {
 	# add interface
 	uci set network.$name=interface
 
-	# fix mtu
-	if fix_mtu=$(uci -q get gateway.$name.fix_mtu); then
-		uci set network.$name.fix_mtu="$fix_mtu"
-	fi
+	# parse attributes
+	attrlist="mtu fix_mtu"
+	for attrname in $attrlist; do
+		if attr=$(uci -q get gateway.$name.$attrname); then
+			uci set network.$name.$attrname="$attr"
+		fi
+	done
 
 	# add iif-rules
 	add_iifrules "$name" "10" "31"
