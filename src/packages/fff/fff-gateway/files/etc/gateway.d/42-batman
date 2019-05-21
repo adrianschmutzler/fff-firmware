@@ -1,7 +1,6 @@
 . /lib/functions/fff/networksetup
 
 configure() {
-	# batman
 	echo "Setting up BATMAN interface"
 	if vlan=$(uci -q get gateway.@batman[0].vlan); then
 		uci set network.ethmesh.ifname="$(switchPrefix)$vlan"
