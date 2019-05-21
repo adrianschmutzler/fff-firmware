@@ -6,12 +6,14 @@
 
 setAutoConf() {
 	# Sets ipv6 auto configuration on an interface to on/off
-	# Usage: setAutoConf <interface> <[0|1]>
+	# Usage: setAutoConf <interface> <(0|1)> [<path_to_sysctl_file>]
 	local iface=$1
 	local on=$2
+	local sysctlfile="$3"
 
-	sysctlfile="/etc/sysctl.d/51-fff-network-$iface.conf"
-	echo "# Generated from configurenetwork" > "$sysctlfile"
+	[ -n "$sysctlfile" ] || sysctlfile="/etc/sysctl.d/51-fff-network-wan.conf"
+
+	echo "# Generated from network setup" > "$sysctlfile"
 	echo "net.ipv6.conf.$iface.accept_ra = $on" >> "$sysctlfile"
 	echo "net.ipv6.conf.$iface.accept_ra_defrtr = $on" >> "$sysctlfile"
 	echo "net.ipv6.conf.$iface.accept_ra_pinfo = $on" >> "$sysctlfile"
