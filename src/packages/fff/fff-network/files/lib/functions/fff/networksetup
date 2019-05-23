@@ -193,7 +193,7 @@ setupOnePort() {
 		uci set network.wan.ifname="$DEV"
 		uci set network.wan.proto=dhcp
 		enableAutoConf "$DEV"
-	elif uci -q get network.wan.ifname | grep "^ *$DEV *$"; then
+	elif uci -q get network.wan.ifname | grep -q "^ *$DEV *$"; then
 		# only disable WAN for $DEV if it was set before
 		# -> will ignore other eth if called for second port
 		uci del network.wan.ifname
@@ -214,7 +214,7 @@ setupOnePort() {
 	if [ "$ETHMODE" = "BATMAN" ]; then
 		# Always overwrite (if both ports are set to BATMAN, only the last will be)
 		uci set network.ethmesh.ifname="$DEV"
-	elif uci -q get network.ethmesh.ifname | grep "^ *$DEV *$"; then
+	elif uci -q get network.ethmesh.ifname | grep -q "^ *$DEV *$"; then
 		uci del network.ethmesh.ifname
 	fi
 
