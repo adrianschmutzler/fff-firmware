@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff
 PKG_VERSION:=0.0.2-5
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff
 
@@ -18,8 +18,6 @@ define Package/fff/base
 			 +micrond \
 			 +odhcp6c \
 			 +kmod-ifb \
-			 +kmod-ledtrig-heartbeat \
-			 +kmod-ledtrig-netdev \
 			 +kmod-nls-base \
 			 +kmod-sched-connmark \
 			 +tc \
