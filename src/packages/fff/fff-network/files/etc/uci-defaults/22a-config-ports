@@ -19,7 +19,6 @@ rm -f /etc/config/network
 
 # set up ethmesh
 uci set network.ethmesh=interface
-uci set network.ethmesh.mtu=1528
 uci set network.ethmesh.proto=batadv
 uci set network.ethmesh.mesh=bat0
 
