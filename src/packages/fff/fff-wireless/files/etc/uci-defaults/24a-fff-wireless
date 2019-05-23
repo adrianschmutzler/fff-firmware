@@ -36,7 +36,7 @@ configWifiDevice() {
 		set wireless.w${freq}ap.disabled='1'
 
 		set network.w${freq}mesh='interface'
-		set network.w${freq}mesh.mtu='1528'
+		set network.w${freq}mesh.mtu='1560'
 		set network.w${freq}mesh.proto='batadv'
 		set network.w${freq}mesh.mesh='bat0'
 
