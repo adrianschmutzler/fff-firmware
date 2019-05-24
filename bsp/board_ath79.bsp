@@ -11,6 +11,7 @@ images=("openwrt-${chipset}-${subtarget}-glinet_gl-ar150-squashfs-sysupgrade.bin
         "openwrt-${chipset}-${subtarget}-tplink_archer-c7-v5-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_cpe210-220-v1-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_cpe210-v2-squashfs-sysupgrade.bin"
+        "openwrt-${chipset}-${subtarget}-tplink_cpe210-v3-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_cpe510-520-v1-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_tl-wdr3500-squashfs-sysupgrade.bin"
         "openwrt-${chipset}-${subtarget}-tplink_tl-wdr3600-squashfs-sysupgrade.bin"
