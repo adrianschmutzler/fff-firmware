@@ -1,0 +1,50 @@
+configval() {
+	local name="$1"
+	local value="$2"
+
+	echo "CONFIG_${name}=$value" >> "$configfile"
+}
+configyes() {
+	configval "$1" "y"
+}
+configno() {
+	local name="$1"
+
+	echo "# CONFIG_${name} is not set" >> "$configfile"
+}
+
+packageyes() {
+	configval "PACKAGE_$1" "y"
+}
+packageno() {
+	configno "PACKAGE_$1"
+}
+packagemod() {
+	configval "PACKAGE_$1" "m"
+}
+
+defaultconfig() {
+	. ./bsp/defaultconfig
+}
+
+device() {
+	local devname="$1"
+	local packages="$2"
+
+	configyes "TARGET_DEVICE_${imagetarget}_DEVICE_${devname}"
+	configval "TARGET_DEVICE_PACKAGES_${imagetarget}_DEVICE_${devname}" "\"$packages\""
+	[ -n "$devices" ] && devices="$devices $devname" || devices="$devname"
+}
+
+target() {
+	chipset=$1
+	subtarget=$2
+	devices=
+
+	[ -n "$subtarget" ] && imagetarget=${chipset}_${subtarget} || imagetarget=${chipset}
+
+	configyes "TARGET_$chipset"
+	[ -n "$subtarget" ] && configyes "TARGET_${chipset}_${subtarget}"
+	configyes "TARGET_MULTI_PROFILE"
+	configyes "TARGET_PER_DEVICE_ROOTFS"
+}

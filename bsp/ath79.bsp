@@ -1,0 +1,35 @@
+target ath79 generic
+
+device glinet_gl-ar150
+device tplink_archer-c25-v1
+device tplink_archer-c60-v1
+device tplink_archer-c60-v2
+device tplink_archer-c7-v2
+device tplink_archer-c7-v4
+device tplink_archer-c7-v5
+device tplink_cpe210-220-v1
+device tplink_cpe210-v2
+device tplink_cpe210-v3
+device tplink_cpe510-520-v1
+device tplink_tl-wdr3500
+device tplink_tl-wdr3600
+device tplink_tl-wdr4300
+device tplink_tl-wdr4310
+device tplink_tl-wr842n-v2
+device tplink_tl-wr1043nd-v1
+device tplink_tl-wr1043nd-v2
+device tplink_tl-wr1043nd-v3
+device tplink_tl-wr1043nd-v4
+device tplink_tl-wr1043n-v5
+device ubnt_bullet-m
+device ubnt_bullet-m-xw
+device ubnt_loco-m-xw
+device ubnt_nanostation-m
+device ubnt_nanostation-m-xw
+device ubnt_unifi
+device ubnt_unifiac-lite
+device ubnt_unifiac-mesh
+
+defaultconfig
+
+configval TARGET_SQUASHFS_BLOCK_SIZE 512

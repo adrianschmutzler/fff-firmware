@@ -1,6 +1,0 @@
-machine=ipq40xx
-chipset=ipq40xx
-subtarget=generic
-target=$builddir/$machine
-images=("openwrt-${chipset}-avm_fritzbox-4040-squashfs-sysupgrade.bin"
-        )

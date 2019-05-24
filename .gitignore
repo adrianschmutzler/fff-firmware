@@ -3,6 +3,7 @@
 /selected_variant
 /build
 /bin*
+/bsp/config
 /src/dl
 /src/openwrt
 /src/packages/fastd

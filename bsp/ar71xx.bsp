@@ -1,0 +1,34 @@
+target ar71xx generic
+
+device archer-c25-v1
+device archer-c60-v1
+device archer-c60-v2
+device archer-c7-v2
+device archer-c7-v4
+device archer-c7-v5
+device cpe210-220-v1
+device cpe210-v2
+device cpe210-v3
+device cpe510-520-v1
+device gl-ar150
+device tl-wdr3500-v1
+device tl-wdr3600-v1
+device tl-wdr4300-v1
+device tl-wdr4310-v1
+device tl-wr842n-v2
+device tl-wr1043nd-v1
+device tl-wr1043nd-v2
+device tl-wr1043nd-v3
+device tl-wr1043nd-v4
+device tl-wr1043n-v5
+device ubnt-bullet-m
+device ubnt-loco-m-xw
+device ubnt-nano-m
+device ubnt-nano-m-xw
+device ubnt-unifi
+device ubnt-unifiac-lite
+device ubnt-unifiac-mesh
+
+defaultconfig
+
+configval TARGET_SQUASHFS_BLOCK_SIZE 512

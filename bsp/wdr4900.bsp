@@ -1,0 +1,7 @@
+target mpc85xx generic
+
+device tl-wdr4900-v1
+
+defaultconfig
+
+configval TARGET_SQUASHFS_BLOCK_SIZE 512

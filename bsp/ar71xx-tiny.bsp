@@ -1,0 +1,20 @@
+target ar71xx tiny
+
+device tl-mr3020-v1  "-uboot-envtools -kmod-usb-core -kmod-usb2 -kmod-usb-ledtrig-usbport"
+device tl-wa850re-v1 "-uboot-envtools"
+device tl-wa860re-v1 "-uboot-envtools"
+device tl-wa901nd-v2 "-uboot-envtools"
+device tl-wr740n-v4  "-uboot-envtools"
+device tl-wr741nd-v2 "-uboot-envtools"
+device tl-wr741nd-v4 "-uboot-envtools"
+device tl-wr841-v7   "-uboot-envtools"
+device tl-wr841-v8   "-uboot-envtools"
+device tl-wr841-v9   "-uboot-envtools"
+device tl-wr841-v10  "-uboot-envtools"
+device tl-wr841-v11  "-uboot-envtools"
+device tl-wr841-v12  "-uboot-envtools"
+
+defaultconfig
+
+configyes STRIP_KERNEL_EXPORTS
+configval TARGET_SQUASHFS_BLOCK_SIZE 512

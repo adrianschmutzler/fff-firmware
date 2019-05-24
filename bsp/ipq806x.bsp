@@ -1,0 +1,11 @@
+target ipq806x
+
+device tplink_c2600 "-ath10k-firmware-qca99x0 ath10k-firmware-qca99x0-ct"
+
+defaultconfig
+
+packagemod ath10k-firmware-qca99x0
+packagemod kmod-ath10k
+packageyes kmod-ath10k-ct
+
+configval TARGET_SQUASHFS_BLOCK_SIZE 512
