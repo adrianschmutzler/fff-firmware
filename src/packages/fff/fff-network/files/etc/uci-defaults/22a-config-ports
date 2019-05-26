@@ -85,15 +85,13 @@ case "$BOARD" in
 		setupSwitch "0t 4" "0t" "0t 5"
 		uci set "fff.ui.portsetup=cpev1"
 		;;
-	fritzbox-4040)
-		# Set whole switch to CLIENT, since VLANs are not supported
-		# (eth0 is connected untagged to switch)
+	fritzbox-4040|\
+	gl-ar150|\
+	ubnt-nano-m|\
+	ubnt-nano-m-xw|\
+	ubnt-nanostation-m|\
+	ubnt-nanostation-m-xw)
 		uci set "fff.ui.portsetup=twoeth"
-		;;
-	gl-ar150)
-		# Default for LAN-Port: CLIENT
-		setupSwitch "0t 1" "0t"
-		uci set "fff.ui.portsetup=2ndport"
 		;;
 	tl-wr740n-v4|\
 	tl-wr740nd-v4|\
@@ -112,13 +110,6 @@ case "$BOARD" in
 	tl-wr1043nd-v4|\
 	tl-wr1043n-v5)
 		setupSwitch "1 2 0t" "3 4 0t" "5 0t"
-		;;
-	ubnt-nano-m|\
-	ubnt-nano-m-xw|\
-	ubnt-nanostation-m|\
-	ubnt-nanostation-m-xw)
-		# Default: LAN0: WAN, LAN1: CLIENT
-		uci set "fff.ui.portsetup=twoeth"
 		;;
 	cpe210-v2|\
 	cpe210-v3|\
