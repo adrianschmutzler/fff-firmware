@@ -107,7 +107,7 @@ case "$BOARD" in
 		;;
 	tl-wr1043nd-v2|\
 	tl-wr1043nd-v3)
-		setupSwitch "1 2 6t" "3 4 6t" "5 6t"
+		setupSwitch "1 2 0t" "3 4 0t" "5 6t"
 		;;
 	tl-wr1043nd-v4|\
 	tl-wr1043n-v5)

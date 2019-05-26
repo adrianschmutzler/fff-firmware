@@ -51,6 +51,8 @@ case "$BOARD" in
 	tl-wr841-v10|\
 	tl-wr841-v11|\
 	tl-wr841-v12|\
+	tl-wr1043nd-v2|\
+	tl-wr1043nd-v3|\
 	tl-wr1043nd-v4|\
 	tl-wr1043n-v5)
 		ETHMESHMAC=$(macaddr_add "$ROUTERMAC" 1)
