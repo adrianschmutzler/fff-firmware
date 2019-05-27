@@ -79,9 +79,10 @@ format_port() {
 # write
 if [ "$REQUEST_METHOD" = "POST" ] ; then
 	if [ "$POST_change_mode" != "" ] ; then
-		setoneport "${POST_mode}" > /dev/null
+		setupOnePort "${POST_mode}" "eth0" > /dev/null
 		sed -i '/.*WebUI-Port-Setup.*/d' $LOCALUPGRADESCRIPT
-		echo "setoneport \"${POST_mode}\" > /dev/null # WebUI-Port-Setup" >> $LOCALUPGRADESCRIPT
+		echo ". /lib/functions/fff/networksetup # WebUI-Port-Setup" >> $LOCALUPGRADESCRIPT
+		echo "setupOnePort \"${POST_mode}\" > /dev/null # WebUI-Port-Setup" >> $LOCALUPGRADESCRIPT
 		do_restart=1
 		MSG='<span class="green">Port Modus ge&auml;ndert! Netzwerk wird konfiguriert...</span>'
 	fi
@@ -215,7 +216,7 @@ if [ "$(uci -q get fff.ui.portsetup)" = "oneport" ]; then
 				</td>
 			</tr>
 			<tr><td colspan="2"><input type="submit" name="change_mode" /></td></tr>
-			<tr><td colspan="2"></td></tr>
+			<tr><td colspan="2">&nbsp;</td></tr>
 			<tr><td colspan="2">
 				WAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zum Internet her.<br />
 				CLIENT: Normale Clients stellen &uuml;ber Ethernet Anschluss des Knotens Verbindung zum Freifunk Netz her.<br />
