@@ -23,8 +23,16 @@ if [ -s /etc/network.config ]; then
 
 	firstbootscript=/etc/firstbootfff
 
-	# real one-port
-	if [ -n "$ETHMODE" ] && ! [ "$(uci get board.model.name)" = "gl-ar150" ] ; then
+	# GL-AR150
+	if [ "$(uci get board.model.name)" = "gl-ar150" ] ; then
+		# only set if non-default mode
+		if [ -n "$ETHMODE" ] && [ "$ETHMODE" != "CLIENT" ]; then
+			echo "# Migrated network config" >> "$firstbootscript"
+			echo ". /lib/functions/fff/networksetup" >> "$firstbootscript"
+			echo "setupOnePort '$ETHMODE' 'eth1'" >> "$firstbootscript"
+		fi
+	# one-port
+	elif [ -n "$ETHMODE" ] ; then
 		# only set if non-default mode
 		if ! [ "$ETHMODE" = "CLIENT" ]; then
 			echo "# Migrated network config" >> "$firstbootscript"
@@ -35,12 +43,6 @@ if [ -s /etc/network.config ]; then
 	else
 		CLIENT_UCI="$(uci -q get network.vlan1.ports)"
 		BATMAN_UCI="$(uci -q get network.vlan3.ports)"
-
-		# GL-AR150
-		if [ -n "$ETHMODE" ]; then
-			setupPorts "1" "$ETHMODE"
-			WAN_PORTS=""
-		fi
 
 		# CPE210/510 v1
 		[ -n "$LAN0MODE" ] && setupPorts "5" "$LAN0MODE"
