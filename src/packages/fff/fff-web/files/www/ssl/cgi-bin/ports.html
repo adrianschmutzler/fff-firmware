@@ -85,6 +85,16 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 		do_restart=1
 		MSG='<span class="green">Port Modus ge&auml;ndert! Netzwerk wird konfiguriert...</span>'
 	fi
+	if [ "$POST_change_twoeth" != "" ] ; then
+		setupOnePort "${POST_mode0}" "eth0" > /dev/null
+		setupOnePort "${POST_mode1}" "eth1" > /dev/null
+		sed -i '/.*WebUI-Port-Setup.*/d' $LOCALUPGRADESCRIPT
+		echo ". /lib/functions/fff/networksetup # WebUI-Port-Setup" >> $LOCALUPGRADESCRIPT
+		echo "setupOnePort \"${POST_mode0}\" \"eth0\" # WebUI-Port-Setup" >> $LOCALUPGRADESCRIPT
+		echo "setupOnePort \"${POST_mode1}\" \"eth1\" # WebUI-Port-Setup" >> $LOCALUPGRADESCRIPT
+		do_restart=1
+		MSG='<span class="green">Port Modi ge&auml;ndert! Netzwerk wird konfiguriert...</span>'
+	fi
 	if [ "$POST_change_switch" != "" ] ; then
 		sed -i '/.*WebUI-Port-Setup.*/d' $LOCALUPGRADESCRIPT
 		for vlan in $(all_vlans) ; do
@@ -213,6 +223,53 @@ if [ "$(uci -q get fff.ui.portsetup)" = "oneport" ]; then
 
 				Wenn diese Einstellung ver&auml;ndert wird, wird ggf. eine evtl. vorhandene manuelle Netzwerkkonfiguration in der
 				<tt>/etc/config/network</tt> &uuml;berschrieben.
+			</td></tr>
+		</table>
+	</fieldset>
+	</td></tr>
+<% fi %>
+<%
+if [ "$(uci -q get fff.ui.portsetup)" = "twoeth" ]; then
+	ETH0MODE="$(getEthMode eth0)"
+	ETH1MODE="$(getEthMode eth1)"
+%>
+	<tr><td>
+	<fieldset>
+		<legend>Ethernet Anschl&uuml;sse</legend>
+		<table>
+			<tr>
+				<th style="width: 15em;text-align:left">Modus&nbsp;eth0:</th>
+				<th style="width: 15em;text-align:left">Modus&nbsp;eth1:</th>
+				<th></th>
+			</tr>
+			<tr>
+				<td>
+					<select name="mode0">
+						<option value="BATMAN" <% [ "$ETH0MODE" = "BATMAN" ] && echo -n 'selected="selected" ' %>>BATMAN</option>
+						<option value="CLIENT" <% [ "$ETH0MODE" = "CLIENT" ] && echo -n 'selected="selected" ' %>>CLIENT</option>
+						<option value="WAN" <% [ "$ETH0MODE" = "WAN" ] && echo -n 'selected="selected" ' %>>WAN</option>
+					</select>
+				</td>
+				<td>
+					<select name="mode1">
+						<option value="BATMAN" <% [ "$ETH1MODE" = "BATMAN" ] && echo -n 'selected="selected" ' %>>BATMAN</option>
+						<option value="CLIENT" <% [ "$ETH1MODE" = "CLIENT" ] && echo -n 'selected="selected" ' %>>CLIENT</option>
+						<option value="WAN" <% [ "$ETH1MODE" = "WAN" ] && echo -n 'selected="selected" ' %>>WAN</option>
+					</select>
+				</td>
+				<td><input type="submit" name="change_twoeth" /></td>
+			</tr>
+			<tr><td colspan="3">&nbsp;</td></tr>
+			<tr><td colspan="3">
+				WAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zum Internet her.<br />
+				CLIENT: Normale Clients stellen &uuml;ber Ethernet Anschluss des Knotens Verbindung zum Freifunk Netz her.<br />
+				BATMAN: Knoten stellt &uuml;ber Ethernet Anschluss Verbindung zu anderen MESH Knoten her.<br /><br />
+
+				Wenn diese Einstellung ver&auml;ndert wird, wird eine evtl. vorhandene manuelle Netzwerkkonfiguration in der
+				<tt>/etc/config/network</tt> &uuml;berschrieben.<br /><br />
+
+				Achtung: Die Reihenfolge der Schnittstellen folgt nur der internen Nummerierung.<br />
+				Achtung: Das &Auml;ndern des WAN-Ports auf BATMAN kann ggf. zur Doppelbelegung von MAC-Adressen f&uuml;hren.
 			</td></tr>
 		</table>
 	</fieldset>
