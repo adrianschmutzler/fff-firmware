@@ -106,7 +106,7 @@ fi
 <% show_msg %>
 <form method="post">
 <table style="width: 100%;">
-<% if swconfig list | grep -q switch0 ; then %>
+<% if uci -q get network.@switch[0].name > /dev/null ; then %>
 	<%# Device has a switch %>
 	<tr><td>
 	<fieldset>
