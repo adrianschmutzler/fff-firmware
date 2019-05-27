@@ -50,7 +50,7 @@ fi
 
 case "$BOARD" in
 	archer-c7-v2)
-		setupSwitch "4 5 0t" "2 3 0t" "1 6t"
+		setupSwitch "0t 4 5" "0t 2 3" "6t 1"
 		;;
 	archer-c7-v4|\
 	archer-c7-v5|\
@@ -61,7 +61,7 @@ case "$BOARD" in
 	tl-wdr4300-v1|\
 	tl-wdr4310-v1|\
 	tl-wdr4900-v1)
-		setupSwitch "4 5 0t" "2 3 0t" "1 0t"
+		setupSwitch "0t 4 5" "0t 2 3" "0t 1"
 		;;
 	archer-c25-v1|\
 	archer-c60-v1|\
@@ -74,10 +74,10 @@ case "$BOARD" in
 	tl-wr841-v10|\
 	tl-wr841-v11|\
 	tl-wr841-v12)
-		setupSwitch "1 2 0t" "3 4 0t"
+		setupSwitch "0t 1 2" "0t 3 4"
 		;;
 	c2600)
-		setupSwitch "1 2 6t" "3 4 6t" "5 0t"
+		setupSwitch "6t 1 2" "6t 3 4" "0t 5"
 		;;
 	cpe210|\
 	cpe510)
@@ -98,18 +98,18 @@ case "$BOARD" in
 	tl-wr741nd-v4|\
 	tl-wr841-v8|\
 	tl-wr842n-v2)
-		setupSwitch "1 4 0t" "2 3 0t"
+		setupSwitch "0t 1 4" "0t 2 3"
 		;;
 	tl-wr1043nd-v1)
-		setupSwitch "3 4 5t" "1 2 5t" "0 5t"
+		setupSwitch "5t 3 4" "5t 1 2" "5t 0"
 		;;
 	tl-wr1043nd-v2|\
 	tl-wr1043nd-v3)
-		setupSwitch "1 2 0t" "3 4 0t" "5 6t"
+		setupSwitch "0t 1 2" "0t 3 4" "6t 5"
 		;;
 	tl-wr1043nd-v4|\
 	tl-wr1043n-v5)
-		setupSwitch "1 2 0t" "3 4 0t" "5 0t"
+		setupSwitch "0t 1 2" "0t 3 4" "0t 5"
 		;;
 	cpe210-v2|\
 	cpe210-v3|\

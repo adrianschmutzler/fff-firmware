@@ -63,6 +63,10 @@ if [ -s /etc/network.config ]; then
 				;;
 		esac
 
+		# Move CPU-Port to beginning (required to compare with current config)
+		CLIENT_PORTS="$(echo "$CLIENT_PORTS" | sed 's/\(.*\) \b\(\d*t\)$/\2 \1/')"
+		BATMAN_PORTS="$(echo "$BATMAN_PORTS" | sed 's/\(.*\) \b\(\d*t\)$/\2 \1/')"
+
 		# Only create entry if setting actually differs
 		# But: if entries are created, create entries for all VLANs
 		if [ ! "$CLIENT_UCI" = "$CLIENT_PORTS" ] || [ ! "$BATMAN_UCI" = "$BATMAN_PORTS" ]; then
