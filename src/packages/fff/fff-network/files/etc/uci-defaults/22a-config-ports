@@ -88,9 +88,7 @@ case "$BOARD" in
 	fritzbox-4040|\
 	gl-ar150|\
 	ubnt-nano-m|\
-	ubnt-nano-m-xw|\
-	ubnt-nanostation-m|\
-	ubnt-nanostation-m-xw)
+	ubnt-nano-m-xw)
 		uci set "fff.ui.portsetup=twoeth"
 		;;
 	tl-wr740n-v4|\

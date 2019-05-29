@@ -31,10 +31,10 @@ case "$BOARD" in
 		BOARD=tl-wr841-v11
 		grep "v12" /var/sysinfo/model && BOARD=tl-wr841-v12
 		;;
-	nanostation-m)
+	*nanostation-m)
 		BOARD=ubnt-nano-m
 		;;
-	nanostation-m-xw)
+	*nanostation-m-xw)
 		BOARD=ubnt-nano-m-xw
 		;;
 	bullet-m)
@@ -80,6 +80,7 @@ case "$BOARD" in
 		BOARD=ubnt-bullet-m
 		MODEL="$(ubnt_xm_board_detect)"
 		echo "$MODEL" | grep -iq "Pico" && BOARD=ubnt-pico-m
+		echo "$MODEL" | grep -iq "Nano" && BOARD=ubnt-nano-m
 		echo "$MODEL" | grep -iq "Loco" && BOARD=ubnt-loco-m
 		;;
 esac

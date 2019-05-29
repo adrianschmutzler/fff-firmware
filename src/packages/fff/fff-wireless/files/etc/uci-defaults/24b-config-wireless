@@ -16,9 +16,7 @@ case "$BOARD" in
 		uci commit wireless
 		;;
 	ubnt-nano-m|\
-	ubnt-nano-m-xw|\
-	ubnt-nanostation-m|\
-	ubnt-nanostation-m-xw)
+	ubnt-nano-m-xw)
 		uci set wireless.radio0.antenna_gain=11
 		uci commit wireless
 		;;
