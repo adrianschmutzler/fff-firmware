@@ -3,6 +3,7 @@
 . /etc/firmware_release
 . /lib/functions/fff/evalhoodinfo
 . /lib/functions/fff/evalbytes
+. /lib/functions/fff/networksetup
 . /lib/functions/fff/portorder
 . /lib/functions.sh # required for config_load and config_foreach
 
@@ -219,6 +220,11 @@ if uci -q get network.@switch[0].name > /dev/null ; then
 	for port in $(swconfig dev switch0 show | grep "link:" | sed 's/.*port:\([0-9]*\) .*/\1/') ; do
 		echo "$PORTORDER" | grep -q "$port" && continue
 		format_port "$port"
+	done
+else
+	echo "-> PORT ASSIGNMENT (no switch)"
+	for i in $(ls /sys/class/net/ | grep "^eth\d$"); do
+		echo "Port Mode ${i}: $(getEthMode $i)"
 	done
 fi
 
