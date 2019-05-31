@@ -190,7 +190,7 @@ echo "Download-Limit: $(uci -q get 'simple-tc.example.limit_ingress') kBit/s"
 echo "Upload-Limit: $(uci -q get 'simple-tc.example.limit_egress') kBit/s"
 
 echo ""
-if swconfig list | grep -q switch0 ; then
+if uci -q get network.@switch[0].name > /dev/null ; then
 	if [ -n "$PORTORDER" ] ; then
 		echo "-> SWITCH (tatsaechliche Portreihenfolge)"
 	else
