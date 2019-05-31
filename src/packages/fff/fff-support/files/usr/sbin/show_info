@@ -14,7 +14,7 @@ hood="$(uci -q get "system.@system[0].hood")"
 hoodid="$(uci -q get "system.@system[0].hoodid")"
 
 all_vlans() {
-	swconfig dev switch0 show | grep VLAN | sed 's/VLAN \(.*\):/\1/'
+	swconfig dev switch0 show | grep "^ *VLAN" | sed 's/.*VLAN \(.*\):.*/\1/'
 }
 
 format_state() {

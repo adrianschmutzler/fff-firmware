@@ -8,7 +8,7 @@ LOCALUPGRADESCRIPT="/etc/firstbootfff"
 
 #helpers
 all_vlans() {
-	swconfig dev switch0 show | grep VLAN | sed 's/VLAN \(.*\):/\1/'
+	swconfig dev switch0 show | grep "^ *VLAN" | sed 's/.*VLAN \(.*\):.*/\1/'
 }
 vlan_to_label() {
 	local vlan=$1
