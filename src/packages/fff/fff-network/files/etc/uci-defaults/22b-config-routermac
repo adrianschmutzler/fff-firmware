@@ -42,48 +42,24 @@ echo "Setting br-mesh MAC address to $ROUTERMAC"
 uci set "network.mesh.macaddr=$ROUTERMAC"
 
 # Set MAC address for ethmesh
-case "$BOARD" in
-	archer-c7-v4|\
-	archer-c7-v5|\
-	c2600|\
-	tl-wdr4900-v1|\
-	tl-wr841-v9|\
-	tl-wr841-v10|\
-	tl-wr841-v11|\
-	tl-wr841-v12|\
-	tl-wr1043nd-v2|\
-	tl-wr1043nd-v3|\
-	tl-wr1043nd-v4|\
-	tl-wr1043n-v5)
-		ETHMESHMAC=$(macaddr_add "$ROUTERMAC" 1)
-		;;
-	cpe210|\
-	cpe210-v2|\
-	cpe210-v3|\
-	cpe510|\
-	gl-ar150|\
-	tl-mr3020-v1|\
-	tl-wa850re-v1|\
-	tl-wa860re-v1|\
-	tl-wa901nd-v2|\
-	tl-wr1043nd-v1)
-		ETHMESHMAC=$(macaddr_setbit_la "$ROUTERMAC")
-		;;
-	tl-wr841-v8|\
-	tl-wr842n-v2)
-		ETHMESHMAC=$(macaddr_add "$ROUTERMAC" -1)
-		;;
-esac
+ETHMESHDEV="$(uci -q get network.ethmesh.ifname)"
+# -> ethmesh will be set for VLAN-based setup, otherwise just prepare ethX from mesh
+[ -n "$ETHMESHDEV" ] || ETHMESHDEV="$(uci get network.mesh.ifname | grep -o -m1 "eth[0-9.]*")"
 
-if [ -n "$ETHMESHMAC" ]; then
-	echo "Setting ethmesh MAC address to $ETHMESHMAC"
+# -> Get ethmesh device, cut VLAN at end
+ETHDEV="$(echo "$ETHMESHDEV" | sed 's/\.[0-9]*$//')"
+ETHMESHMAC=$(cat /sys/class/net/${ETHDEV}/address)
 
-	ETHMESHDEV="$(uci -q get network.ethmesh.ifname)"
-	# ethmesh will be set for VLAN-based setup, otherwise just prepare ethX from mesh
-	[ -n "$ETHMESHDEV" ] || ETHMESHDEV="$(uci get network.mesh.ifname | grep -o -m1 "eth[0-9.]*")"
+for phymac in $(cat /sys/class/ieee80211/phy*/macaddress); do
+	# Check if duplicate -> if not, go on
+	[ "$phymac" = "$ETHMESHMAC" ] || continue
+	# If yes, set local bit and leave loop
+	newmac=$(macaddr_setbit_la $ETHMESHMAC)
 	uci set network.ethmesh_dev=device
 	uci set network.ethmesh_dev.name="$ETHMESHDEV"
-	uci set network.ethmesh_dev.macaddr="$ETHMESHMAC"
-fi
+	uci set network.ethmesh_dev.macaddr="$newmac"
+	echo "Setting ethmesh MAC address to $newmac"
+	break
+done
 
 uci commit network
