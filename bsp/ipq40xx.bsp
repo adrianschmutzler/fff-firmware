@@ -4,4 +4,9 @@ device avm_fritzbox-4040
 
 defaultconfig
 
+packagemod ath10k-firmware-qca4019-ct
+packageyes ath10k-firmware-qca4019
+packagemod kmod-ath10k-ct
+packageyes kmod-ath10k
+
 configval TARGET_SQUASHFS_BLOCK_SIZE 512

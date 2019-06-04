@@ -1,11 +1,11 @@
 target ar71xx generic
 
-device archer-c25-v1
-device archer-c60-v1
-device archer-c60-v2
-device archer-c7-v2
-device archer-c7-v4
-device archer-c7-v5
+device archer-c25-v1 "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9887-ct ath10k-firmware-qca9887"
+device archer-c60-v1 "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9888-ct ath10k-firmware-qca9888"
+device archer-c60-v2 "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9888-ct ath10k-firmware-qca9888"
+device archer-c7-v2  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
+device archer-c7-v4  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
+device archer-c7-v5  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 device cpe210-220-v1
 device cpe210-v2
 device cpe210-v3
@@ -26,11 +26,20 @@ device ubnt-loco-m-xw
 device ubnt-nano-m
 device ubnt-nano-m-xw
 device ubnt-unifi
-device ubnt-unifiac-lite
-device ubnt-unifiac-mesh
-device ubnt-unifiac-mesh-pro
-device ubnt-unifiac-pro
+device ubnt-unifiac-lite "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
+device ubnt-unifiac-mesh "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
+device ubnt-unifiac-mesh-pro "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
+device ubnt-unifiac-pro "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 
 defaultconfig
+
+packagemod ath10k-firmware-qca9887
+packagemod ath10k-firmware-qca9888
+packagemod ath10k-firmware-qca988x
+packagemod kmod-ath10k
+packagemod ath10k-firmware-qca9887-ct
+packagemod ath10k-firmware-qca9888-ct
+packagemod ath10k-firmware-qca988x-ct
+packagemod kmod-ath10k-ct
 
 configval TARGET_SQUASHFS_BLOCK_SIZE 512
