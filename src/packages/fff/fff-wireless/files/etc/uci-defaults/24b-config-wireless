@@ -53,9 +53,11 @@ esac
 # rssid
 case "$BOARD" in
 	cpe210|\
+	cpe210-v1|\
 	cpe210-v2|\
 	cpe210-v3|\
 	cpe510|\
+	cpe510-v1|\
 	tl-wa850re-v1)
 		/etc/init.d/rssileds disable
 		;;
