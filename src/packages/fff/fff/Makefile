@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff
 PKG_VERSION:=0.0.2-5
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff
 
@@ -20,7 +20,6 @@ define Package/fff/base
 			 +kmod-ifb \
 			 +kmod-nls-base \
 			 +kmod-sched-connmark \
-			 +tc \
 			 +fff-config \
 			 +fff-network \
 			 +fff-nodewatcher \
