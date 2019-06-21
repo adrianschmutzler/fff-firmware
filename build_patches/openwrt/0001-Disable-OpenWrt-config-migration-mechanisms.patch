@@ -1,6 +1,9 @@
 From: Tim Niemeyer <tim@tn-x.org>
 Date: Sat, 8 Jul 2017 10:46:59 +0200
-Subject: sysupgrade no config save
+Subject: Disable OpenWrt config migration mechanisms
+
+This disables all OpenWrt config migration mechanisms except for
+files listed in /etc/sysupgrade.conf
 
 diff --git a/package/base-files/files/sbin/sysupgrade b/package/base-files/files/sbin/sysupgrade
 index b75bd097f3..8ad778fd69 100755
@@ -19,5 +22,5 @@ index b75bd097f3..8ad778fd69 100755
  }
  
 -- 
-2.11.0
+2.20.1
 

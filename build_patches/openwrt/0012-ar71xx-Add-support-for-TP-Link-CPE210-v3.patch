@@ -50,7 +50,7 @@ index 23f3d23bf5..e0222f3637 100755
  		;;
  	*)
 diff --git a/target/linux/ar71xx/base-files/etc/board.d/02_network b/target/linux/ar71xx/base-files/etc/board.d/02_network
-index 1db7b5844e..cc52b288d7 100755
+index e9522252a2..386d93e584 100755
 --- a/target/linux/ar71xx/base-files/etc/board.d/02_network
 +++ b/target/linux/ar71xx/base-files/etc/board.d/02_network
 @@ -75,6 +75,7 @@ ar71xx_setup_interfaces()
@@ -140,5 +140,5 @@ index daf6c35ae4..8ad1f6e382 100644
    $(Device/cpe510-520-v1)
    DEVICE_TITLE := TP-LINK WBS210 v1
 -- 
-2.11.0
+2.20.1
 

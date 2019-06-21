@@ -13,9 +13,9 @@
 
 builddir=./build
 
-OPENWRTREV="e0505cc0182acf569cdd7b849189c134684160f8" # openwrt-18.06.2+ from 2019-05-01
+OPENWRTREV="4382d4ce19a95aa0d2ebd098c6b54feced21e7f9" # openwrt-18.06.3 from 2019-06-21
 OPENWRTURL="https://git.openwrt.org/openwrt/openwrt.git"
-PACKAGEREV="3ca88ff6df67f72a12b6f3f7565783376db589de" # openwrt-18.06.2+ from 2019-05-01
+PACKAGEREV="7879bbdb4ba35888c096a85367f98efbc617ebec" # openwrt-18.06.3 from 2019-06-21
 PACKAGEURL="https://git.openwrt.org/feed/packages.git"
 
 ## Feed definition [0]: name aka directory, [1]: url, [2]: revision, [3..n]: patches
@@ -36,7 +36,7 @@ GLUON_PKGS="micrond simple-tc uradvd"
 #official openwrt routing packages
 ROUTING=(routing
          https://git.openwrt.org/feed/routing.git
-         e5fe4b63e8063d87ccbdc9044f77e5f57e9f5eed) # openwrt-18.06.2+ from 2019-05-01
+         7589804a56baac804421b492c93004c28a627abb) # openwrt-18.06.3 from 2019-06-21
 ROUTING_PKGS="kmod-batman-adv batctl alfred babeld"
 
 FFF=(fff)
