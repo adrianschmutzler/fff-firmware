@@ -12,6 +12,7 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Freifunk
 	TITLE:=Freifunk-Franken adsc Customizations
 	URL:=http://www.freifunk-franken.de
+	DEPENDS:=+@BUSYBOX_CONFIG_WGET
 endef
 
 define Package/$(PKG_NAME)/description
