@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-support
 PKG_VERSION:=2
-PKG_RELEASE:=7
+PKG_RELEASE:=8
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
