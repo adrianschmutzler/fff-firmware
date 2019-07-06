@@ -10,7 +10,7 @@ Signed-off-by: Robert Marko <robimarko@gmail.com>
 Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
 
 diff --git a/tools/firmware-utils/src/tplink-safeloader.c b/tools/firmware-utils/src/tplink-safeloader.c
-index 4b227e1c97..de15faf679 100644
+index 4b227e1c97b6c5b236dba29dbdd5f0bcd68621cb..de15faf6796c993efc6c2a36b22bb1e978e3be90 100644
 --- a/tools/firmware-utils/src/tplink-safeloader.c
 +++ b/tools/firmware-utils/src/tplink-safeloader.c
 @@ -197,6 +197,42 @@ static struct device_info boards[] = {
@@ -56,6 +56,3 @@ index 4b227e1c97..de15faf679 100644
  	/** Firmware layout for the CPE510/520 */
  	{
  		.id	= "CPE510",
--- 
-2.20.1
-

@@ -10,7 +10,7 @@ Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.net>
 
 diff --git a/package/network/services/wireguard/files/wireguard.sh b/package/network/services/wireguard/files/wireguard.sh
-index 96fa7215ff..fb781070d6 100644
+index 96fa7215ffc8d47e2f7934a96ada21eee5a4ed19..fb781070d6c566c4367a59ff573b7a1aed52e71f 100644
 --- a/package/network/services/wireguard/files/wireguard.sh
 +++ b/package/network/services/wireguard/files/wireguard.sh
 @@ -114,6 +114,7 @@ proto_wireguard_setup() {
@@ -42,6 +42,3 @@ index 96fa7215ff..fb781070d6 100644
  
    proto_send_update "${config}"
  }
--- 
-2.20.1
-

@@ -4,7 +4,7 @@ Subject: ar71xx-4.9-l2tp-stats
 
 diff --git a/target/linux/ar71xx/patches-4.9/fix-l2tp-stats-counter-overflow-on-32-bit-systems.patch b/target/linux/ar71xx/patches-4.9/fix-l2tp-stats-counter-overflow-on-32-bit-systems.patch
 new file mode 100644
-index 0000000000..4348aea31c
+index 0000000000000000000000000000000000000000..4348aea31cca0226171a878d0b13563ba48a1351
 --- /dev/null
 +++ b/target/linux/ar71xx/patches-4.9/fix-l2tp-stats-counter-overflow-on-32-bit-systems.patch
 @@ -0,0 +1,38 @@
@@ -46,6 +46,3 @@ index 0000000000..4348aea31c
 +-- 
 +2.7.2
 +
--- 
-2.20.1
-

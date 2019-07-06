@@ -13,7 +13,7 @@ Signed-off-by: Hans Dedecker <dedeckeh@gmail.com> [PKG_RELEASE increase]
 Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de> [backport]
 
 diff --git a/package/network/config/gre/files/gre.sh b/package/network/config/gre/files/gre.sh
-index ca11e87cfd..b6131d0555 100755
+index ca11e87cfd4502e547d1c255ec25223325d43a40..b6131d0555ff5390d28da31621f6a9317161dd2d 100755
 --- a/package/network/config/gre/files/gre.sh
 +++ b/package/network/config/gre/files/gre.sh
 @@ -57,7 +57,7 @@ gre_setup() {
@@ -72,6 +72,3 @@ index ca11e87cfd..b6131d0555 100755
  }
  
  proto_grev6tap_init_config() {
--- 
-2.20.1
-
