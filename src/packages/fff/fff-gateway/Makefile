@@ -16,7 +16,8 @@ define Package/fff-gateway
 	DEPENDS:=+fff-network \
 	         +fff-macnock \
 	         +fff-fixmtu \
-	         +fff-web-hood
+	         +fff-web-hood \
+	         +fff-wireguard
 endef
 
 define Package/fff-gateway/description

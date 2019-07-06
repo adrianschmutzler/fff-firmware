@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff
 PKG_VERSION:=6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff
 
@@ -66,15 +66,14 @@ define Package/fff-layer3
 			 +iptables-mod-ipopt \
 			 +iptables-mod-conntrack-extra \
 			 +tcpdump \
-			 +kmod-wireguard \
-			 +wireguard-tools \
 			 +fff-alfred-monitoring-proxy \
 			 +fff-babeld \
 			 +fff-batman-adv-server \
 			 +fff-dhcp \
 			 +fff-gateway \
 			 +fff-gwinfo \
-			 +fff-ra
+			 +fff-ra \
+			 +fff-wireguard
 	VARIANT:=layer3
 endef
 
