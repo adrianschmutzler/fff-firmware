@@ -13,31 +13,37 @@
 
 builddir=./build
 
-OPENWRTREV="f6429577c5110fe3ad5575c797e884e87027726c" # openwrt-18.06.4 from 2019-06-30
+# OpenWrt: openwrt-18.06.4 from 2019-06-30
+OPENWRTREV="f6429577c5110fe3ad5575c797e884e87027726c"
+PACKAGEREV="68461c4c5490065212ece28de1d44ede177536f5"
+ROUTINGREV="bb156bf355b54236a52279522fabbec1e8dd7043"
+
+# Gluon packages: master from 2019-05-02
+GLUONREV="9a364fb8d0a4f9fecb6a3aac7525fedf759fe81a"
+
+OPENWRT_PKGS="gpioctl-sysfs libugpio fastd haserl libpam libgnutls liblzma libnetsnmp libopenldap libidn2 libssh2 jansson"
+ROUTING_PKGS="kmod-batman-adv batctl alfred babeld"
+GLUON_PKGS="micrond simple-tc uradvd"
+
 OPENWRTURL="https://git.openwrt.org/openwrt/openwrt.git"
-PACKAGEREV="68461c4c5490065212ece28de1d44ede177536f5" # openwrt-18.06.4 from 2019-06-30
-PACKAGEURL="https://git.openwrt.org/feed/packages.git"
 
 ## Feed definition [0]: name aka directory, [1]: url, [2]: revision, [3..n]: patches
 
 #official openwrt packages
 OPENWRT=(openwrt
-         $PACKAGEURL
+         https://git.openwrt.org/feed/packages.git
          $PACKAGEREV)
-OPENWRT_PKGS="gpioctl-sysfs libugpio fastd haserl libpam libgnutls liblzma libnetsnmp libopenldap libidn2 libssh2 jansson"
 
 ## Be careful: FFF uses COMPAT_VERSION 15 as default at the moment.
 ## See http://www.open-mesh.org/projects/batman-adv/wiki/Compatversion
 GLUON=(gluon
-            https://github.com/freifunk-gluon/packages.git
-            9a364fb8d0a4f9fecb6a3aac7525fedf759fe81a) # master from 2019-05-02
-GLUON_PKGS="micrond simple-tc uradvd"
+       https://github.com/freifunk-gluon/packages.git
+       $GLUONREV)
 
 #official openwrt routing packages
 ROUTING=(routing
          https://git.openwrt.org/feed/routing.git
-         bb156bf355b54236a52279522fabbec1e8dd7043) # openwrt-18.06.4 from 2019-06-30
-ROUTING_PKGS="kmod-batman-adv batctl alfred babeld"
+         $ROUTINGREV)
 
 FFF=(fff)
 FFF_PKGS="-a"
