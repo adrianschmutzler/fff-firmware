@@ -28,6 +28,8 @@ device ubnt-nano-m-xw
 device ubnt-unifi
 device ubnt-unifiac-lite
 device ubnt-unifiac-mesh
+device ubnt-unifiac-mesh-pro
+device ubnt-unifiac-pro
 
 defaultconfig
 

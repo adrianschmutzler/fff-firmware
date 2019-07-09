@@ -19,7 +19,9 @@ case "$BOARD" in
 	archer-c7-v5|\
 	fritzbox-4040|\
 	ubnt-unifiac-lite|\
-	ubnt-unifiac-mesh)
+	ubnt-unifiac-mesh|\
+	ubnt-unifiac-mesh-pro|\
+	ubnt-unifiac-pro)
 		ROUTERMAC=$(cat /sys/class/net/eth0/address)
 		;;
 	archer-c25-v1|\

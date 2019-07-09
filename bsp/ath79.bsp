@@ -29,6 +29,8 @@ device ubnt_nanostation-m-xw
 device ubnt_unifi
 device ubnt_unifiac-lite
 device ubnt_unifiac-mesh
+device ubnt_unifiac-mesh-pro
+device ubnt_unifiac-pro
 
 defaultconfig
 

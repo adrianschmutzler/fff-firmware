@@ -38,6 +38,16 @@ case "$BOARD" in
 		uci set wireless.radio1.antenna_gain=3
 		uci commit wireless
 		;;
+	ubnt-unifiac-mesh-pro)
+		uci set wireless.radio0.antenna_gain=8
+		uci set wireless.radio1.antenna_gain=8
+		uci commit wireless
+		;;
+	ubnt-unifiac-pro)
+		uci set wireless.radio0.antenna_gain=6
+		uci set wireless.radio1.antenna_gain=3
+		uci commit wireless
+		;;
 esac
 
 # rssid
