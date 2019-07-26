@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=fff-web
+PKG_NAME:=fff-web-ui
 PKG_VERSION:=8
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -19,7 +19,7 @@ define Package/$(PKG_NAME)
 endef
 
 define Package/$(PKG_NAME)/description
-	This is the Webinterface for the Freifunk Franken Firmware
+	This is the web-based user interface for the Freifunk Franken Firmware
 endef
 
 define Build/Prepare

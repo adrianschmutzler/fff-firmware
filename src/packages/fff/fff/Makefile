@@ -26,7 +26,7 @@ define Package/fff/base
 			 +fff-support \
 			 +fff-sysupgrade \
 			 +fff-timeserver \
-			 +fff-web \
+			 +fff-web-ui \
 			 +fff-wireless \
 			 +simple-tc
 endef
