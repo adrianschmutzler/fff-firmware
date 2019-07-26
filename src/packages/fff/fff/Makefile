@@ -28,7 +28,7 @@ define Package/fff/base
 			 +fff-timeserver \
 			 +fff-web-ui \
 			 +fff-wireless \
-			 +simple-tc
+			 +fff-simple-tc
 endef
 
 define Package/fff/base/description
