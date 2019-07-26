@@ -162,13 +162,17 @@ echo "E-Mail Adresse: $(uci -q get 'fff.system.contact')"
 
 echo ""
 echo "-> BITRATEN-BEGRENZUNG"
-if [ "$(uci -q get 'simple-tc.example.enabled')" = "1" ] ; then
-	echo "Aktiv: ja"
+if [ -s "/etc/config/simple-tc" ]; then
+	if [ "$(uci -q get 'simple-tc.example.enabled')" = "1" ] ; then
+		echo "Aktiv: ja"
+	else
+		echo "Aktiv: nein"
+	fi
+	echo "Download-Limit: $(uci -q get 'simple-tc.example.limit_ingress') kBit/s"
+	echo "Upload-Limit: $(uci -q get 'simple-tc.example.limit_egress') kBit/s"
 else
-	echo "Aktiv: nein"
+	echo "simple-tc nicht installiert."
 fi
-echo "Download-Limit: $(uci -q get 'simple-tc.example.limit_ingress') kBit/s"
-echo "Upload-Limit: $(uci -q get 'simple-tc.example.limit_egress') kBit/s"
 
 echo ""
 if uci -q get network.@switch[0].name > /dev/null ; then
