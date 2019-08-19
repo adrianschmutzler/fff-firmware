@@ -92,19 +92,19 @@ add_wireguardpeer() {
 	fi
 
 	# set up wireguard
-	if privkey=$(uci -q get gateway.$name.private_key); then
+	if privkey=$(uci -q get gateway.$name.local_private_key); then
 		uci set network.$name.private_key="$privkey"
 	else
 		privkey=$(wg genkey)
 		uci set network.$name.private_key="$privkey"
-		uci set gateway.$name.private_key="$privkey"
+		uci set gateway.$name.local_private_key="$privkey"
 	fi
 	echo "WIREGUARD: publickey for ${name}: $(echo $privkey | wg pubkey)"
 
 	# configure wireguard
 	local wgname="wireguard_$name"
 	uci -q get network.@$wgname[-1] > /dev/null || uci set network.$wgname=$wgname
-	uci set network.@$wgname[-1].public_key="$(uci get gateway.$name.public_key)"
+	uci set network.@$wgname[-1].public_key="$(uci get gateway.$name.remote_public_key)"
 	uci set network.@$wgname[-1].endpoint_host="$(uci get gateway.$name.endpoint_host)"
 	uci set network.@$wgname[-1].endpoint_port="$(uci get gateway.$name.endpoint_port)"
 	uci set network.@$wgname[-1].persistent_keepalive="$(uci get gateway.$name.persistent_keepalive)"
