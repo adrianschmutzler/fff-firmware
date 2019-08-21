@@ -1,0 +1,16 @@
+. /lib/functions.sh
+
+fix_key_names() {
+	local name="$1"
+
+	if ! uci -q get gateway.$name.local_private_key > /dev/null; then
+		uci -q get gateway.$name.private_key > /dev/null && uci rename gateway.$name.private_key=local_private_key
+	fi
+
+	if ! uci -q get gateway.$name.remote_public_key > /dev/null; then
+		uci -q get gateway.$name.public_key > /dev/null && uci rename gateway.$name.public_key=remote_public_key
+	fi
+}
+
+config_load gateway
+config_foreach fix_key_names wireguardpeer
