@@ -1,0 +1,148 @@
+babel_add_iifrules() {
+	[ "$#" -ne "3" ] && return 1
+
+	local name="$1"
+	local table="$2"
+	local prio="$3"
+
+	uci set network.${name}_rule=rule
+	uci set network.${name}_rule.in="$name"
+	uci set network.${name}_rule.lookup="$table"
+	uci set network.${name}_rule.priority="$prio"
+
+	uci set network.${name}_rule6=rule6
+	uci set network.${name}_rule6.in="$name"
+	uci set network.${name}_rule6.lookup="$table"
+	uci set network.${name}_rule6.priority="$prio"
+
+	return 0
+}
+
+babel_delete_iifrules() {
+	[ "$#" -ne "1" ] && return 1
+
+	local name="$1"
+
+	uci del network.${name}_rule
+	uci del network.${name}_rule6
+
+	return 0
+}
+
+babel_add_peeraddr() {
+	[ "$#" -ne "1" ] && return 1
+
+	local option="$1"
+	local peer_ip
+
+	if peer_ip=$(uci -q get gateway.@gateway[0].peer_ip); then
+		uci add_list "$option"="$peer_ip"
+	elif peer_ip=$(uci -q get gateway.@client[0].ipaddr); then
+		# use ipaddr (without subnet) if no peer_ip set
+		uci add_list "$option"="$(echo "$peer_ip" | cut -d / -f1)"
+	else
+		echo "FATAL: Neither peer_ip nor ipaddr set! No peering ipv4 set!"
+		return 1
+	fi
+
+	return 0
+}
+
+babel_add_peer6addr() {
+	[ "$#" -ne "1" ] && return 1
+
+	local option="$1"
+	local peer_ip6
+
+	if peer_ip6=$(uci -q get gateway.@gateway[0].peer_ip6); then
+		uci add_list "$option"="$peer_ip6"
+	else
+		return 1
+	fi
+
+	return 0
+}
+
+babel_add_network() {
+	local name="$1"
+
+	# prohibit cfg* as name
+	if echo $name | grep -q cfg ; then
+		echo "ERROR: Name $name is invalid for peer!"
+		return 1
+	fi
+
+	# ensure name length
+	if [ ${#name} -gt 15 ]; then
+		echo "ERROR: name $name is too long!"
+		return 1
+	fi
+
+	# add interface
+	uci set network.$name=interface
+
+	# parse attributes
+	local attrlist="mtu fix_mtu"
+	for attrname in $attrlist; do
+		uci set network.$name.$attrname="$(uci -q get gateway.$name.$attrname)"
+	done
+
+	return 0
+}
+
+babel_add_interface() {
+	[ "$#" -ne "4" ] && return 1
+
+	local name="$1"
+	local interface="$2"
+	local type="$3"
+	local rxcost="$4"
+
+	uci set babeld.$name=interface
+	uci set babeld.$name.ifname="$interface"
+	uci set babeld.$name.type="$type"
+	uci set babeld.$name.rxcost="$rxcost"
+
+	return 0
+}
+
+babel_delete_interface() {
+	[ "$#" -ne "1" ] && return 1
+
+	local name="$1"
+
+	uci -q del babeld.$name
+
+	return 0
+}
+
+babel_set_penalty() {
+	# Usage: babel_set_penalty <interface> <cost>
+
+	[ "$#" -ne "2" ] && return 1
+
+	local name="$1"
+	local penalty="$2"
+
+	uci set "babeld.$name.rxcost=$penalty"
+	uci set "babeld.penalty_$name=filter"
+	uci set "babeld.penalty_$name.type=in"
+	uci set "babeld.penalty_$name.if=$name"
+	uci set "babeld.penalty_$name.action=metric $penalty"
+
+	return 0
+}
+
+babel_remove_penalty() {
+	# Usage: babel_remove_penalty <interface>
+
+	[ "$#" -ne "1" ] && return 1
+
+	local name="$1"
+
+	uci del "babeld.penalty_$name"
+	uci del "babeld.$name.rxcost"
+
+	return 0
+}
+
