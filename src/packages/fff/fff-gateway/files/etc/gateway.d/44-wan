@@ -21,7 +21,7 @@ apply() {
 	WANDEV="$(uci -q get network.wan.ifname)"
 	if [ -n "$WANDEV" ]; then
 		echo "WAN: Enable IPv6 auto configuration on $WANDEV"
-		enableAutoConf "$WANDEV"
+		enableAutoConf "$WANDEV" 2> /dev/null
 	fi
 }
 
