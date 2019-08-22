@@ -20,6 +20,8 @@ remove_babelpeer() {
 			uci -q del "babeld.penalty_$name"
 		fi
 	fi
+
+	return 0
 }
 
 add_babelpeer() {
@@ -63,6 +65,8 @@ add_babelpeer() {
 	if penalty=$(uci -q get gateway.$name.babel_penalty); then
 		babel_set_penalty "$name" "$penalty"
 	fi
+
+	return 0
 }
 
 add_wireguardpeer() {
@@ -122,6 +126,8 @@ add_wireguardpeer() {
 	# peer_ips
 	babel_add_peeraddr "network.$name.addresses"
 	babel_add_peer6addr "network.$name.addresses"
+
+	return 0
 }
 
 configure() {

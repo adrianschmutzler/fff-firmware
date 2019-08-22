@@ -109,6 +109,8 @@ configure() {
 	else
 		echo "WARNING: No hoodfile!"
 	fi
+
+	return 0
 }
 
 apply() {

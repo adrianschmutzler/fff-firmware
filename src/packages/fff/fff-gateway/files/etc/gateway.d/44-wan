@@ -11,6 +11,8 @@ configure() {
 	else
 		echo "No interface for WAN specified. Existing one is kept!"
 	fi
+
+	return 0
 }
 
 apply() {

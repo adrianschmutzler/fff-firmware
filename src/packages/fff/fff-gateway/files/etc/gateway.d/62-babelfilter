@@ -24,6 +24,8 @@ set_redistfilter() {
 	uci set babeld.${name}=filter
 	uci set babeld.${name}.type=redistribute
 	uci set babeld.${name}.ip="$net"
+
+	return 0
 }
 
 set_babelfilter() {
@@ -38,6 +40,8 @@ set_babelfilter() {
 		echo "WARNING: Unrecognized babel filter $name"
 		return 1
 	fi
+
+	return 0
 }
 
 configure() {

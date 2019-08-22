@@ -16,6 +16,8 @@ add_vlan() {
 	uci set network.vlan$vlan.vlan="$vlan"
 	uci set network.vlan$vlan.device="$(uci get network.@switch[0].name)"
 	uci set network.vlan$vlan.ports="$(uci get gateway.$name.ports)"
+
+	return 0
 }
 
 remove_vlan() {
@@ -32,6 +34,8 @@ remove_vlan() {
 	if ! uci -q del network.vlan$vlan ; then
 		echo "-> Error deleting VLAN $vlan"
 	fi
+
+	return 0
 }
 
 configure() {

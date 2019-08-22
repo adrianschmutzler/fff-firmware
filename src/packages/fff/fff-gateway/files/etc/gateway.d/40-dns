@@ -12,6 +12,8 @@ configure() {
 	else
 		echo "WARNING: No DNS servers set!"
 	fi
+
+	return 0
 }
 
 apply() {

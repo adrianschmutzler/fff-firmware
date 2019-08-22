@@ -69,6 +69,8 @@ configure() {
 		uci set network.mesh.ifname=$meshbase # No quotes to cut tailing space
 		echo "WARNING: No interface for client specified!"
 	fi
+
+	return 0
 }
 
 apply() {

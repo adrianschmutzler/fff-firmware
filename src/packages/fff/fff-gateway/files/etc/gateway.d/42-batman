@@ -10,6 +10,8 @@ configure() {
 		uci del network.ethmesh.ifname
 		echo "WARNING: No interface for batman specified."
 	fi
+
+	return 0
 }
 
 apply() {
