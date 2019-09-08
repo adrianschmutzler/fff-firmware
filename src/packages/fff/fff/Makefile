@@ -1,14 +1,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff
-PKG_VERSION:=6
-PKG_RELEASE:=2
+PKG_VERSION:=7
+PKG_RELEASE:=1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/fff/base
+define Package/fff-base
 	SECTION:=base
 	CATEGORY:=Freifunk
 	TITLE:=Freifunk-Franken Base
@@ -31,27 +31,12 @@ define Package/fff/base
 			 +fff-simple-tc
 endef
 
-define Package/fff/base/description
+define Package/fff-base/description
 	This is the Freifunk Franken Firmware Base package
 endef
 
-define Package/fff-node
-	$(call Package/fff/base)
-	TITLE+=(Home node)
-	DEPENDS+=+fff-batman-adv \
-			 +fff-fastd \
-			 +fff-firewall \
-			 +fff-hoods \
-			 +fff-uradvd
-	VARIANT:=homenode
-endef
-
-define Package/fff-node/description
-	$(call Package/fff/base/description)
-endef
-
 define Package/fff-layer3
-	$(call Package/fff/base)
+	$(call Package/fff-base)
 	TITLE+=(Layer 3 Gateway)
 	DEPENDS+=+arptables \
 			 +ebtables \
@@ -78,10 +63,10 @@ define Package/fff-layer3
 endef
 
 define Package/fff-layer3/description
-	$(call Package/fff/base/description)
+	$(call Package/fff-base/description)
 endef
 
-$(eval $(call BuildPackage,fff-node))
+$(eval $(call BuildPackage,fff-base))
 $(eval $(call BuildPackage,fff-layer3))
 
 include $(TOPDIR)/variant.mk
