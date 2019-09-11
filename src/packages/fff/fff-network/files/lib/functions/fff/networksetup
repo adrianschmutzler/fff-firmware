@@ -11,7 +11,7 @@ setAutoConf() {
 	local on=$2
 	local sysctlfile="$3"
 
-	[ -n "$sysctlfile" ] || sysctlfile="/etc/sysctl.d/51-fff-network-wan.conf"
+	[ -n "$sysctlfile" ] || sysctlfile="/etc/sysctl.d/65-fff-network-wan.conf"
 
 	echo "# Generated from network setup" > "$sysctlfile"
 	echo "net.ipv6.conf.$iface.accept_ra = $on" >> "$sysctlfile"
