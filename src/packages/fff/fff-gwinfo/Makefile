@@ -12,7 +12,7 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Freifunk
 	TITLE:= Freifunk-Franken GWinfo
 	URL:=http://www.freifunk-franken.de
-	DEPENDS:=+fff-network +fff-gateway
+	DEPENDS:=+fff-network
 endef
 
 define Package/$(PKG_NAME)/description
