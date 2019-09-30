@@ -218,7 +218,7 @@ prepare() {
 
     #saves ~200MB for each build
     test -d ./src/dl || mkdir ./src/dl
-    ln -s ../../src/dl "$target"/dl
+    ln -s ../src/dl "$target"/dl
 }
 
 prebuild() {
@@ -412,7 +412,7 @@ loadBSP()
         exit 1
     fi
 
-    target=$builddir/$machine
+    target=$builddir
     configfile="./bsp/config/${machine}.config"
     [ ! -d ./bsp/config ] && mkdir ./bsp/config
     > "$configfile"
