@@ -4,6 +4,9 @@
 BOARD="$(uci get board.model.name)"
 
 case "$BOARD" in
+	joy-it,jit-or750i)
+		PORTORDER="4 3 2"
+		;;
 	*archer-c25-v1|\
 	*archer-c60-v1|\
 	*archer-c60-v2|\
