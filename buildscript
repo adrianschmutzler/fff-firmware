@@ -533,6 +533,10 @@ case "$1" in
     "patchfeed")
         apply_feedpatch "$2" "$3"
         ;;
+    "prebuild")
+        set_variant
+        prebuild
+        ;;
     "build")
         if [ "$2" = "help" ] || [ "$2" = "x" ]; then
             echo "This option compiles the firmware"
@@ -601,6 +605,7 @@ case "$1" in
         echo "  prepare"
         echo "  updatefeeds"
         echo "  config openwrt"
+        echo "  prebuild"
         echo "  build [fast|debug]"
         echo "  buildall [fast]"
         echo "  release [all] [fast]"
