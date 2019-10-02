@@ -267,6 +267,8 @@ build() {
 
     prebuild
 
+    rm_firmware
+
     opath=$(pwd)
     cd "$builddir"
     cpus=$(grep -c processor /proc/cpuinfo)
@@ -322,6 +324,12 @@ config() {
     fi
 
     cd "$opath"
+}
+
+rm_firmware() {
+    [ -n "$subtarget" ] || subtarget="generic"
+
+    rm -rf "$builddir/bin/targets/${chipset}/${subtarget}"
 }
 
 cp_firmware() {
