@@ -13,9 +13,17 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Freifunk
 	TITLE:= Freifunk-Franken Webinterface
 	URL:=http://www.freifunk-franken.de
-	DEPENDS:=+fff-web-hood +libustream-mbedtls +haserl +px5g +fff-simple-tc \
-			 +fff-boardname +fff-config +fff-network +fff-hoodutils \
-			 +@BUSYBOX_CONFIG_WGET +@BUSYBOX_CONFIG_FEATURE_WGET_TIMEOUT
+	DEPENDS:=+@BUSYBOX_CONFIG_WGET \
+	         +@BUSYBOX_CONFIG_FEATURE_WGET_TIMEOUT \
+	         +haserl \
+	         +libustream-mbedtls \
+	         +px5g \
+	         +fff-boardname \
+	         +fff-config \
+	         +fff-network \
+	         +fff-hoodutils \
+	         +fff-simple-tc \
+	         +fff-web-hood
 endef
 
 define Package/$(PKG_NAME)/description

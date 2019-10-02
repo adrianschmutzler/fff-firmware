@@ -13,7 +13,7 @@ define Package/$(PKG_NAME)
 	CATEGORY:=Freifunk
 	TITLE:= Freifunk-Franken Nodewatcher
 	URL:=http://www.freifunk-franken.de
-	DEPENDS:=+fff-alfred +micrond +fff-config +fff-random +ip +ip-bridge
+	DEPENDS:=+ip +ip-bridge +micrond +fff-alfred +fff-config +fff-random
 endef
 
 define Package/$(PKG_NAME)/description
