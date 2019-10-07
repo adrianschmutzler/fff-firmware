@@ -185,6 +185,14 @@ prepare() {
     # set the variant for this build
     set_variant
 
+    #saves ~200MB for each build
+    test -d ./src/dl || mkdir ./src/dl
+    ln -s ../src/dl "$builddir"/dl
+
+    update_feeds
+}
+
+update_feeds() {
     ## generate own feeds.conf
     #this local variable should be globally configure variable used in get_source and here
     local PACKAGEBASE=${PWD}/src/packages
@@ -215,10 +223,6 @@ prepare() {
             "$builddir"/scripts/feeds install -p "$NAME" "${PACKAGESVAR[@]}"
         fi
     done
-
-    #saves ~200MB for each build
-    test -d ./src/dl || mkdir ./src/dl
-    ln -s ../src/dl "$builddir"/dl
 }
 
 prebuild() {
@@ -509,6 +513,9 @@ case "$1" in
             prepare
         fi
         ;;
+    "updatefeeds")
+        update_feeds
+        ;;
     "patchbuild")
         apply_buildpatch "$2" "$3"
         ;;
@@ -584,6 +591,7 @@ case "$1" in
         echo "  unpatchbuild <target> <patch>"
         echo "  patchfeed <target> <patch>"
         echo "  prepare"
+        echo "  updatefeeds"
         echo "  config openwrt"
         echo "  build [fast|debug]"
         echo "  buildall [fast]"
