@@ -107,7 +107,7 @@ else
 
 			#SECTOR FILE: Set up uplink data on first contact:
 			if [ -s /tmp/keyxchangev2data ]; then
-				wget -T15 "http://[fe80::1%w2sta]:2342/sectorfile" -O "$sectorfiletmp" || wget -T15 "http://[fe80::1%w5sta]:2342/sectorfile" -O "$sectorfiletmp"
+				/bin/busybox wget -T15 "http://[fe80::1%w2sta]:2342/sectorfile" -O "$sectorfiletmp" || wget -T15 "http://[fe80::1%w5sta]:2342/sectorfile" -O "$sectorfiletmp"
 			fi
 		else
 			# We wait some time, so nodes without network connection can delete their $hoodfilecopy

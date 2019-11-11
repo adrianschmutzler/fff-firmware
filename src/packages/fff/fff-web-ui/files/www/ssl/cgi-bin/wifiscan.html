@@ -14,7 +14,7 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 		fi
 	fi
 	if [ "$POST_wifidownload" != "" ] ; then
-		if /bin/wget -T 10 -O /tmp/wifinodelist "https://monitoring.freifunk-franken.de/api/wifianalall" 2> /dev/null ; then
+		if /bin/busybox wget -T 10 -O /tmp/wifinodelist "https://monitoring.freifunk-franken.de/api/wifianalall" 2> /dev/null ; then
 			MSG='<span class="green">Download erfolgreich!</span>'
 		else
 			MSG='<span class="red">Download fehlgeschlagen!</span>'
