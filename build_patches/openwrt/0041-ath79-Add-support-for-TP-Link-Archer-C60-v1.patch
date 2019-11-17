@@ -33,10 +33,10 @@ index 41a4abae18c9ea94c945eba6ff312c3deada2237..8a95de30b6647b6226039e1214c2d7c9
  	ucidef_set_led_netdev "wan" "WAN" "tp-link:green:wan" "eth1"
  	;;
 diff --git a/target/linux/ath79/base-files/etc/board.d/02_network b/target/linux/ath79/base-files/etc/board.d/02_network
-index 65df0c60436bf7b47c93fbb7e5067e32c3731c90..7afbd947fc05c535ddc15f1bd72215ff6ed9e71c 100755
+index 82c1e09981407f49ff33bc9d71e0a22593a7d03b..9121a7248ad0ae3db72de4d88653dab6e3f52fc2 100755
 --- a/target/linux/ath79/base-files/etc/board.d/02_network
 +++ b/target/linux/ath79/base-files/etc/board.d/02_network
-@@ -204,6 +204,11 @@ ath79_setup_interfaces()
+@@ -205,6 +205,11 @@ ath79_setup_interfaces()
  		ucidef_add_switch "switch0" \
  			"0@eth1" "2:lan" "3:lan" "4:lan" "5:lan" "6@eth0" "1:wan"
  		;;
@@ -49,10 +49,10 @@ index 65df0c60436bf7b47c93fbb7e5067e32c3731c90..7afbd947fc05c535ddc15f1bd72215ff
  		ucidef_add_switch "switch0" \
  			"0@eth0" "2:lan:3" "3:lan:2" "4:lan:1" "1:wan"
 diff --git a/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata b/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
-index 06a48e2258c3b45bed045901933fe9846600a121..e36cf8fded2adea0e593e856e7ddce41fe1770fd 100644
+index d1f529fde5097400d5e4a663da2fe7ee07eb0f82..2bb7e554adb1528978c0b45709f720ae16147df2 100644
 --- a/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
 +++ b/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
-@@ -199,6 +199,7 @@ case "$FIRMWARE" in
+@@ -200,6 +200,7 @@ case "$FIRMWARE" in
  		;;
  	tplink,archer-c58-v1|\
  	tplink,archer-c59-v1|\
@@ -235,7 +235,7 @@ index 0000000000000000000000000000000000000000..1ee212b5494314d38495de0cb0b006f8
 +	mtd-mac-address = <&mac 0x8>;
 +};
 diff --git a/target/linux/ath79/image/generic-tp-link.mk b/target/linux/ath79/image/generic-tp-link.mk
-index d56e54ba1f81b45d127c38ff5101e18231c3f1d3..53fb03e51ac4bab6295cc071fe66af29e94e247e 100644
+index ece7284710d76309ee9e9757e92801550f12dc14..71aa7cd6626373765cc7a3d8612edf8f03a2eb99 100644
 --- a/target/linux/ath79/image/generic-tp-link.mk
 +++ b/target/linux/ath79/image/generic-tp-link.mk
 @@ -55,6 +55,17 @@ define Device/tplink_archer-c59-v1

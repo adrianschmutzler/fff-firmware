@@ -1,4 +1,4 @@
-target ipq40xx
+target ipq40xx generic
 
 device avm_fritzbox-4040
 

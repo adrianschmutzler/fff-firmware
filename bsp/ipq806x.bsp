@@ -1,4 +1,4 @@
-target ipq806x
+target ipq806x generic
 
 device tplink_c2600
 
