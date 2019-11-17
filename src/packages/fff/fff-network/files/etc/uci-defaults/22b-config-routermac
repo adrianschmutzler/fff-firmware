@@ -11,25 +11,25 @@ BOARD="$(uci get board.model.name)"
 
 # Set MAC address for br-mesh
 case "$BOARD" in
-	archer-c7-v2|\
-	c2600)
-		ROUTERMAC=$(cat /sys/class/net/eth1/address)
-		;;
-	archer-c7-v4|\
-	archer-c7-v5|\
-	fritzbox-4040|\
-	ubnt-unifiac-lite|\
-	ubnt-unifiac-mesh|\
-	ubnt-unifiac-mesh-pro|\
-	ubnt-unifiac-pro)
+	avm,fritzbox-4040|\
+	*archer-c7-v4|\
+	*archer-c7-v5|\
+	*unifiac-lite|\
+	*unifiac-mesh|\
+	*unifiac-mesh-pro|\
+	*unifiac-pro)
 		ROUTERMAC=$(cat /sys/class/net/eth0/address)
 		;;
-	archer-c25-v1|\
-	archer-c60-v1|\
-	archer-c60-v2|\
-	tl-wdr3600-v1|\
-	tl-wdr4300-v1|\
-	tl-wdr4310-v1)
+	*archer-c7-v2|\
+	tplink,c2600)
+		ROUTERMAC=$(cat /sys/class/net/eth1/address)
+		;;
+	*archer-c25-v1|\
+	*archer-c60-v1|\
+	*archer-c60-v2|\
+	*tl-wdr3600-v1|\
+	*tl-wdr4300-v1|\
+	*tl-wdr4310-v1)
 		ROUTERMAC=$(cat /sys/class/ieee80211/phy1/macaddress)
 		;;
 	*)

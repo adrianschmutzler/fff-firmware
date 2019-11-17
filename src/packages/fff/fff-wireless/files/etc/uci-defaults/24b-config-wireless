@@ -6,59 +6,59 @@ BOARD="$(uci get board.model.name)"
 
 # antenna gain
 case "$BOARD" in
-	tl-wr1043nd-v1)
+	*tl-wr1043nd-v1)
 		uci set wireless.radio0.antenna_gain=3
 		uci commit wireless
 		;;
-	ubnt-loco-m|\
-	ubnt-loco-m-xw)
+	*loco-m|\
+	*loco-m-xw)
 		uci set wireless.radio0.antenna_gain=9
 		uci commit wireless
 		;;
-	ubnt-nano-m|\
-	ubnt-nano-m-xw)
+	*nanostation-m|\
+	*nanostation-m-xw)
 		uci set wireless.radio0.antenna_gain=11
 		uci commit wireless
 		;;
-	ubnt-pico-m)
+	pico-m)
 		uci set wireless.radio0.antenna_gain=12
 		uci commit wireless
 		;;
-	ubnt-power-m-xw)
+	power-m-xw)
 		uci set wireless.radio0.antenna_gain=18
 		uci commit wireless
 		;;
-	ubnt-unifi)
+	*unifi)
 		# No support for Unifi AP Pro!
 		uci set wireless.radio0.antenna_gain=3
 		uci commit wireless
 		;;
-	ubnt-unifiac-mesh)
+	*unifiac-mesh)
 		uci set wireless.radio0.antenna_gain=4
 		uci set wireless.radio1.antenna_gain=3
 		uci commit wireless
 		;;
-	ubnt-unifiac-mesh-pro)
+	*unifiac-mesh-pro)
 		uci set wireless.radio0.antenna_gain=8
 		uci set wireless.radio1.antenna_gain=8
 		uci commit wireless
 		;;
-	ubnt-unifiac-pro)
+	*unifiac-pro)
 		uci set wireless.radio0.antenna_gain=6
 		uci set wireless.radio1.antenna_gain=3
 		uci commit wireless
 		;;
 esac
 
-# rssid
+# rssileds
 case "$BOARD" in
 	cpe210|\
-	cpe210-v1|\
-	cpe210-v2|\
-	cpe210-v3|\
 	cpe510|\
-	cpe510-v1|\
-	tl-wa850re-v1)
+	tplink,cpe210-v1|\
+	*cpe210-v2|\
+	*cpe210-v3|\
+	tplink,cpe510-v1|\
+	*tl-wa850re-v1)
 		/etc/init.d/rssileds disable
 		;;
 esac

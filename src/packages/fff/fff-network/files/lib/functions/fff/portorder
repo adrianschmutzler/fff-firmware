@@ -4,33 +4,29 @@
 BOARD="$(uci get board.model.name)"
 
 case "$BOARD" in
-	archer-c7-v4|\
-	archer-c7-v5|\
-	tl-wdr4300|\
-	tl-wdr4300-v1)
-		PORTORDER="1 2 3 4 5"
-		;;
-	archer-c25-v1|\
-	archer-c60-v1|\
-	archer-c60-v2|\
-	tl-wr841-v10|\
-	tl-wr841-v11|\
-	tl-wr841-v12)
+	*archer-c25-v1|\
+	*archer-c60-v1|\
+	*archer-c60-v2|\
+	*tl-wr841-v10|\
+	*tl-wr841-v11|\
+	*tl-wr841-v12)
 		PORTORDER="4 3 2 1"
 		;;
-	c2600|\
-	tl-wr1043nd-v4|\
-	tl-wr1043n-v5)
+	*archer-c7-v4|\
+	*archer-c7-v5|\
+	*tl-wdr4300-v1)
+		PORTORDER="1 2 3 4 5"
+		;;
+	tplink,c2600|\
+	*tl-wr1043nd-v4|\
+	*tl-wr1043n-v5)
 		PORTORDER="5 4 3 2 1"
 		;;
 	cpe210|\
 	cpe510)
 		PORTORDER="5 4"
 		;;
-	gl-ar150)
-		PORTORDER="1"
-		;;
-	tl-wr841-v8)
+	*tl-wr841-v8)
 		PORTORDER="2 3 4 1"
 		;;
 esac

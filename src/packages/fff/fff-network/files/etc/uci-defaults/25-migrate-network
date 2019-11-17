@@ -26,7 +26,7 @@ if [ -s /etc/network.config ]; then
 	BOARD="$(uci get board.model.name)"
 
 	# GL-AR150
-	if [ "$BOARD" = "gl-ar150" ] ; then
+	if [ "$BOARD" = "gl-ar150" ] || [ "$BOARD" = "glinet,gl-ar150" ] ; then
 		# only set if non-default mode
 		if [ -n "$ETHMODE" ] && [ "$ETHMODE" != "CLIENT" ]; then
 			echo "# Migrated network config" >> "$firstbootscript"
@@ -52,11 +52,11 @@ if [ -s /etc/network.config ]; then
 
 		# Fix port changes
 		case "$BOARD" in
-			archer-c7-v2)
+			*archer-c7-v2)
 				WAN_PORTS="$(echo "$WAN_PORTS" | sed 's/\b6\b/6t/')"
 				;;
-			tl-wr1043nd-v2|\
-			tl-wr1043nd-v3)
+			*tl-wr1043nd-v2|\
+			*tl-wr1043nd-v3)
 				CLIENT_PORTS="$(echo "$CLIENT_PORTS" | sed 's/\b6t\b/0t/')"
 				BATMAN_PORTS="$(echo "$BATMAN_PORTS" | sed 's/\b6t\b/0t/')"
 				WAN_PORTS="$(echo "$WAN_PORTS" | sed 's/\b0t\b/6t/')"
