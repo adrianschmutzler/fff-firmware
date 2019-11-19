@@ -13,13 +13,7 @@ if [ -z "$UPGRADE_PATH" ]; then
 fi
 
 BOARD=$(uci -q get board.model.name)
-TARGET=$(uci -q get board.model.target)
-SUBTARGET=$(uci -q get board.model.subtarget | sed 's/generic/g/' | sed 's/tiny/t/')
 
-[ -n "$SUBTARGET" ] && SOC="${TARGET}-${SUBTARGET}" || SOC="${TARGET}"
-[ "$TARGET" = "ipq40xx" ] && SOC="$TARGET" # no subtarget in file name for certain targets
-
-echo ""
 echo "Hardware: $BOARD"
 
 #rewrite BOARD
@@ -65,7 +59,7 @@ if [ "$VERSION" = "$FIRMWARE_VERSION" ]; then
   done
 fi
 
-FILE="fff-${VERSION}-${SOC}-${BOARD}-sysupgrade.bin"
+FILE="fff-${VERSION}-${BOARD}-sysupgrade.bin"
 echo "Downloading $FILE"
 echo ""
 /bin/busybox wget "${UPGRADE_PATH}/${FILE}"
