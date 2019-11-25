@@ -4,6 +4,7 @@
 # (c) 2007,2008, Andy Whitcroft <apw@uk.ibm.com> (new conditions, test suite)
 # (c) 2008-2010 Andy Whitcroft <apw@canonical.com>
 # (c) 2013 Vasilis Tsiligiannis <acinonyx@openwrt.gr> (adapt for OpenWrt tree)
+# (c) 2019 Adrian Schmutzler <freifunk@adrianschmutzler.de> (adapt for FFF)
 # Licensed under the terms of the GNU GPL License version 2
 
 use strict;
@@ -17,7 +18,7 @@ my $V = '0.32-openwrt';
 use Getopt::Long qw(:config no_auto_abbrev);
 
 my $quiet = 0;
-my $tree = 1;
+my $tree = 0;
 my $chk_signoff = 1;
 my $chk_patch = 1;
 my $tst_only;
@@ -45,7 +46,6 @@ Version: $V
 
 Options:
   -q, --quiet                quiet
-  --no-tree                  run without a kernel tree
   --no-signoff               do not check for 'Signed-off-by' line
   --patch                    treat FILE as patchfile (default)
   --emacs                    emacs compile window format
@@ -54,7 +54,6 @@ Options:
   --subjective, --strict     enable more subjective tests
   --ignore TYPE(,TYPE2...)   ignore various comma separated message types
   --show-types               show the message "types" in the output
-  --root=PATH                PATH to the kernel tree root
   --no-summary               suppress the per-file summary
   --mailback                 only produce a report in case of warnings/errors
   --summary-file             include the filename in summary
@@ -99,7 +98,6 @@ if (-f $conf) {
 
 GetOptions(
 	'q|quiet+'	=> \$quiet,
-	'tree!'		=> \$tree,
 	'signoff!'	=> \$chk_signoff,
 	'patch!'	=> \$chk_patch,
 	'emacs!'	=> \$emacs,
@@ -109,7 +107,6 @@ GetOptions(
 	'strict!'	=> \$check,
 	'ignore=s'	=> \@ignore,
 	'show-types!'	=> \$show_types,
-	'root=s'	=> \$root,
 	'summary!'	=> \$summary,
 	'mailback!'	=> \$mailback,
 	'summary-file!'	=> \$summary_file,
