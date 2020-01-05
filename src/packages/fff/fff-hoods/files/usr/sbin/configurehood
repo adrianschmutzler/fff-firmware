@@ -103,12 +103,7 @@ else
 			echo "Waiting 30 seconds ..."
 			sleep 30 # Wait for the config AP, which may be created at the same time as this script has started
 
-			getEthernetHoodfile "$hoodfiletmp" || getWirelessHoodfile "$hoodfiletmp"
-
-			#SECTOR FILE: Set up uplink data on first contact:
-			if [ -s /tmp/keyxchangev2data ]; then
-				/bin/busybox wget -T15 "http://[fe80::1%w2sta]:2342/sectorfile" -O "$sectorfiletmp" || wget -T15 "http://[fe80::1%w5sta]:2342/sectorfile" -O "$sectorfiletmp"
-			fi
+			getEthernetHoodfile "$hoodfiletmp" || getWirelessHoodfile "$hoodfiletmp" "$sectorfiletmp"
 		else
 			# We wait some time, so nodes without network connection can delete their $hoodfilecopy
 			# -> as a consequence, all hood files in the wired network are from devices with gateway connection
@@ -200,8 +195,7 @@ if [ -s "$hoodfiletmp" ]; then
 				disablemesh="fff.wifi.disablew2mesh"
 			fi
 
-			# Disable wXsta, wXconfigap
-			uci set wireless.w${freq}sta.disabled='1'
+			# Disable wXconfigap
 			uci set wireless.w${freq}configap.disabled='1'
 
 			# Configure wXap
