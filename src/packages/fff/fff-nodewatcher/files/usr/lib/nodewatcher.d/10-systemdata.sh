@@ -3,7 +3,7 @@
 # License; GPL v3
 
 SCRIPT_STATUS_FILE=$(uci get nodewatcher.@script[0].status_text_file)
-SCRIPT_VERSION="55.2"
+SCRIPT_VERSION="55.3"
 
 debug() {
 	(>&2 echo "$1")
