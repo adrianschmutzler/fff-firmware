@@ -51,6 +51,7 @@ fi
 case "$BOARD" in
 	avm,fritzbox-4040|\
 	*gl-ar150|\
+	tplink,cpe220-v3|\
 	*nanostation-m)
 		uci set "fff.ui.portsetup=twoeth"
 		;;

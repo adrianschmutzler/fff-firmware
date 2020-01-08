@@ -1,6 +1,7 @@
 target ath79 generic
 
 device joy-it_jit-or750i "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9887-ct ath10k-firmware-qca9887"
+device tplink_cpe220-v3
 
 defaultconfig
 

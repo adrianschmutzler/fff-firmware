@@ -13,8 +13,8 @@
 
 builddir=./build
 
-# OpenWrt: openwrt-19.07.0 from 2020-01-06
-OPENWRTREV="aca39acedf98aa7e40119692f6b94681096becd2"
+# OpenWrt: openwrt-19.07.x from 2020-01-06, main repo from 2020-01-08
+OPENWRTREV="19ff3f5105791a31b27932e1bf2ad9e150604b6e"
 PACKAGEREV="d974cd36735353204fac679cb9febd6c9814c326"
 ROUTINGREV="c82ce8d095a87df32bbd3a89e3cf113721d3ae82"
 
