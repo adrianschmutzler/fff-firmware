@@ -27,20 +27,22 @@ if [ "$REQUEST_METHOD" = "POST" ] ; then
 		uci -q set "fff.system.contact=${POST_contact}"
 
 		# Bitratenbegrenzung
-		uci -q get "fff.trafficcontrol" > /dev/null || uci -q set fff.trafficcontrol=fff
-		if [ "$POST_traffic_limit" = "on" ] ; then
-			uci -q set "fff.trafficcontrol.enabled=1"
-			uci -q set "simple-tc.example.enabled=1"
-		else
-			uci -q set "fff.trafficcontrol.enabled=0"
-			uci -q set "simple-tc.example.enabled=0"
-		fi
-		uci -q set "fff.trafficcontrol.limit_in=${POST_limit_ingress}"
-		uci -q set "fff.trafficcontrol.limit_out=${POST_limit_egress}"
+		if [ -s "/etc/config/simple-tc" ]; then
+			uci -q get "fff.trafficcontrol" > /dev/null || uci -q set fff.trafficcontrol=fff
+			if [ "$POST_traffic_limit" = "on" ] ; then
+				uci -q set "fff.trafficcontrol.enabled=1"
+				uci -q set "simple-tc.example.enabled=1"
+			else
+				uci -q set "fff.trafficcontrol.enabled=0"
+				uci -q set "simple-tc.example.enabled=0"
+			fi
+			uci -q set "fff.trafficcontrol.limit_in=${POST_limit_ingress}"
+			uci -q set "fff.trafficcontrol.limit_out=${POST_limit_egress}"
 
-		uci -q set "simple-tc.example.ifname=wan"
-		uci -q set "simple-tc.example.limit_ingress=${POST_limit_ingress}"
-		uci -q set "simple-tc.example.limit_egress=${POST_limit_egress}"
+			uci -q set "simple-tc.example.ifname=wan"
+			uci -q set "simple-tc.example.limit_ingress=${POST_limit_ingress}"
+			uci -q set "simple-tc.example.limit_egress=${POST_limit_egress}"
+		fi
 
 		# Restliche Einstellungen
 		uci -q set "fff.notifyupdate=webui"
@@ -140,6 +142,7 @@ fi
 </fieldset>
 <p><input type="submit" style="margin-top: 5px; margin-left: 3px;" /></p>
 </td><td>
+<% if [ -s "/etc/config/simple-tc" ]; then %>
 <fieldset style="min-height: 7em;" class="smallinput">
 	<legend>Bitratenbegrenzung</legend>
 	<table>
@@ -150,6 +153,7 @@ fi
 		<tr><th>Freifunk&nbsp;Upload:</th><td><input type="text" name="limit_egress" value="<%= $(uci -q get 'fff.trafficcontrol.limit_out') %>" /></td><td>kbit/s</td></tr>
 	</table>
 </fieldset>
+<% fi %>
 <fieldset style="min-height: 8em;" class="smallinput">
 	<legend>Weitere Einstellungen</legend>
 	<table>

@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-web-ui
 PKG_VERSION:=10
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -22,7 +22,6 @@ define Package/$(PKG_NAME)
 	         +fff-config \
 	         +fff-network \
 	         +fff-hoodutils \
-	         +fff-simple-tc \
 	         +fff-web-hood
 endef
 
