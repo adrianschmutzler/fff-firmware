@@ -7,7 +7,7 @@ Based on the corresponding staging tree of David Bauer.
 Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
 
 diff --git a/target/linux/ath79/base-files/etc/board.d/01_leds b/target/linux/ath79/base-files/etc/board.d/01_leds
-index be5d29d97c365ca053dccd16f1580e5edbfdff5d..8aad344b2ef092261f80ad0a02e13d58eb68131e 100755
+index f600c6f779e639d8777069f619325a491fe04eef..ea391d2ff94d235c354c6a8ba60fb9c2359d0cfb 100755
 --- a/target/linux/ath79/base-files/etc/board.d/01_leds
 +++ b/target/linux/ath79/base-files/etc/board.d/01_leds
 @@ -88,6 +88,13 @@ glinet,gl-ar300m-lite)
@@ -25,10 +25,10 @@ index be5d29d97c365ca053dccd16f1580e5edbfdff5d..8aad344b2ef092261f80ad0a02e13d58
  on,n150r)
  	ucidef_set_led_netdev "wan" "WAN" "netgear:green:wan" "eth0"
 diff --git a/target/linux/ath79/base-files/etc/board.d/02_network b/target/linux/ath79/base-files/etc/board.d/02_network
-index b342c8b5e42a67a6f34911618c247b10d51438c2..2667c38161c33c8e91b99a5d7a0c0da26bac3ced 100755
+index 3df6fde229c907ea3a8351f737edf3b7478694d1..86c27f11f960714ce486eee3e1015767d16882c3 100755
 --- a/target/linux/ath79/base-files/etc/board.d/02_network
 +++ b/target/linux/ath79/base-files/etc/board.d/02_network
-@@ -143,6 +143,11 @@ ath79_setup_interfaces()
+@@ -147,6 +147,11 @@ ath79_setup_interfaces()
  		ucidef_add_switch "switch0" \
  			"0@eth0" "1:lan" "2:lan" "3:lan" "4:lan" "5:wan"
  	;;
@@ -204,7 +204,7 @@ index 0000000000000000000000000000000000000000..9faff9c310baed0d47847075b10df402
 +	mtd-cal-data = <&art 0x1000>;
 +};
 diff --git a/target/linux/ath79/image/generic.mk b/target/linux/ath79/image/generic.mk
-index 430740e5d6be7ddd6ac9aa9e08bf90e53c7de18e..f6b9eb66c6436f1af8b7a91b371ee923a28d914d 100644
+index 55053be34f11f0df982c85f94c9180fdba9ff221..a9e0b7c82dd9b9fab079ca0597cab4ecdea8a901 100644
 --- a/target/linux/ath79/image/generic.mk
 +++ b/target/linux/ath79/image/generic.mk
 @@ -484,6 +484,14 @@ define Device/jjplus_ja76pf2
