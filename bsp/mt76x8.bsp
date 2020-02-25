@@ -1,0 +1,7 @@
+target ramips mt76x8
+
+device tplink_c50-v4
+
+defaultconfig
+
+configval TARGET_SQUASHFS_BLOCK_SIZE 512

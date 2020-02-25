@@ -15,6 +15,9 @@ case "$BOARD" in
 	*tl-wr841-v12)
 		PORTORDER="4 3 2 1"
 		;;
+	*archer-c50-v4)
+		PORTORDER="0 1 2 3 4"
+		;;
 	*archer-c7-v2|\
 	*archer-c7-v4|\
 	*archer-c7-v5|\

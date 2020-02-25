@@ -40,6 +40,9 @@ case "$BOARD" in
 		grep "v10" /var/sysinfo/model && BOARD=tl-wr841-v10
 		grep "v12" /var/sysinfo/model && BOARD=tl-wr841-v12
 		;;
+	tplink,c50-v4)
+		BOARD=tplink,archer-c50-v4
+		;;
 	unifiac-lite)
 		grep -i "MESH" /var/sysinfo/model && BOARD=unifiac-mesh
 		;;
