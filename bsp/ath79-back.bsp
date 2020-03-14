@@ -1,13 +1,16 @@
 target ath79 generic
 
 device joy-it_jit-or750i "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9887-ct ath10k-firmware-qca9887"
+device tplink_archer-c60-v3 "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9888-ct ath10k-firmware-qca9888"
 device tplink_cpe220-v3
 
 defaultconfig
 
 packagemod ath10k-firmware-qca9887
+packagemod ath10k-firmware-qca9888
 packagemod kmod-ath10k
 packagemod ath10k-firmware-qca9887-ct
+packagemod ath10k-firmware-qca9888-ct
 packagemod kmod-ath10k-ct
 
 configval TARGET_SQUASHFS_BLOCK_SIZE 512

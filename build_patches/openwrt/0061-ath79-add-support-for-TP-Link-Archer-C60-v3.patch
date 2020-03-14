@@ -1,0 +1,308 @@
+From: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+Date: Wed, 12 Feb 2020 14:43:15 +0100
+Subject: ath79: add support for TP-Link Archer C60 v3
+
+TP-Link Archer C60 v3 is a dual-band AC1350 router,
+based on Qualcomm/Atheros QCA9561 + QCA9886.
+
+It seems to be identical to the v2 revision, except that
+it lacks a WPS LED and has different GPIO for amber WAN LED.
+
+Specification:
+
+- 775/650/258 MHz (CPU/DDR/AHB)
+- 64 MB of RAM (DDR2)
+- 8 MB of FLASH (SPI NOR)
+- 3T3R 2.4 GHz
+- 2T2R 5 GHz
+- 5x 10/100 Mbps Ethernet
+- 7x LED, 2x button
+- UART header on PCB
+
+Flash instruction (WebUI):
+Download *-factory.bin image and upload it via the firmwary upgrade
+function of the stock firmware WebUI.
+
+Flash instruction (TFTP):
+1. Set PC to fixed IP address 192.168.0.66
+2. Download *-factory.bin image and rename it to tp_recovery.bin
+3. Start a tftp server with the file tp_recovery.bin in its root
+   directory
+4. Turn off the router
+5. Press and hold reset button
+6. Turn on router with the reset button pressed and wait ~15 seconds
+7. Release the reset button and after a short time the firmware should
+   be transferred from the tftp server
+8. Wait ~30 second to complete recovery
+
+Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
+
+diff --git a/target/linux/ath79/base-files/etc/board.d/01_leds b/target/linux/ath79/base-files/etc/board.d/01_leds
+index 46b8ea84ac4aee1f83c8067b0acb8932974b9f24..045c598e3ba8c8c623c83395fe23bdf405c84c13 100755
+--- a/target/linux/ath79/base-files/etc/board.d/01_leds
++++ b/target/linux/ath79/base-files/etc/board.d/01_leds
+@@ -148,7 +148,8 @@ tplink,tl-wr842n-v3)
+ tplink,archer-c58-v1|\
+ tplink,archer-c59-v1|\
+ tplink,archer-c60-v1|\
+-tplink,archer-c60-v2)
++tplink,archer-c60-v2|\
++tplink,archer-c60-v3)
+ 	ucidef_set_led_switch "lan" "LAN" "tp-link:green:lan" "switch0" "0x1E"
+ 	ucidef_set_led_netdev "wan" "WAN" "tp-link:green:wan" "eth1"
+ 	;;
+diff --git a/target/linux/ath79/base-files/etc/board.d/02_network b/target/linux/ath79/base-files/etc/board.d/02_network
+index 0152e99bb0bc923100c256a4463e32776dd3b741..034808e4a02f002d46fa7ba39d80e70d3725112c 100755
+--- a/target/linux/ath79/base-files/etc/board.d/02_network
++++ b/target/linux/ath79/base-files/etc/board.d/02_network
+@@ -76,6 +76,7 @@ ath79_setup_interfaces()
+ 	tplink,archer-c25-v1|\
+ 	tplink,archer-c60-v1|\
+ 	tplink,archer-c60-v2|\
++	tplink,archer-c60-v3|\
+ 	tplink,tl-mr3220-v1|\
+ 	tplink,tl-mr3420-v1|\
+ 	tplink,tl-wr841-v7|\
+diff --git a/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata b/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+index fe994d2630b389716f0cdcda983f01daa356bfbd..bb6c81fd87f460603aae43f5dab3c7bffe90cdb6 100644
+--- a/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
++++ b/target/linux/ath79/base-files/etc/hotplug.d/firmware/11-ath10k-caldata
+@@ -203,6 +203,7 @@ case "$FIRMWARE" in
+ 	tplink,archer-c59-v1|\
+ 	tplink,archer-c60-v1|\
+ 	tplink,archer-c60-v2|\
++	tplink,archer-c60-v3|\
+ 	tplink,archer-c6-v2)
+ 		ath10kcal_extract "art" 20480 12064
+ 		ath10kcal_patch_mac_crc $(macaddr_add $(mtd_get_mac_binary mac 8) -1)
+diff --git a/target/linux/ath79/dts/qca9561_tplink_archer-c60-v1.dts b/target/linux/ath79/dts/qca9561_tplink_archer-c60-v1.dts
+index 85e456bb449b15edf82488f448ae283bd170279f..a83b5881d400f69ac05a498ae5cf602c1732ee7d 100644
+--- a/target/linux/ath79/dts/qca9561_tplink_archer-c60-v1.dts
++++ b/target/linux/ath79/dts/qca9561_tplink_archer-c60-v1.dts
+@@ -8,6 +8,18 @@
+ 	model = "TP-Link Archer C60 v1";
+ };
+ 
++&leds {
++	wan_amber {
++		label = "tp-link:amber:wan";
++		gpios = <&gpio 22 GPIO_ACTIVE_LOW>;
++	};
++
++	wps {
++		label = "tp-link:green:wps";
++		gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
++	};
++};
++
+ &spi {
+ 	status = "okay";
+ 	num-cs = <1>;
+diff --git a/target/linux/ath79/dts/qca9561_tplink_archer-c60-v2.dts b/target/linux/ath79/dts/qca9561_tplink_archer-c60-v2.dts
+index 29f916734ea172db734ffab4cd7e4869abada40e..c19e4e973dcc90a66901bf8e4c662bc54340559c 100644
+--- a/target/linux/ath79/dts/qca9561_tplink_archer-c60-v2.dts
++++ b/target/linux/ath79/dts/qca9561_tplink_archer-c60-v2.dts
+@@ -8,6 +8,18 @@
+ 	model = "TP-Link Archer C60 v2";
+ };
+ 
++&leds {
++	wan_amber {
++		label = "tp-link:amber:wan";
++		gpios = <&gpio 22 GPIO_ACTIVE_LOW>;
++	};
++
++	wps {
++		label = "tp-link:green:wps";
++		gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
++	};
++};
++
+ &spi {
+ 	status = "okay";
+ 	num-cs = <1>;
+diff --git a/target/linux/ath79/dts/qca9561_tplink_archer-c60-v3.dts b/target/linux/ath79/dts/qca9561_tplink_archer-c60-v3.dts
+new file mode 100644
+index 0000000000000000000000000000000000000000..444d54b00076253b5f68839c4cdfa376dfbeabaf
+--- /dev/null
++++ b/target/linux/ath79/dts/qca9561_tplink_archer-c60-v3.dts
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++/dts-v1/;
++
++#include "qca9561_tplink_archer-c6x.dtsi"
++
++/ {
++	compatible = "tplink,archer-c60-v3", "qca,qca9561";
++	model = "TP-Link Archer C60 v3";
++};
++
++&leds {
++	wan_amber {
++		label = "tp-link:amber:wan";
++		gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
++	};
++};
++&spi {
++	status = "okay";
++
++	num-cs = <1>;
++
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <25000000>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "factory-boot";
++				reg = <0x000000 0x01fb00>;
++				read-only;
++			};
++
++			mac: partition@1fb00 {
++				label = "mac";
++				reg = <0x01fb00 0x000500>;
++				read-only;
++			};
++
++			partition@20000 {
++				label = "u-boot";
++				reg = <0x020000 0x010000>;
++				read-only;
++			};
++
++			partition@30000 {
++				compatible = "denx,uimage";
++				label = "firmware";
++				reg = <0x030000 0x7a0000>;
++			};
++
++			partition@7d0000 {
++				label = "tplink";
++				reg = <0x7d0000 0x020000>;
++				read-only;
++			};
++
++			art: partition@7f0000 {
++				label = "art";
++				reg = <0x7f0000 0x010000>;
++				read-only;
++			};
++		};
++	};
++};
+diff --git a/target/linux/ath79/dts/qca9561_tplink_archer-c6x.dtsi b/target/linux/ath79/dts/qca9561_tplink_archer-c6x.dtsi
+index 23ef0cdcbf4ecd6fed0165edf3cdcb11fdcb03f0..6c015fcdd9cad3419beb3f26c374b3d67e9ea217 100644
+--- a/target/linux/ath79/dts/qca9561_tplink_archer-c6x.dtsi
++++ b/target/linux/ath79/dts/qca9561_tplink_archer-c6x.dtsi
+@@ -33,7 +33,7 @@
+ 		};
+ 	};
+ 
+-	leds {
++	leds: leds {
+ 		compatible = "gpio-leds";
+ 
+ 		led_power: power {
+@@ -59,20 +59,10 @@
+ 			gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
+ 		};
+ 
+-		wan_amber {
+-			label = "tp-link:amber:wan";
+-			gpios = <&gpio 22 GPIO_ACTIVE_LOW>;
+-		};
+-
+ 		lan {
+ 			label = "tp-link:green:lan";
+ 			gpios = <&gpio 2 GPIO_ACTIVE_LOW>;
+ 		};
+-
+-		wps {
+-			label = "tp-link:green:wps";
+-			gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
+-		};
+ 	};
+ };
+ 
+diff --git a/target/linux/ath79/image/generic-tp-link.mk b/target/linux/ath79/image/generic-tp-link.mk
+index 01d3c42acc1b8aa0aa8ed18e16b14883537dd966..b252101a7698f450889c0bc0b00e5c5b56a945f1 100644
+--- a/target/linux/ath79/image/generic-tp-link.mk
++++ b/target/linux/ath79/image/generic-tp-link.mk
+@@ -76,6 +76,16 @@ define Device/tplink_archer-c60-v2
+ endef
+ TARGET_DEVICES += tplink_archer-c60-v2
+ 
++define Device/tplink_archer-c60-v3
++  $(Device/tplink-safeloader-uimage)
++  ATH_SOC := qca9561
++  IMAGE_SIZE := 7808k
++  DEVICE_TITLE := TP-Link Archer C60 v3
++  TPLINK_BOARD_ID := ARCHER-C60-V3
++  DEVICE_PACKAGES := kmod-ath10k-ct-smallbuffers ath10k-firmware-qca9888-ct
++endef
++TARGET_DEVICES += tplink_archer-c60-v3
++
+ define Device/tplink_archer-c6-v2
+   $(Device/tplink-safeloader-uimage)
+   ATH_SOC := qca9563
+diff --git a/tools/firmware-utils/src/tplink-safeloader.c b/tools/firmware-utils/src/tplink-safeloader.c
+index 1c5792f70ba8897e95a63e4265acb9ca04ca6671..b6ad5c0869d3ce0f15e456b0a20e9c8f939de3ab 100644
+--- a/tools/firmware-utils/src/tplink-safeloader.c
++++ b/tools/firmware-utils/src/tplink-safeloader.c
+@@ -799,6 +799,42 @@ static struct device_info boards[] = {
+ 		.last_sysupgrade_partition = "file-system",
+ 	},
+ 
++	/** Firmware layout for the C60v3 */
++	{
++		.id     = "ARCHER-C60-V3",
++		.vendor = "",
++		.support_list =
++			"SupportList:\r\n"
++			"{product_name:Archer C60,product_ver:3.0.0,special_id:42520000}\r\n"
++			"{product_name:Archer C60,product_ver:3.0.0,special_id:45550000}\r\n"
++			"{product_name:Archer C60,product_ver:3.0.0,special_id:55530000}\r\n",
++		.support_trail = '\x00',
++		.soft_ver = "soft_ver:3.0.0\n",
++
++		.partitions = {
++			{"factory-boot", 0x00000, 0x1fb00},
++			{"default-mac", 0x1fb00, 0x00200},
++			{"pin", 0x1fd00, 0x00100},
++			{"product-info", 0x1fe00, 0x00100},
++			{"device-id", 0x1ff00, 0x00100},
++			{"fs-uboot", 0x20000, 0x10000},
++			{"firmware", 0x30000, 0x7a0000},
++			{"soft-version", 0x7d9500, 0x00100},
++			{"support-list", 0x7d9600, 0x00100},
++			{"extra-para", 0x7d9700, 0x00100},
++			{"profile", 0x7d9800, 0x03000},
++			{"default-config", 0x7dc800, 0x03000},
++			{"partition-table", 0x7df800, 0x00800},
++			{"user-config", 0x7e0000, 0x0c000},
++			{"certificate", 0x7ec000, 0x04000},
++			{"radio", 0x7f0000, 0x10000},
++			{NULL, 0, 0}
++		},
++
++		.first_sysupgrade_partition = "os-image",
++		.last_sysupgrade_partition = "file-system",
++	},
++
+ 	/** Firmware layout for the C5 */
+ 	{
+ 		.id = "ARCHER-C5-V2",
+@@ -1835,6 +1871,7 @@ static void build_image(const char *output,
+ 	    strcasecmp(info->id, "ARCHER-C25-V1") == 0 ||
+ 	    strcasecmp(info->id, "ARCHER-C59-V2") == 0 ||
+ 	    strcasecmp(info->id, "ARCHER-C60-V2") == 0 ||
++	    strcasecmp(info->id, "ARCHER-C60-V3") == 0 ||
+ 	    strcasecmp(info->id, "TLWR1043NV5") == 0) {
+ 		const char mdat[11] = {0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00};
+ 		parts[5] = put_data("extra-para", mdat, 11);

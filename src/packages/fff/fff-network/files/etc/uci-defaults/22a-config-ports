@@ -64,6 +64,7 @@ case "$BOARD" in
 	*archer-c25-v1|\
 	*archer-c60-v1|\
 	*archer-c60-v2|\
+	tplink,archer-c60-v3|\
 	*tl-wdr3500-v1|\
 	*tl-wr741nd-v2|\
 	*tl-wr841-v7|\
