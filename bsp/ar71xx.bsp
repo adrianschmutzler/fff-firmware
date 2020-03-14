@@ -6,10 +6,10 @@ device archer-c60-v2 "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9888-ct at
 device archer-c7-v2  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 device archer-c7-v4  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 device archer-c7-v5  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
-device cpe210-220-v1
-device cpe210-v2
-device cpe210-v3
-device cpe510-520-v1
+device cpe210-220-v1 "-rssileds"
+device cpe210-v2     "-rssileds"
+device cpe210-v3     "-rssileds"
+device cpe510-520-v1 "-rssileds"
 device gl-ar150
 device tl-wdr3500-v1
 device tl-wdr3600-v1
@@ -21,10 +21,10 @@ device tl-wr1043nd-v2
 device tl-wr1043nd-v3
 device tl-wr1043nd-v4
 device tl-wr1043n-v5
-device ubnt-bullet-m
-device ubnt-loco-m-xw
-device ubnt-nano-m
-device ubnt-nano-m-xw
+device ubnt-bullet-m  "-rssileds"
+device ubnt-loco-m-xw "-rssileds"
+device ubnt-nano-m    "-rssileds"
+device ubnt-nano-m-xw "-rssileds"
 device ubnt-unifi
 device ubnt-unifiac-lite "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 device ubnt-unifiac-mesh "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"

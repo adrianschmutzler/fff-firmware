@@ -9,11 +9,11 @@ device tplink_archer-c60-v3 "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988
 device tplink_archer-c7-v2  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 device tplink_archer-c7-v4  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 device tplink_archer-c7-v5  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
-device tplink_cpe210-v1
-device tplink_cpe210-v2
-device tplink_cpe210-v3
-device tplink_cpe220-v3
-device tplink_cpe510-v1
+device tplink_cpe210-v1 "-rssileds"
+device tplink_cpe210-v2 "-rssileds"
+device tplink_cpe210-v3 "-rssileds"
+device tplink_cpe220-v3 "-rssileds"
+device tplink_cpe510-v1 "-rssileds"
 device tplink_tl-wdr3600-v1
 device tplink_tl-wdr4300-v1
 device tplink_tl-wr842n-v2
@@ -22,13 +22,13 @@ device tplink_tl-wr1043nd-v2
 device tplink_tl-wr1043nd-v3
 device tplink_tl-wr1043nd-v4
 device tplink_tl-wr1043n-v5
-device ubnt_bullet-m
-device ubnt_bullet-m-xw
-device ubnt_nanostation-loco-m
-device ubnt_nanostation-loco-m-xw
-device ubnt_nanostation-m
-device ubnt_nanostation-m-xw
-device ubnt_picostation-m
+device ubnt_bullet-m "-rssileds"
+device ubnt_bullet-m-xw "-rssileds"
+device ubnt_nanostation-loco-m "-rssileds"
+device ubnt_nanostation-loco-m-xw "-rssileds"
+device ubnt_nanostation-m "-rssileds"
+device ubnt_nanostation-m-xw "-rssileds"
+device ubnt_picostation-m "-rssileds"
 device ubnt_unifi
 device ubnt_unifiac-lite "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 device ubnt_unifiac-mesh "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
