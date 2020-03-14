@@ -106,6 +106,7 @@ case "$BOARD" in
 	*loco-m|\
 	*loco-m-xw|\
 	pico-m|\
+	ubnt,picostation-m|\
 	power-m-xw|\
 	*unifi|\
 	*unifiac-lite|\

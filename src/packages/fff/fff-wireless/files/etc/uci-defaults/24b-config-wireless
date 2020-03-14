@@ -20,7 +20,8 @@ case "$BOARD" in
 		uci set wireless.radio0.antenna_gain=11
 		uci commit wireless
 		;;
-	pico-m)
+	pico-m|\
+	ubnt,picostation-m)
 		uci set wireless.radio0.antenna_gain=12
 		uci commit wireless
 		;;

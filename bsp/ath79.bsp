@@ -23,8 +23,11 @@ device tplink_tl-wr1043nd-v4
 device tplink_tl-wr1043n-v5
 device ubnt_bullet-m
 device ubnt_bullet-m-xw
+device ubnt_nanostation-loco-m
+device ubnt_nanostation-loco-m-xw
 device ubnt_nanostation-m
 device ubnt_nanostation-m-xw
+device ubnt_picostation-m
 device ubnt_unifi
 device ubnt_unifiac-lite "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 device ubnt_unifiac-mesh "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
