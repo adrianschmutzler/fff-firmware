@@ -3,5 +3,3 @@ target ipq806x generic
 device tplink_c2600
 
 defaultconfig
-
-configval TARGET_SQUASHFS_BLOCK_SIZE 512

@@ -4,5 +4,3 @@ device cpe210-220-v1 "-rssileds"
 device cpe510-520-v1 "-rssileds"
 
 defaultconfig
-
-configval TARGET_SQUASHFS_BLOCK_SIZE 512

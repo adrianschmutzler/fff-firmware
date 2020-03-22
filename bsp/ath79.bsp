@@ -48,5 +48,3 @@ packagemod ath10k-firmware-qca9888-ct
 packagemod ath10k-firmware-qca988x-ct
 packagemod kmod-ath10k-ct-smallbuffers
 packagemod kmod-ath10k-ct
-
-configval TARGET_SQUASHFS_BLOCK_SIZE 512

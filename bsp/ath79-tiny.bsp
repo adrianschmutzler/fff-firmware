@@ -20,4 +20,3 @@ packageno wpad-mini
 packageyes hostapd-mini
 
 configyes STRIP_KERNEL_EXPORTS
-configval TARGET_SQUASHFS_BLOCK_SIZE 1024
