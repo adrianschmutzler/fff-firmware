@@ -6,45 +6,40 @@ BOARD="$(uci get board.model.name)"
 
 # antenna gain
 case "$BOARD" in
-	*tl-wr1043nd-v1)
+	tplink,tl-wr1043nd-v1)
 		uci set wireless.radio0.antenna_gain=3
 		uci commit wireless
 		;;
-	*loco-m|\
-	*loco-m-xw)
+	ubnt,nanostation-loco-m|\
+	ubnt,nanostation-loco-m-xw)
 		uci set wireless.radio0.antenna_gain=9
 		uci commit wireless
 		;;
-	*nanostation-m|\
-	*nanostation-m-xw)
+	ubnt,nanostation-m|\
+	ubnt,nanostation-m-xw)
 		uci set wireless.radio0.antenna_gain=11
 		uci commit wireless
 		;;
-	pico-m|\
 	ubnt,picostation-m)
 		uci set wireless.radio0.antenna_gain=12
 		uci commit wireless
 		;;
-	power-m-xw)
-		uci set wireless.radio0.antenna_gain=18
-		uci commit wireless
-		;;
-	*unifi)
+	ubnt,unifi)
 		# No support for Unifi AP Pro!
 		uci set wireless.radio0.antenna_gain=3
 		uci commit wireless
 		;;
-	*unifiac-mesh)
+	ubnt,unifiac-mesh)
 		uci set wireless.radio0.antenna_gain=4
 		uci set wireless.radio1.antenna_gain=3
 		uci commit wireless
 		;;
-	*unifiac-mesh-pro)
+	ubnt,unifiac-mesh-pro)
 		uci set wireless.radio0.antenna_gain=8
 		uci set wireless.radio1.antenna_gain=8
 		uci commit wireless
 		;;
-	*unifiac-pro)
+	ubnt,unifiac-pro)
 		uci set wireless.radio0.antenna_gain=6
 		uci set wireless.radio1.antenna_gain=3
 		uci commit wireless

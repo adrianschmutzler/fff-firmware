@@ -1,45 +1,8 @@
 target ar71xx generic
 
-device archer-c25-v1 "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9887-ct ath10k-firmware-qca9887"
-device archer-c60-v1 "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9888-ct ath10k-firmware-qca9888"
-device archer-c60-v2 "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9888-ct ath10k-firmware-qca9888"
-device archer-c7-v2  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
-device archer-c7-v4  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
-device archer-c7-v5  "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 device cpe210-220-v1 "-rssileds"
-device cpe210-v2     "-rssileds"
-device cpe210-v3     "-rssileds"
 device cpe510-520-v1 "-rssileds"
-device gl-ar150
-device tl-wdr3500-v1
-device tl-wdr3600-v1
-device tl-wdr4300-v1
-device tl-wdr4310-v1
-device tl-wr842n-v2
-device tl-wr1043nd-v1
-device tl-wr1043nd-v2
-device tl-wr1043nd-v3
-device tl-wr1043nd-v4
-device tl-wr1043n-v5
-device ubnt-bullet-m  "-rssileds"
-device ubnt-loco-m-xw "-rssileds"
-device ubnt-nano-m    "-rssileds"
-device ubnt-nano-m-xw "-rssileds"
-device ubnt-unifi
-device ubnt-unifiac-lite "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
-device ubnt-unifiac-mesh "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
-device ubnt-unifiac-mesh-pro "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
-device ubnt-unifiac-pro "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca988x-ct ath10k-firmware-qca988x"
 
 defaultconfig
-
-packagemod ath10k-firmware-qca9887
-packagemod ath10k-firmware-qca9888
-packagemod ath10k-firmware-qca988x
-packagemod kmod-ath10k
-packagemod ath10k-firmware-qca9887-ct
-packagemod ath10k-firmware-qca9888-ct
-packagemod ath10k-firmware-qca988x-ct
-packagemod kmod-ath10k-ct
 
 configval TARGET_SQUASHFS_BLOCK_SIZE 512
