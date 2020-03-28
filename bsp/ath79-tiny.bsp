@@ -20,3 +20,5 @@ packageno wpad-mini
 packageyes hostapd-mini
 
 configyes STRIP_KERNEL_EXPORTS
+
+configval KERNEL_SQUASHFS_FRAGMENT_CACHE_SIZE 1
