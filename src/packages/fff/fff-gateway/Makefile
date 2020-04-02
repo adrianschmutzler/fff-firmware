@@ -1,8 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-gateway
-PKG_VERSION:=4
-PKG_RELEASE:=2
+PKG_RELEASE:=5.1
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff-gateway
 
@@ -26,6 +25,7 @@ define Package/fff-gateway
 	         +iptables-mod-ipopt \
 	         +iptables-mod-conntrack-extra \
 	         +tcpdump \
+	         +vxlan \
 	         +fff-alfred-monitoring-proxy \
 	         +fff-babeld \
 	         +fff-batman-adv-server \
