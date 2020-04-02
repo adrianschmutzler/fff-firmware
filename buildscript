@@ -334,23 +334,23 @@ cp_firmware() {
 
     mkdir -p "bin/$variant"
 
-    #for image in ${images[@]}; do
-    for dev in $devices; do
-        image="openwrt-${imagetarget/_/-}-${dev}-squashfs-sysupgrade.bin"
-        filename_build=${image//openwrt/fff-${version}}
-        filename_build=${filename_build//generic/g}
-        filename_build=${filename_build//tiny/t}
-        filename_build=${filename_build//squashfs-/}
-        cp "$builddir/bin/targets/${chipset}/${subtarget}/$image" "./bin/$variant/$filename_build" && \
-        echo "Success: $filename_build"
+    imagesrcpath="$builddir/bin/targets/${chipset}/${subtarget}"
+    imagedestpath="./bin/$variant"
 
-        for factory in "factory" "factory-eu" "factory-us" "eva"; do
-            image_factory=${image/sysupgrade/$factory}
-            if [[ -f "$builddir/bin/targets/${chipset}/${subtarget}/$image_factory" ]]; then
-              filename_build_factory=${filename_build/sysupgrade/$factory}
-              cp "$builddir/bin/targets/${chipset}/${subtarget}/$image_factory" "./bin/$variant/$filename_build_factory" && \
-              echo "Success: $filename_build_factory"
-            fi
+    for dev in $devices; do
+        fullsrcpath="$imagesrcpath/openwrt-${imagetarget/_/-}-${dev}-squashfs-*"
+        if ! ls $fullsrcpath >/dev/null 2>/dev/null; then
+            echo "Warning: Image for $dev not found."
+            continue
+        fi
+        for f in $fullsrcpath; do
+            filename_build=${f##*/}
+            filename_build=${filename_build//openwrt/fff-${version}}
+            filename_build=${filename_build//generic/g}
+            filename_build=${filename_build//tiny/t}
+            filename_build=${filename_build//squashfs-/}
+            cp "$f" "$imagedestpath/$filename_build" && \
+                echo "Success: $filename_build"
         done
     done
 }
