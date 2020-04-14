@@ -74,6 +74,7 @@ case "$BOARD" in
 	tplink,tl-wr841-v12)
 		setupSwitch "0t 1 2" "0t 3 4"
 		;;
+	tplink,archer-c50-v3|\
 	tplink,archer-c50-v4)
 		setupSwitch "6t 3 4" "6t 1 2" "6t 0"
 		;;
