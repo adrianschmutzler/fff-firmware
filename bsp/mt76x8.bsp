@@ -2,5 +2,6 @@ target ramips mt76x8
 
 device tplink_c50-v3
 device tplink_c50-v4
+device tl-wr841n-v13
 
 defaultconfig

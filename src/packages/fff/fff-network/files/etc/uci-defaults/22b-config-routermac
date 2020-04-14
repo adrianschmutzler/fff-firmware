@@ -16,6 +16,7 @@ case "$BOARD" in
 	tplink,archer-c50-v4|\
 	tplink,archer-c7-v4|\
 	tplink,archer-c7-v5|\
+	tplink,tl-wr841n-v13|\
 	ubnt,unifiac-lite|\
 	ubnt,unifiac-mesh|\
 	ubnt,unifiac-mesh-pro|\

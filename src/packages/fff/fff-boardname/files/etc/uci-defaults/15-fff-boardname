@@ -9,6 +9,9 @@ case "$BOARD" in
 	tplink,c50-v4)
 		BOARD=tplink,archer-c50-v4
 		;;
+	tl-wr841n-v13)
+		BOARD=tplink,tl-wr841n-v13
+		;;
 esac
 
 uci set board.model.name="$BOARD"
