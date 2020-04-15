@@ -18,8 +18,8 @@ OPENWRTREV="470f7c046c54c4db9914e98aabf705b5856fd693"
 PACKAGEREV="0d9a89370d4a221331aeb91723754df46bed0de7"
 ROUTINGREV="b8fd8c8b9f8fa3284714ee7965fd3caa87d6f3d1"
 
-# Gluon packages: master from 2019-07-26
-GLUONREV="63e6e0da0647263c1de9e12dd434a47c1f5a9b7e"
+# Gluon packages: master from 2020-02-04
+GLUONREV="12e41d0ff07ec54bbd67a31ab50d12ca04f2238c"
 
 OPENWRT_PKGS="gpioctl-sysfs libugpio fastd haserl micrond libpam libgnutls liblzma libnetsnmp libopenldap libidn2 libssh2 jansson libcap"
 ROUTING_PKGS="kmod-batman-adv batctl alfred babeld"
