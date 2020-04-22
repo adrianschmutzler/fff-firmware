@@ -1,4 +1,3 @@
-#!/bin/sh
 # Copyright 2017 Adrian Schmutzler
 # License GPLv3
 
@@ -26,3 +25,5 @@ uci -q get fff.wifi.disablew2mesh > /dev/null || uci set "fff.wifi.disablew2mesh
 uci -q get fff.wifi.disablew5mesh > /dev/null || uci set "fff.wifi.disablew5mesh=0"
 
 uci commit fff
+
+exit 0

@@ -1,4 +1,3 @@
-#!/bin/sh
 # License GPLv3
 
 setupPorts() {
@@ -80,3 +79,5 @@ if [ -s /etc/network.config ]; then
 
 	rm /etc/network.config
 fi
+
+exit 0

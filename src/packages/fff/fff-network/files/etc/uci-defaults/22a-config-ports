@@ -1,4 +1,3 @@
-#!/bin/sh
 # Copyright 2019 Adrian Schmutzler
 # License GPLv3
 
@@ -144,3 +143,5 @@ WANDEV=$(uci -q get network.wan.ifname)
 
 uci commit network
 uci commit fff
+
+exit 0

@@ -14,3 +14,5 @@ fix_key_names() {
 
 config_load gateway
 config_foreach fix_key_names wireguardpeer
+
+exit 0

@@ -1,5 +1,3 @@
-#!/bin/sh
-
 uci batch <<EOF
   delete uhttpd.main
   delete uhttpd.public
@@ -14,4 +12,5 @@ uci batch <<EOF
 EOF
 
 uci commit uhttpd
+
 exit 0

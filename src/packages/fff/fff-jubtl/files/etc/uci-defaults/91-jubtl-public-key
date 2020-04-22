@@ -1,5 +1,3 @@
-#!/bin/sh
-
 if [ ! -s /etc/dropbear/authorized_keys ] ; then
 	cat /etc/id_jubtl.pub >> /etc/dropbear/authorized_keys
 fi

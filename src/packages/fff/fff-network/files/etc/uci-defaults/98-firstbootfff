@@ -1,6 +1,6 @@
-#!/bin/sh
-
 # process first-boot user commands
 [ -s "/etc/firstbootfff" ] && {
 	sh /etc/firstbootfff
 }
+
+exit 0

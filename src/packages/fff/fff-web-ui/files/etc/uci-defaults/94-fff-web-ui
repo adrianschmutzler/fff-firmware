@@ -1,5 +1,3 @@
-#!/bin/sh
-
 uci batch <<EOF
   delete uhttpd.ssl
   delete uhttpd.px5g
@@ -32,4 +30,5 @@ uci batch <<EOF
 EOF
 
 uci commit uhttpd
+
 exit 0

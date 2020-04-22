@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # Migrate old hood file
 [ -s /www/hood/keyxchangev2data ] && mv /www/hood/keyxchangev2data /etc/hoodfile
 

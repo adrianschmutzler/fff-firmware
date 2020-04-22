@@ -1,6 +1,4 @@
-#!/bin/ash
-
-BOARD="$(cat /var/sysinfo/board_name)"
+BOARD=$(cat /var/sysinfo/board_name)
 
 case "$BOARD" in
 	tplink,c50-v3)
@@ -16,3 +14,5 @@ esac
 
 uci set board.model.name="$BOARD"
 uci commit board
+
+exit 0
