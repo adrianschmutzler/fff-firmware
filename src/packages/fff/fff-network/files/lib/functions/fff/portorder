@@ -7,33 +7,33 @@ case "$BOARD" in
 	joy-it,jit-or750i)
 		PORTORDER="4 3 2"
 		;;
-	*archer-c25-v1|\
-	*archer-c60-v1|\
-	*archer-c60-v2|\
-	*tl-wr841-v10|\
-	*tl-wr841-v11|\
-	*tl-wr841-v12)
+	tplink,archer-c25-v1|\
+	tplink,archer-c60-v1|\
+	tplink,archer-c60-v2|\
+	tplink,tl-wr841-v10|\
+	tplink,tl-wr841-v11|\
+	tplink,tl-wr841-v12)
 		PORTORDER="4 3 2 1"
 		;;
-	*archer-c50-v4)
+	tplink,archer-c50-v4)
 		PORTORDER="0 1 2 3 4"
 		;;
-	*archer-c7-v2|\
-	*archer-c7-v4|\
-	*archer-c7-v5|\
-	*tl-wdr4300-v1)
+	tplink,archer-c7-v2|\
+	tplink,archer-c7-v4|\
+	tplink,archer-c7-v5|\
+	tplink,tl-wdr4300-v1)
 		PORTORDER="1 2 3 4 5"
 		;;
 	tplink,c2600|\
-	*tl-wr1043nd-v4|\
-	*tl-wr1043n-v5)
+	tplink,tl-wr1043nd-v4|\
+	tplink,tl-wr1043n-v5)
 		PORTORDER="5 4 3 2 1"
 		;;
 	cpe210|\
 	cpe510)
 		PORTORDER="5 4"
 		;;
-	*tl-wr841-v8)
+	tplink,tl-wr841-v8)
 		PORTORDER="2 3 4 1"
 		;;
 esac
