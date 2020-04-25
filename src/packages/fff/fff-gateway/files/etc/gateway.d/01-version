@@ -12,6 +12,7 @@ configure() {
 	# check version of configuration
 	if ! [ -n "$config_version" ]; then
 		echo "ERROR: No config version given. Supported versions: '1'"
+		echo "Note that the definitions vary between firmware flavors."
 
 		exit 1
 	fi
