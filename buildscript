@@ -405,7 +405,7 @@ loadBSP()
 {
     bspfile="$(/bin/ls -l selected_bsp | awk '{ print $11 }')"
     echo "Working with $bspfile"
-    machine=$(echo "$bspfile" | sed -e 's#^bsp/##' -e 's#\.bsp$##')
+    machine=$(basename $(realpath selected_bsp) .bsp)
 
     if [ -z "$machine" ]; then
         echo "Error: BSP file naming scheme incorrect!"
