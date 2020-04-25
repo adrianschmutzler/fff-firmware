@@ -23,4 +23,6 @@ configure() {
 
 		exit 1
 	fi
+
+	return 0
 }
