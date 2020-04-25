@@ -19,5 +19,4 @@ configno KERNEL_DEBUG_INFO
 configno KERNEL_DEBUG_KERNEL
 configno PACKAGE_ALFRED_VIS
 
-packagemod kmod-hwmon-core
 packagemod opkg
