@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-gateway
 PKG_VERSION:=4
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff-gateway
 
@@ -30,6 +30,7 @@ define Package/fff-gateway
 	         +fff-babeld \
 	         +fff-batman-adv-server \
 	         +fff-dhcp \
+	         +fff-firewall \
 	         +fff-gwinfo \
 	         +fff-network \
 	         +fff-macnock \
