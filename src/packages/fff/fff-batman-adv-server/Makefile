@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-batman-adv-server
-PKG_RELEASE:=5
+PKG_RELEASE:=0.5
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 

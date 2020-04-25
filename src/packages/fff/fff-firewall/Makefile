@@ -1,8 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-firewall
-PKG_VERSION:=4
-PKG_RELEASE:=3
+PKG_RELEASE:=4.3
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 

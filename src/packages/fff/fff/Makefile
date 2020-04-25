@@ -1,8 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff
-PKG_VERSION:=7
-PKG_RELEASE:=5
+PKG_RELEASE:=7.5
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff
 
