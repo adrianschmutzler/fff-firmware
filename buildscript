@@ -338,12 +338,12 @@ cp_firmware() {
     imagedestpath="./bin/$variant"
 
     for dev in $devices; do
-        fullsrcpath="$imagesrcpath/openwrt-${imagetarget/_/-}-${dev}-squashfs-*"
-        if ! ls $fullsrcpath >/dev/null 2>/dev/null; then
+        fullsrcpattern="$imagesrcpath/openwrt-${imagetarget/_/-}-${dev}-squashfs-*"
+        if ! ls $fullsrcpattern >/dev/null 2>/dev/null; then
             echo "Warning: Image for $dev not found."
             continue
         fi
-        for f in $fullsrcpath; do
+        for f in $fullsrcpattern; do
             filename_build=${f##*/}
             filename_build=${filename_build//openwrt/fff-${version}}
             filename_build=${filename_build//generic/g}
