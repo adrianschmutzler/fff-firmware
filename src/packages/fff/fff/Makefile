@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff
 PKG_VERSION:=7
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff
 
@@ -23,7 +23,7 @@ define Package/fff-base
 			 +fff-config \
 			 +fff-network \
 			 +fff-nodewatcher \
-			 +!(TARGET_ar71xx_tiny||TARGET_ath79_tiny):fff-simple-tc \
+			 +!TARGET_ath79_tiny:fff-simple-tc \
 			 +fff-support \
 			 +fff-sysupgrade \
 			 +fff-timeserver \
