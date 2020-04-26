@@ -57,8 +57,8 @@ start_service() {
     procd_set_param respawn 10 10 0
     procd_set_param file /etc/config/system
     procd_set_param netdev $IFACE
-    procd_set_param stdout 0
-    procd_set_param stderr 0
+    procd_set_param stdout 1
+    procd_set_param stderr 1
     procd_set_param user root
     procd_close_instance
 }

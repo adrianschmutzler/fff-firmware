@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-macnock
-PKG_RELEASE:=1.1
+PKG_RELEASE:=1.2
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/FreifunkFranken/macnocker.git
