@@ -17,7 +17,7 @@ statslink="$(uci -q get gateway.gwinfo.statslink)"
 
 # Code
 tmp=$(/bin/mktemp)
-echo "{\"version\":\"1.4.7\",\"hostname\":\"$hostname\",\"stats_page\":\"$statslink\",\"netifs\":[" > $tmp
+echo "{\"version\":\"1.4.8\",\"hostname\":\"$hostname\",\"stats_page\":\"$statslink\",\"netifs\":[" > $tmp
 
 comma=""
 for netif in $(ls /sys/class/net); do
@@ -25,7 +25,11 @@ for netif in $(ls /sys/class/net); do
 		continue
 	fi
 	mac="$(cat "/sys/class/net/$netif/address")"
-	batctl="$("$batctlpath" -m "$netif" if | grep "eth" | sed -n 's/:.*//p')"
+	if echo "$netif" | grep -q -v "\."; then
+		batctl="$("$batctlpath" -m "$netif" if | grep "eth" | sed -n 's/:.*//p')"
+	else
+		batctl=""
+	fi
 
 	ipv4=""
 	ipv6=""
