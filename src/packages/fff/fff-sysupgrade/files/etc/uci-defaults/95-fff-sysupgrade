@@ -7,6 +7,7 @@ cat > /etc/sysupgrade.conf <<-__EOF__
 /etc/dropbear/dropbear_rsa_host_key
 /etc/dropbear/authorized_keys
 /etc/config/fff
+/etc/config/gateway
 /etc/firstbootfff
 /etc/hoodfile
 /etc/sectorfile

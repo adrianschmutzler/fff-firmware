@@ -1,3 +1,0 @@
-echo "/etc/config/gateway" >> /etc/sysupgrade.conf
-
-exit 0
