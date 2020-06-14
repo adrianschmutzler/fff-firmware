@@ -85,7 +85,7 @@ add_wireguardpeer() {
 
 	# set up babel interface
 	rxcost=$(uci -q get gateway.$name.rxcost)
-	babel_add_interface "$name" "$name" "tunnel" "$rxcost"
+	babel_add_interface "$name" "$name" "wired" "$rxcost"
 
 	# add iif-rules
 	babel_add_iifrules "$name" "10" "31"
