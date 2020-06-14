@@ -7,7 +7,7 @@ fetchid="64"
 
 alfredjson=/bin/alfred-json
 header="Content-type: application/json; charset=UTF-8"
-verbose=-v # -v for verbose output, nothing for standard output
+verbose=-sS # -v for verbose output, -sS for silent output except errors
 certs=-k # -k to allow insecure SSL connections, nothing for standard
 
 for api_url in $api_urls; do
