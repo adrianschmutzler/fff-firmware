@@ -54,7 +54,7 @@ case "$BOARD" in
 	ubnt,nanostation-m)
 		uci set "fff.ui.portsetup=twoeth"
 		;;
-	joy-it,jit-or750i)
+	joyit,jit-or750i)
 		setupSwitch "0t 2" "0t 3 4"
 		;;
 	tplink,archer-c7-v2)

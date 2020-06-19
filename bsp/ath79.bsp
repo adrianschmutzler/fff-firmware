@@ -1,7 +1,7 @@
 target ath79 generic
 
 device glinet_gl-ar150
-device joy-it_jit-or750i "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9887-ct ath10k-firmware-qca9887"
+device joyit_jit-or750i "-kmod-ath10k-ct kmod-ath10k -ath10k-firmware-qca9887-ct ath10k-firmware-qca9887"
 device tplink_archer-c25-v1 "-kmod-ath10k-ct-smallbuffers kmod-ath10k -ath10k-firmware-qca9887-ct ath10k-firmware-qca9887"
 device tplink_archer-c60-v1 "-kmod-ath10k-ct-smallbuffers kmod-ath10k -ath10k-firmware-qca9888-ct ath10k-firmware-qca9888"
 device tplink_archer-c60-v2 "-kmod-ath10k-ct-smallbuffers kmod-ath10k -ath10k-firmware-qca9888-ct ath10k-firmware-qca9888"

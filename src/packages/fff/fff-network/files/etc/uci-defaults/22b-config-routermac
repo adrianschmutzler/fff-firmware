@@ -22,7 +22,7 @@ case "$BOARD" in
 	ubnt,unifiac-pro)
 		ROUTERMAC=$(cat /sys/class/net/eth0/address)
 		;;
-	joy-it,jit-or750i|\
+	joyit,jit-or750i|\
 	tplink,archer-c7-v2|\
 	tplink,c2600)
 		ROUTERMAC=$(cat /sys/class/net/eth1/address)
