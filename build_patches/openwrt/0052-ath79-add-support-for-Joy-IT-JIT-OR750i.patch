@@ -7,10 +7,10 @@ Based on the corresponding staging tree of David Bauer.
 Signed-off-by: Adrian Schmutzler <freifunk@adrianschmutzler.de>
 
 diff --git a/target/linux/ath79/base-files/etc/board.d/01_leds b/target/linux/ath79/base-files/etc/board.d/01_leds
-index c3fa7f6a61750919eb0d12216155e479da04b7f3..1f907a00430d4e32bb4ed8f7da8dcea37ae2d6d7 100755
+index 058ab006e5e16afd61b6e03ab6e83b4c20af2660..24a92de432cc10fb14a32fc47f1e8fa44d3b8ee0 100755
 --- a/target/linux/ath79/base-files/etc/board.d/01_leds
 +++ b/target/linux/ath79/base-files/etc/board.d/01_leds
-@@ -88,6 +88,13 @@ glinet,gl-ar300m-lite)
+@@ -84,6 +84,13 @@ glinet,gl-ar300m-lite)
  glinet,gl-x750)
  	ucidef_set_led_netdev "wan" "WAN" "$boardname:green:wan" "eth1"
  	;;
@@ -25,10 +25,10 @@ index c3fa7f6a61750919eb0d12216155e479da04b7f3..1f907a00430d4e32bb4ed8f7da8dcea3
  on,n150r)
  	ucidef_set_led_netdev "wan" "WAN" "netgear:green:wan" "eth0"
 diff --git a/target/linux/ath79/base-files/etc/board.d/02_network b/target/linux/ath79/base-files/etc/board.d/02_network
-index 9b9bc8a7fc15300247bceeb431ab3ae8d3ac47e6..2fbe4d3a753fb6c5c6cb37ade891fad0ce811dec 100755
+index f6efc4d4d658c29459205f29e537066e03870afa..ced614ee3b6ffeb5ecb764845cfaa24ed1c0e08d 100755
 --- a/target/linux/ath79/base-files/etc/board.d/02_network
 +++ b/target/linux/ath79/base-files/etc/board.d/02_network
-@@ -165,6 +165,11 @@ ath79_setup_interfaces()
+@@ -167,6 +167,11 @@ ath79_setup_interfaces()
  		ucidef_add_switch "switch0" \
  			"0@eth0" "1:lan" "2:lan" "3:lan" "4:lan" "5:wan"
  	;;
