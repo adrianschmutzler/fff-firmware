@@ -56,6 +56,6 @@ done
 echo "]}" >> $tmp
 
 for api_url in $api_urls; do
-	/usr/bin/curl -k -v -H "Content-type: application/json; charset=UTF-8" --data-binary @$tmp $api_url
+	/usr/bin/curl -k -sS -H "Content-type: application/json; charset=UTF-8" --data-binary @$tmp $api_url
 done
 /bin/rm "$tmp"

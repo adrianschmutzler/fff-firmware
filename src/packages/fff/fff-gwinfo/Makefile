@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-gwinfo
-PKG_RELEASE:=0.5
+PKG_RELEASE:=0.6
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
