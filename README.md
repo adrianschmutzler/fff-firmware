@@ -54,22 +54,13 @@ Weitere Informationen gibt es auf <https://freifunk.net/> und auf <https://wiki.
 Je nachdem, für welche Hardware die Firmware gebaut werden soll, muss das BSP gewählt werden:
 
 * `./buildscript selectvariant adsc9`
-* `./buildscript selectbsp bsp/board_ar71xx.bsp`
+* `./buildscript selectbsp bsp/ath79.bsp`
 * Um die vorhandenen BSPs zu sehen, kann `./buildscript selectbsp help` ausgeführt werden.
 
 ## Was ist ein BSP?
 Ein BSP (Board-Support-Package) beschreibt, was zu tun ist, damit ein Firmware Image für eine spezielle Hardware gebaut werden kann.
-Typischerweise ist eine Ordner-Struktur wie folgt vorhanden:
-* .config
-* root_file_system/
-  * etc/
-    * rc.local.board
-    * config/
-      * board
-      * network
-      * system
-    * crontabs/
-      * root
+Typischerweise besteht ein bsp aus:
+* bsp/target.bsp
 
 Die Daten des BSP werden nie alleine verwendet. Zuerst werden immer die Daten aus dem "default"-BSP zum Ziel kopiert, erst danach werden die Daten des eigentlichen BSPs dazu kopiert. Durch diesen Effekt kann ein BSP die "default" Daten überschreiben.
 
@@ -82,8 +73,6 @@ Das Buildscript generiert ein dynamisches sed-Script. Dies geschieht, damit die 
   * OpenWrt
   * Sämtliche Packages (ggf. werden Patches angewandt)
 
-* Ein ggf. altes Target wird gelöscht
-* OpenWrt wird ins Target exportiert (kopiert)
 * Eine OpenWrt Feed-Config wird mit dem lokalen Source Verzeichnis als Quelle angelegt
 * Die Feeds werden geladen
 * Spezielle Auswahl an Paketen wird geladen
@@ -122,14 +111,13 @@ cd firmware
 ```
 
 ### Erste Images erzeugen
-Du fügst die Dateinamen der Images, die zusätzlich kopiert werden sollen, in das `images`-Array ein:
+Du fügst die Dateinamen der Images, die zusätzlich kopiert werden sollen, in das `images`-Array ein. Hierbei können Wildcards verwendet werden, um z.B. sysupgrade.bin und ggf. meherere factory.bin Ergebnisse aus dem OpenWrt Buildverzeichnis in unser Buildverzeichnis zu kopieren.
 
 ```
-vim bsp/board_ar71xx.bsp
+vim bsp/ath79-generic.bsp
 images=(
     // ...
-    openwrt-${chipset}-${subtarget}-tl-wr1043nd-v2-squashfs-sysupgrade.bin"
-    openwrt-${chipset}-${subtarget}-tl-wr1043nd-v2-squashfs-factory.bin"
+    openwrt-${chipset}-${subtarget}-tl-wr1043nd-v2-squashfs-*"
     // ...
 )
 ```
@@ -139,7 +127,7 @@ Dazu in `src/packages/fff/fff-network/files/etc/uci-defaults/22a-config-ports` d
 
 Anschließend kann ein erstes Image erzeugt werden:
 ```
-./buildscript selectbsp bsp/board_wr1043nd.bsp
+./buildscript selectbsp bsp/ath79-generic.bsp
 
 ./buildscript prepare
 ./buildscript build
