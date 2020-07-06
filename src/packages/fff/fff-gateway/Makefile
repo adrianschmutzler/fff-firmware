@@ -24,6 +24,7 @@ define Package/fff-gateway
 	         +iptables-mod-filter \
 	         +iptables-mod-ipopt \
 	         +iptables-mod-conntrack-extra \
+	         +mtr \
 	         +tcpdump \
 	         +vxlan \
 	         +fff-alfred-monitoring-proxy \
