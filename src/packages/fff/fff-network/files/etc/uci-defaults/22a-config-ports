@@ -57,6 +57,9 @@ case "$BOARD" in
 	joyit,jit-or750i)
 		setupSwitch "0t 2" "0t 3 4"
 		;;
+	netgear,r6220)
+		setupSwitch "6t 0 1" "6t 2 3" "6t 4"
+		;;
 	tplink,archer-c7-v2)
 		setupSwitch "0t 4 5" "0t 2 3" "6t 1"
 		;;

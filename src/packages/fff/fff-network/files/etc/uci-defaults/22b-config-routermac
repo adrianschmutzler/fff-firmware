@@ -11,6 +11,7 @@ BOARD="$(uci get board.model.name)"
 # Set MAC address for br-mesh
 case "$BOARD" in
 	avm,fritzbox-4040|\
+	netgear,r6220|\
 	tplink,archer-c50-v3|\
 	tplink,archer-c50-v4|\
 	tplink,archer-c7-v4|\

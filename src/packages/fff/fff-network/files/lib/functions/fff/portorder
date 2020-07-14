@@ -7,6 +7,9 @@ case "$BOARD" in
 	joyit,jit-or750i)
 		PORTORDER="4 3 2"
 		;;
+	netgear,r6220)
+		PORTORDER="4 3 2 1 0"
+		;;
 	tplink,archer-c25-v1|\
 	tplink,archer-c60-v1|\
 	tplink,archer-c60-v2|\

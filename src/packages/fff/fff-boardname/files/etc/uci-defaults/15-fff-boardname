@@ -1,6 +1,9 @@
 BOARD=$(cat /var/sysinfo/board_name)
 
 case "$BOARD" in
+	r6220)
+		BOARD=netgear,r6220
+		;;
 	tplink,c50-v3)
 		BOARD=tplink,archer-c50-v3
 		;;
