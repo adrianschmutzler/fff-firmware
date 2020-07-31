@@ -103,8 +103,8 @@ if [ -s "$hoodfiletmp" ]; then
 		json_get_var mesh_type5 mesh_type5
 	fi
 
-	sumnew=$(cat "$hoodfiletmp" 2>/dev/null | sha256sum | cut -f1 -d " ")
-	sumold=$(cat "$hoodfileref" 2>/dev/null | sha256sum | cut -f1 -d " ")
+	sumnew=$(sha256sum "$hoodfiletmp" 2>/dev/null | cut -f1 -d " ")
+	sumold=$(sha256sum "$hoodfileref" 2>/dev/null | cut -f1 -d " ")
 
 	json_load "$(cat "$hoodfiletmp")"
 
