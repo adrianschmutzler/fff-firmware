@@ -4,42 +4,6 @@
 . /lib/functions.sh
 . /lib/functions/network.sh
 
-setAutoConf() {
-	# Sets ipv6 auto configuration on an interface to on/off
-	# Usage: setAutoConf <interface> <(0|1)> [<path_to_sysctl_file>]
-	local iface=$1
-	local on=$2
-	local sysctlfile="$3"
-
-	[ -n "$sysctlfile" ] || sysctlfile="/etc/sysctl.d/65-fff-network-wan.conf"
-
-	echo "# Generated from network setup" > "$sysctlfile"
-	echo "net.ipv6.conf.$iface.accept_ra = $on" >> "$sysctlfile"
-	echo "net.ipv6.conf.$iface.accept_ra_defrtr = $on" >> "$sysctlfile"
-	echo "net.ipv6.conf.$iface.accept_ra_pinfo = $on" >> "$sysctlfile"
-	echo "net.ipv6.conf.$iface.autoconf = $on" >> "$sysctlfile"
-	echo "net.ipv6.conf.$iface.accept_ra_rtr_pref = $on" >> "$sysctlfile"
-	echo "net.ipv6.conf.$iface.forwarding = 0" >> "$sysctlfile"
-
-	/sbin/sysctl -p "$sysctlfile" > /dev/null
-}
-
-enableAutoConf() {
-	# Enables ipv6 auto configuration on an interface
-	# Usage: enableAutoConf <interface>
-	local iface=$1
-
-	setAutoConf "$iface" "1"
-}
-
-disableAutoConf() {
-	# Disables ipv6 auto configuration on an interface
-	# Usage: disableAutoConf <interface>
-	local iface=$1
-
-	setAutoConf "$iface" "0"
-}
-
 fixMac() {
 	# Update MAC address on live device/interface
 	#
@@ -192,12 +156,10 @@ setupOnePort() {
 		uci set network.wan=interface
 		uci set network.wan.ifname="$DEV"
 		uci set network.wan.proto=dhcp
-		enableAutoConf "$DEV"
 	elif uci -q get network.wan.ifname | grep -q "^ *$DEV *$"; then
 		# only disable WAN for $DEV if it was set before
 		# -> will ignore other eth if called for second port
 		uci del network.wan.ifname
-		disableAutoConf "$DEV"
 	fi
 
 	MESH="$(uci -q get network.mesh.ifname | sed "s/\b$DEV //" | sed "s/ *$DEV$//g")"

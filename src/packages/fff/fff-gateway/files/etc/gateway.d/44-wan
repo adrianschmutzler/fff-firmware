@@ -17,14 +17,6 @@ configure() {
 
 apply() {
 	uci commit network
-
-	# Enable new device in sysctl
-	# (if interface changes, old auto configuration will remain until next boot)
-	WANDEV="$(uci -q get network.wan.ifname)"
-	if [ -n "$WANDEV" ]; then
-		echo "WAN: Enable IPv6 auto configuration on $WANDEV"
-		enableAutoConf "$WANDEV" 2> /dev/null
-	fi
 }
 
 revert() {

@@ -139,11 +139,13 @@ esac
 # delete unused OpenWrt nodes
 uci del network.lan # only delete AFTER switch setup
 # uci del network.wan_dev # not deleting this might preserve MAC address
-uci -q del network.wan6
 
-# setup sysctl conf for WAN
-WANDEV=$(uci -q get network.wan.ifname)
-[ -n "$WANDEV" ] && enableAutoConf "$WANDEV"
+uci -q del network.wan6
+uci set "network.wan6=interface"
+uci set "network.wan6.proto=dhcpv6"
+uci set "network.wan6.reqprefix=no"
+uci set "network.wan6.sourcefilter=0"
+uci set "network.wan6.ifname=@wan"
 
 uci commit network
 uci commit fff
