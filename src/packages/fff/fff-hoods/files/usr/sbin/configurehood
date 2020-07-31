@@ -72,43 +72,39 @@ if [ -s "$hoodfilelocal" ]; then
 	cp "$hoodfilelocal" "$hoodfiletmp"
 	echo "Using local hood file"
 else
-	# if we have Internet, we download the Hoodfile from the keyxchangev2
-	if hasInternet ; then
-		getKeyserverHoodfile "$hoodfiletmp" && cp "$hoodfiletmp" "$hoodfilewww"
+	# if internet is available, the hoodfile is downloaded from our keyserver
+	if getKeyserverHoodfile "$hoodfiletmp"; then
+		cp "$hoodfiletmp" "$hoodfilewww"
 
+		#SECTOR FILE: No uplink download if internet present
 		rm -f "$sectorfiletmp"
 		[ -s "$sectorfilelocal" ] || rm -f "$sectorfilewww" # If internet present, no custom config should be distributed, except when local file is present
-		#SECTOR FILE: No uplink download if internet present
-		#if no Internet, we connect to the hidden AP and download the file from another Node in range
+
+	# if no internet is available, but the node is already configured,
+	# a gateway with the appropriate hoodfile should be available
+	elif getGatewayHoodfile "$hoodfiletmp"; then
+		cp "$hoodfiletmp" "$hoodfilewww"
+
+		#SECTOR FILE: Do nothing
+
+	# no internet and no gateway available. the node is either unconfigured,
+	# has lost connectivity or the hood is broken. Try to regain connectivity by
+	# fetching hoodfiles from nearby nodes
 	else
-		# connect to wireless hidden ap here and download the json File from the nearest router
-		# Only do that, when we have no gateway in range. If the Uplinkrouter changed the hood, we lost the GW and do this automatically again, I think! Nice idea?
-		if ! isGatewayAvailable ; then
-			#now we haven't a gateway in Range, we search for a hidden AP to get a keyxchangev2data file!
-			#first we delete all wifi settings
-			rm -f "$hoodfileref" # delete this, so interfaces are recreated if reconnect with unchanged hood file takes place
-			rm -f "$hoodfilewww" # delete this, so wrong hood file is not broadcasted anymore
-			rm -f "$sectorfilewww" # always delete: no broadcast for isolated device
-			rm -f "$sectorfiletmp"
+		rm -f "$hoodfileref" # delete this, so interfaces are recreated if reconnect with unchanged hood file takes place
+		rm -f "$hoodfilewww" # delete this, so wrong hood file is not broadcasted anymore
+		rm -f "$sectorfilewww" # always delete: no broadcast for isolated device
+		rm -f "$sectorfiletmp"
 
-			uci -q del "system.@system[0].hood"
-			uci -q del "system.@system[0].hoodid"
-			uci commit system
-			reload_config
+		uci -q del "system.@system[0].hood"
+		uci -q del "system.@system[0].hoodid"
+		uci commit system
+		reload_config
 
-			echo "Waiting 30 seconds ..."
-			sleep 30 # Wait for the config AP, which may be created at the same time as this script has started
+		echo "Waiting 30 seconds ..."
+		sleep 30 # Wait for the config AP, which may be created at the same time as this script has started
 
-			getEthernetHoodfile "$hoodfiletmp" || getWirelessHoodfile "$hoodfiletmp" "$sectorfiletmp"
-		else
-			# We wait some time, so nodes without network connection can delete their $hoodfilecopy
-			# -> as a consequence, all hood files in the wired network are from devices with gateway connection
-			echo "Waiting 20 seconds ..."
-			sleep 20;
-
-			getGatewayHoodfile "$hoodfiletmp" && cp "$hoodfiletmp" "$hoodfilewww"
-			#SECTOR FILE: Do nothing
-		fi
+		getEthernetHoodfile "$hoodfiletmp" || getWirelessHoodfile "$hoodfiletmp" "$sectorfiletmp"
 	fi
 fi
 
