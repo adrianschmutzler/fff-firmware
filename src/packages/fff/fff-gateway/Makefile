@@ -13,6 +13,7 @@ define Package/fff-gateway
 	TITLE:=Freifunk-Franken gateway configuration
 	URL:=https://www.freifunk-franken.de
 	DEPENDS:=+arptables \
+	         +bmon \
 	         +ebtables \
 	         +ebtables-utils \
 	         +kmod-ebtables-ipv4 \
@@ -25,6 +26,7 @@ define Package/fff-gateway
 	         +iptables-mod-ipopt \
 	         +iptables-mod-conntrack-extra \
 	         +mtr \
+	         +tc \
 	         +tcpdump \
 	         +vxlan \
 	         +fff-alfred-monitoring-proxy \
