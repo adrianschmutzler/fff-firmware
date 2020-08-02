@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=fff-node
-PKG_RELEASE:=2.3
+PKG_RELEASE:=2.4
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/fff-node
 

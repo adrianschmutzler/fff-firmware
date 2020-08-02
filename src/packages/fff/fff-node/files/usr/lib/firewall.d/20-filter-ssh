@@ -1,5 +1,0 @@
-# If an router has a direct internet connection simple attack act as DOS attack
-if [ -n "$IF_WAN" ]; then
-	iptables -A INPUT -i $IF_WAN -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-	iptables -A INPUT -i $IF_WAN -j REJECT
-fi
