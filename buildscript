@@ -13,9 +13,9 @@
 
 builddir=./build
 
-# OpenWrt: openwrt-19.07.4
-OPENWRTREV="v19.07.4"
-PACKAGEREV="eae1bb397f064befe003b01a36ae318321e81d35"
+# OpenWrt: openwrt-19.07.4+ from 2020-10-16
+OPENWRTREV="7dd822983b8728772e433c7718739b741c3d6de0"
+PACKAGEREV="0f7f9c96a86f0600226a2118859fa1ae8741c0a3"
 ROUTINGREV="b77498bd56d5e45ab4577a1f4ad6ffc55b4a86b7"
 
 # Gluon packages: master from 2020-02-04
