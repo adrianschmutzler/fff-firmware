@@ -1,0 +1,44 @@
+From: Sungbo Eo <mans0n@gorani.run>
+Date: Sat, 25 Jan 2020 23:06:07 +0900
+Subject: base-files: add functions to set or clear bit in MAC address
+
+Some devices (e.g. Arduino Yun) need bitwise operations during MAC address
+setup. This commit adds generalized versions of macaddr_setbit_la(), which
+are helpful when manipulating a single bit in a MAC address.
+
+Signed-off-by: Sungbo Eo <mans0n@gorani.run>
+(cherry picked from commit dc61e3b7ffdc2e3873af238a9100d44ee685578c)
+
+diff --git a/package/base-files/files/lib/functions/system.sh b/package/base-files/files/lib/functions/system.sh
+index dceb66a85124ccb478021c918965d97669f2a1f1..539b3f85de3489b1718620a6ffd452132875bdcf 100644
+--- a/package/base-files/files/lib/functions/system.sh
++++ b/package/base-files/files/lib/functions/system.sh
+@@ -104,10 +104,26 @@ macaddr_add() {
+ 	echo $oui:$nic
+ }
+ 
+-macaddr_setbit_la() {
++macaddr_setbit() {
++	local mac=$1
++	local bit=${2:-0}
++
++	[ $bit -gt 0 -a $bit -le 48 ] || return
++
++	printf "%012x" $(( 0x${mac//:/} | 2**(48-bit) )) | sed -e 's/\(.\{2\}\)/\1:/g' -e 's/:$//'
++}
++
++macaddr_unsetbit() {
+ 	local mac=$1
++	local bit=${2:-0}
++
++	[ $bit -gt 0 -a $bit -le 48 ] || return
+ 
+-	printf "%02x:%s" $((0x${mac%%:*} | 0x02)) ${mac#*:}
++	printf "%012x" $(( 0x${mac//:/} & ~(2**(48-bit)) )) | sed -e 's/\(.\{2\}\)/\1:/g' -e 's/:$//'
++}
++
++macaddr_setbit_la() {
++	macaddr_setbit $1 7
+ }
+ 
+ macaddr_2bin() {

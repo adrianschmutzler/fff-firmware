@@ -1,0 +1,36 @@
+From: David Bauer <mail@david-bauer.net>
+Date: Sat, 11 Jul 2020 13:48:40 +0200
+Subject: base-files: add function for generating random MAC
+
+This adds a function for generating a valid random MAC address (unset MC
+bit / set locally administered bit).
+
+It is necessary for devices which do not have a MAC address programmed
+by the manufacturer.
+
+Signed-off-by: David Bauer <mail@david-bauer.net>
+(cherry picked from commit c3e252d08032de80e7c82759cc9763a310a97144)
+
+diff --git a/package/base-files/files/lib/functions/system.sh b/package/base-files/files/lib/functions/system.sh
+index 539b3f85de3489b1718620a6ffd452132875bdcf..b20792b071adf748f14a891d4e13e15f0ed9da7c 100644
+--- a/package/base-files/files/lib/functions/system.sh
++++ b/package/base-files/files/lib/functions/system.sh
+@@ -126,6 +126,18 @@ macaddr_setbit_la() {
+ 	macaddr_setbit $1 7
+ }
+ 
++macaddr_unsetbit_mc() {
++	local mac=$1
++
++	printf "%02x:%s" $((0x${mac%%:*} & ~0x01)) ${mac#*:}
++}
++
++macaddr_random() {
++	local randsrc=$(get_mac_binary /dev/urandom 0)
++	
++	echo "$(macaddr_unsetbit_mc "$(macaddr_setbit_la "${randsrc}")")"
++}
++
+ macaddr_2bin() {
+ 	local mac=$1
+ 

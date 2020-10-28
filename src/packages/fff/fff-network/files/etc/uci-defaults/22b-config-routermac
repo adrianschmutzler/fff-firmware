@@ -45,7 +45,10 @@ esac
 echo "Setting br-mesh MAC address to $ROUTERMAC"
 uci set "network.mesh.macaddr=$ROUTERMAC"
 
-# Set MAC address for ethmesh
+# Set MAC address for ethmesh itself (random)
+uci set "network.ethmesh.macaddr=$(macaddr_random)"
+
+# Set MAC address for first ethmesh member device
 ETHMESHDEV="$(uci -q get network.ethmesh.ifname)"
 # -> ethmesh will be set for VLAN-based setup, otherwise just prepare ethX from mesh
 [ -n "$ETHMESHDEV" ] || ETHMESHDEV="$(uci get network.mesh.ifname | grep -o -m1 "eth[0-9.]*")"
