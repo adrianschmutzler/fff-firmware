@@ -55,13 +55,6 @@ configure() {
 		echo "-> Setting hood name: $hood"
 		uci set "system.@system[0].hood=$hood"
 
-		# time server
-		echo "-> Setting time server: $ntpip"
-		uci delete system.ntp
-		uci set system.ntp='timeserver'
-		uci add_list system.ntp.server="$ntpip"
-		uci set system.ntp.enable_server='0'
-
 		# wireless
 		for radio in $(wifiListRadio); do
 			freq="$(wifiGetFreq $radio)"
